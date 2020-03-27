@@ -14,7 +14,9 @@
     Set env variables in ./laradock/.env file: 
     ```
     COMPOSE_FILE=docker-compose.local.yml - for local development
+    ```
    
+    ```
     DATA_PATH_HOST=~/.laradock/data/electra - path to project data directory
     ```
     
@@ -40,8 +42,9 @@
     Run command from 'workspace' container:
     ```
     composer install
-    ```    
+    ```
     
     Copy .env.example into .env:
     ```
     cp .env.local.example .env
+    ```
