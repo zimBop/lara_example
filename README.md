@@ -39,6 +39,11 @@
 
 2. Laravel setup
 
+    Add link to storage
+    ```
+   php artisan storage:link
+   ```
+
     Run command from 'workspace' container:
     ```
     composer install
@@ -48,3 +53,18 @@
     ```
     cp .env.local.example .env
     ```
+   
+   Apply migrations:
+   ```
+   php artisan migrate
+   ```
+   
+   Generate the encryption keys Passport needs in order to generate access token:
+   ```
+   php artisan passport:keys
+   ```
+   
+   Add Passport client:
+   ```
+   php artisan passport:client --password --name=IOS --no-interaction
+   ```
