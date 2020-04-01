@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\NexmoService;
 use Illuminate\Support\ServiceProvider;
+use Nexmo\Client as NexmoClient;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(NexmoService::class, function ($app) {
+            return new NexmoService($app->make(NexmoClient::class));
+        });
     }
 
     /**

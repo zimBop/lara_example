@@ -10,6 +10,7 @@ class Client extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
+    public const ID = 'id';
     public const PHONE = 'phone';
     public const FIRST_NAME = 'first_name';
     public const LAST_NAME = 'last_name';

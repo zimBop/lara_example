@@ -13,8 +13,18 @@ class VerificationCode extends Model
 
     public const LIFETIME_MINUTES = 15;
     public const CODE_LENGTH = 4;
+    public const DELAY_MINUTES = 1;
 
     protected $dates = [
         self::EXPIRES_AT,
     ];
+
+    protected $fillable = [
+        self::CODE,
+    ];
+
+    public function getIsExpiredAttribute()
+    {
+        return now()->gte($this->expires_at);
+    }
 }

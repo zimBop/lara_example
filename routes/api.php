@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/clients', 'Api\ClientController@store');
+Route::post('/clients', 'Api\ClientController@store')->name('clients.store');
 
 Route::middleware('auth:api', 'scope:access-client')->group(function () {
-    Route::apiResource('clients', 'Api\ClientController')->except('store');
+    Route::post('/clients/logout/{client}', 'Api\ClientController@logout')->name('clients.logout');
+
+    Route::apiResource('clients', 'Api\ClientController')->except('index', 'store', 'destroy');
 });

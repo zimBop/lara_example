@@ -4,18 +4,12 @@
 
 use App\Models\VerificationCode;
 use Faker\Generator as Faker;
+use App\Services\VerificationCodeService;
 
 $factory->define(
     VerificationCode::class,
     function (Faker $faker) {
-        $code = implode(
-            '',
-            $faker->randomElements(
-                range(0, 9),
-                VerificationCode::CODE_LENGTH,
-                true
-            )
-        );
+        $code = VerificationCodeService::generate();
 
         return [
             VerificationCode::CODE => $code,
