@@ -13,7 +13,7 @@ $factory->define(
 
         return [
             VerificationCode::CODE => $code,
-            VerificationCode::EXPIRES_AT => now()->addMinutes(VerificationCode::LIFETIME_MINUTES),
+            VerificationCode::EXPIRES_AT => now()->addMinutes(config('app.verification_code.lifetime')),
         ];
     }
 );

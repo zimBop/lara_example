@@ -62,18 +62,22 @@ class VerificationCodeService
 
     protected function checkDelayPassed(): bool
     {
+        $delay = config('app.verification_code.delay');
+
         $delayEnd = $this->client->verificationCode
             ->updated_at
-            ->addMinutes(VerificationCode::DELAY_MINUTES);
+            ->addMinutes($delay);
 
         return now()->gt($delayEnd);
     }
 
     public static function generate(): string
     {
+        $length = config('app.verification_code.length');
+
         return str_pad(
-            rand(0, pow(10, VerificationCode::CODE_LENGTH) - 1),
-            VerificationCode::CODE_LENGTH,
+            rand(0, pow(10, $length) - 1),
+            $length,
             '0',
             STR_PAD_LEFT
         );

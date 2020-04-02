@@ -11,10 +11,6 @@ class VerificationCode extends Model
     public const EXPIRES_AT = 'expires_at';
     public const VERIFIED_AT = 'verified_at';
 
-    public const LIFETIME_MINUTES = 15;
-    public const CODE_LENGTH = 4;
-    public const DELAY_MINUTES = 1;
-
     protected $dates = [
         self::EXPIRES_AT,
     ];

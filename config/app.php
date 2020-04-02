@@ -123,6 +123,14 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'verification_code' => [
+        //lifetime in minutes
+        'lifetime' => 15,
+        'length' => 4,
+        //delay between sms sending in minutes
+        'delay' => 1
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
