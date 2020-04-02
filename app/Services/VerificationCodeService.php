@@ -47,7 +47,7 @@ class VerificationCodeService
         return $this->client->verificationCode;
     }
 
-    public function update()
+    protected function update()
     {
         $newCode = self::generate();
         $this->client->verificationCode->update([VerificationCode::CODE => $newCode]);
@@ -60,7 +60,7 @@ class VerificationCodeService
         );
     }
 
-    public function checkDelayPassed()
+    protected function checkDelayPassed(): bool
     {
         $delayEnd = $this->client->verificationCode
             ->updated_at

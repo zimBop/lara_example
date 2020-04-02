@@ -3,34 +3,27 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use App\Models\VerificationCode;
 use App\Services\NexmoService;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Passport\RefreshTokenRepository;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * @param Request $request
      * @param NexmoService $nexmo
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function store(Request $request, NexmoService $nexmo)
+    public function store(StoreClientRequest $request, NexmoService $nexmo)
     {
         $phone = $request->input('phone');
 
@@ -39,7 +32,10 @@ class ClientController extends Controller
         $verificationCodeService = new VerificationCodeService($client);
 
         if (!$verificationCodeService->canSend()) {
-            return response()->json(['message' => 'SMS cannot be sent. Delay between SMS sending 1 minute']);
+            $message = 'SMS cannot be sent. Delay between SMS sending ' . VerificationCode::DELAY_MINUTES
+                . ' ' . Str::plural('minute', VerificationCode::DELAY_MINUTES);
+
+            return response()->json(['message' => $message]);
         }
 
         $verificationCode = $verificationCodeService->get();
@@ -78,17 +74,6 @@ class ClientController extends Controller
         $client->update($input);
 
         return new ClientResource($client);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Client $client
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Client $client)
-    {
-        //
     }
 
     public function logout(Client $client, RefreshTokenRepository $refreshTokenRepository)

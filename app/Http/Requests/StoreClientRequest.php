@@ -25,7 +25,7 @@ class StoreClientRequest extends FormRequest
     public function rules()
     {
         return [
-//            Client::PHONE =>
+            Client::PHONE => ['required', 'string'],
         ];
     }
 }
