@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreClientRequest;
-use App\Http\Requests\UpdateClientRequest;
+use App\Http\Requests\Client\ResetPasswordRequest;
+use App\Http\Requests\Client\StoreRequest;
+use App\Http\Requests\Client\UpdateRequest;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
-use App\Models\VerificationCode;
 use App\Services\NexmoService;
+use App\Services\ResetPasswordService;
 use App\Services\VerificationCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +24,7 @@ class ClientController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function store(StoreClientRequest $request, NexmoService $nexmo)
+    public function store(StoreRequest $request, NexmoService $nexmo)
     {
         $phone = $request->input('phone');
 
@@ -32,8 +33,10 @@ class ClientController extends Controller
         $verificationCodeService = new VerificationCodeService($client);
 
         if (!$verificationCodeService->canSend()) {
-            $message = 'SMS cannot be sent. Delay between SMS sending ' . VerificationCode::DELAY_MINUTES
-                . ' ' . Str::plural('minute', VerificationCode::DELAY_MINUTES);
+            $delay = config('app.verification_code.delay');
+
+            $message = 'SMS cannot be sent. Delay between SMS sending ' . $delay
+                . ' ' . Str::plural('minute', $delay);
 
             return response()->json(['message' => $message]);
         }
@@ -57,11 +60,11 @@ class ClientController extends Controller
     }
 
     /**
-     * @param UpdateClientRequest $request
+     * @param UpdateRequest $request
      * @param Client $client
      * @return ClientResource
      */
-    public function update(UpdateClientRequest $request, Client $client)
+    public function update(UpdateRequest $request, Client $client)
     {
         $input = $request->all();
 
@@ -89,5 +92,33 @@ class ClientController extends Controller
         }
 
         return response()->json(['message' => 'Tokens revoked.']);
+    }
+
+    public function forgotPassword(Client $client, NexmoService $nexmo, ResetPasswordService $passwordService)
+    {
+        $passwordService->setClient($client);
+        $token = $passwordService->create();
+        $link = config('app.password_reset.ios_link') . "?token=$token";
+
+        $statusMessage = $nexmo->sendSMS($client->phone, $link);
+
+        return response()->json(['message' => $statusMessage]);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request, Client $client, ResetPasswordService $passwordService)
+    {
+        $password = $request->input(Client::PASSWORD);
+        $token = $request->input('token');
+
+        $passwordService->setClient($client);
+        if (!$passwordService->exists($token)) {
+            return response()->json(['message' => 'Password reset token expired or not exists.'], 422);
+        }
+
+        $client->update([
+            Client::PASSWORD => Hash::make($password)
+        ]);
+
+        return response()->json(['message' => 'Password reset successfully.']);
     }
 }

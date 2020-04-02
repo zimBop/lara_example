@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Client;
 
 use App\Models\Client;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateClientRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,7 +34,7 @@ class UpdateClientRequest extends FormRequest
             Client::LAST_NAME => ['required', 'string', 'max:255'],
             Client::EMAIL => ['email', 'max:255', 'unique:clients' . $clientIdPart],
             Client::BIRTHDAY => ['date_format:m/d/Y'],
-            Client::PASSWORD => ['required', 'string'],
+            Client::PASSWORD => ['required', 'string', 'min:6'],
         ];
     }
 }

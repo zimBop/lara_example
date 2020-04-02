@@ -131,6 +131,12 @@ return [
         'delay' => 1
     ],
 
+    'password_reset' => [
+        // password reset token lifetime in minutes
+        'token_lifetime' => 15,
+        'ios_link' => 'electra://reset_password',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

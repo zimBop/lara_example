@@ -52,4 +52,9 @@ class Client extends Authenticatable
     {
         return $this->hasOne(VerificationCode::class);
     }
+
+    public function passwordResetToken()
+    {
+        return $this->hasOne(PasswordResetToken::class);
+    }
 }

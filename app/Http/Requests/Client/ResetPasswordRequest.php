@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Client;
 
-use App\Models\Client;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreClientRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +24,8 @@ class StoreClientRequest extends FormRequest
     public function rules()
     {
         return [
-            Client::PHONE => ['required', 'string'],
+            'password' => ['required', 'string', 'confirmed', 'min:6'],
+            'token' => ['required', 'string'],
         ];
     }
 }
