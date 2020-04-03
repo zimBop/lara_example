@@ -11,37 +11,31 @@ use App\Models\Client;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\VerificationCodeService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Laravel\Passport\RefreshTokenRepository;
 
 class ClientController extends Controller
 {
     /**
-     * @param Request $request
+     * @param StoreRequest $request
      * @param NexmoService $nexmo
+     * @param VerificationCodeService $codeService
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function store(StoreRequest $request, NexmoService $nexmo)
+    public function store(StoreRequest $request, NexmoService $nexmo, VerificationCodeService $codeService)
     {
         $phone = $request->input('phone');
 
         $client = Client::firstOrCreate([Client::PHONE => $phone]);
 
-        $verificationCodeService = new VerificationCodeService($client);
+        $codeService->setClient($client);
 
-        if (!$verificationCodeService->canSend()) {
-            $delay = config('app.verification_code.delay');
-
-            $message = 'SMS cannot be sent. Delay between SMS sending ' . $delay
-                . ' ' . Str::plural('minute', $delay);
-
-            return response()->json(['message' => $message]);
+        if (!$codeService->canSend()) {
+            return response()->json(['message' => VerificationCodeService::getCannotSendMessage()]);
         }
 
-        $verificationCode = $verificationCodeService->get();
+        $verificationCode = $codeService->get();
 
         $statusMessage = $nexmo->sendSMS($phone, $verificationCode->code);
 

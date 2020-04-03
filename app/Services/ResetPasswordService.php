@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Client;
 use App\Models\PasswordResetToken;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ResetPasswordService

@@ -4,13 +4,17 @@ namespace App\Services;
 
 use App\Models\VerificationCode;
 use App\Models\Client;
+use Illuminate\Support\Str;
 
 class VerificationCodeService
 {
     protected $client;
     protected $canSend;
 
-    public function __construct(Client $client)
+    /**
+     * @param mixed $client
+     */
+    public function setClient(Client $client): void
     {
         $this->client = $client;
     }
@@ -81,5 +85,13 @@ class VerificationCodeService
             '0',
             STR_PAD_LEFT
         );
+    }
+
+    public static function getCannotSendMessage(): string
+    {
+        $delay = config('app.verification_code.delay');
+
+        return 'SMS cannot be sent. Delay between SMS sending ' . $delay
+            . ' ' . Str::plural('minute', $delay);
     }
 }
