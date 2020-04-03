@@ -5,6 +5,8 @@ networks:
     driver: ${NETWORKS_DRIVER}
   backend:
     driver: ${NETWORKS_DRIVER}
+  traefik:
+    external: true
 
 volumes:
   mysql:
@@ -56,6 +58,7 @@ services:
 
 ### Workspace Utilities ##################################
     workspace:
+      container_name: dev_electra_workspace
       build:
         context: ./workspace
         args:
@@ -142,19 +145,12 @@ services:
           - INSTALL_FFMPEG=${WORKSPACE_INSTALL_FFMPEG}
           - INSTALL_WKHTMLTOPDF=${WORKSPACE_INSTALL_WKHTMLTOPDF}
           - INSTALL_GNU_PARALLEL=${WORKSPACE_INSTALL_GNU_PARALLEL}
-          - http_proxy
-          - https_proxy
-          - no_proxy
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
         - docker-in-docker:/certs/client
         - ./php-worker/supervisord.d:/etc/supervisord.d
       extra_hosts:
         - "dockerhost:${DOCKER_HOST_IP}"
-      ports:
-        - "${WORKSPACE_SSH_PORT}:22"
-        - "${WORKSPACE_VUE_CLI_SERVE_HOST_PORT}:8080"
-        - "${WORKSPACE_VUE_CLI_UI_HOST_PORT}:8000"
       tty: true
       environment:
         - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
@@ -165,11 +161,30 @@ services:
       networks:
         - frontend
         - backend
+        - traefik
       links:
         - docker-in-docker
+      restart: always
+      labels:
+        - "traefik.enable=false"
+        - "traefik.http.routers.dev_octomed_nginx.entrypoints=http"
+        - "traefik.http.routers.dev_octomed_nginx.rule=Host(`electra.ag.digital`)"
+        - "traefik.docker.network=traefik"
+        - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
+        - "traefik.http.routers.dev_octomed_nginx.middlewares=redirect"
+        - "traefik.http.routers.dev_octomed_nginx-https.entrypoints=https"
+        - "traefik.http.middlewares.secure-headers.headers.customresponseheaders.x-powered-by=NotYourBusiness/9.7.2"
+        - "traefik.http.middlewares.secure-headers.headers.framedeny=true"
+        - "traefik.http.middlewares.secure-headers.headers.sslredirect=true"
+        - "traefik.http.routers.dev_octomed_nginx-https.middlewares=secure-headers"
+        - "traefik.http.routers.dev_octomed_nginx-https.rule=Host(`electra.ag.digital`)"
+        - "traefik.http.routers.dev_octomed_nginx-https.tls=true"
+        - "traefik.http.routers.dev_octomed_nginx-https.tls.certresolver=mytlschallenge"
+        - "traefik.http.routers.dev_octomed_nginx-https.tls.domains[0].main=electra.ag.digital"
 
 ### PHP-FPM ##############################################
     php-fpm:
+      container_name: dev_electra_php-fpm
       build:
         context: ./php-fpm
         args:
@@ -256,46 +271,13 @@ services:
         - backend
       links:
         - docker-in-docker
-
-### PHP Worker ############################################
-    php-worker:
-      build:
-        context: ./php-worker
-        args:
-          - CHANGE_SOURCE=${CHANGE_SOURCE}
-          - LARADOCK_PHP_VERSION=${PHP_VERSION}
-          - PHALCON_VERSION=${PHALCON_VERSION}
-          - INSTALL_BZ2=${PHP_WORKER_INSTALL_BZ2}
-          - INSTALL_GD=${PHP_WORKER_INSTALL_GD}
-          - INSTALL_GMP=${PHP_WORKER_INSTALL_GMP}
-          - INSTALL_PGSQL=${PHP_WORKER_INSTALL_PGSQL}
-          - INSTALL_BCMATH=${PHP_WORKER_INSTALL_BCMATH}
-          - INSTALL_PHALCON=${PHP_WORKER_INSTALL_PHALCON}
-          - INSTALL_SOAP=${PHP_WORKER_INSTALL_SOAP}
-          - INSTALL_ZIP_ARCHIVE=${PHP_WORKER_INSTALL_ZIP_ARCHIVE}
-          - INSTALL_MYSQL_CLIENT=${PHP_WORKER_INSTALL_MYSQL_CLIENT}
-          - INSTALL_AMQP=${PHP_WORKER_INSTALL_AMQP}
-          - INSTALL_CASSANDRA=${PHP_WORKER_INSTALL_CASSANDRA}
-          - INSTALL_GEARMAN=${PHP_WORKER_INSTALL_GEARMAN}
-          - INSTALL_GHOSTSCRIPT=${PHP_WORKER_INSTALL_GHOSTSCRIPT}
-          - INSTALL_SWOOLE=${PHP_WORKER_INSTALL_SWOOLE}
-          - INSTALL_TAINT=${PHP_WORKER_INSTALL_TAINT}
-          - INSTALL_FFMPEG=${PHP_WORKER_INSTALL_FFMPEG}
-          - INSTALL_REDIS=${PHP_WORKER_INSTALL_REDIS}
-          - PUID=${PHP_WORKER_PUID}
-          - PGID=${PHP_WORKER_PGID}
-      volumes:
-        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
-        - ./php-worker/supervisord.d:/etc/supervisord.d
-      depends_on:
-        - workspace
-      extra_hosts:
-        - "dockerhost:${DOCKER_HOST_IP}"
-      networks:
-        - backend
+      restart: always
+      labels:
+        - "traefik.enable=false"
 
 ### NGINX Server #########################################
     nginx:
+      container_name: dev_electra_nginx
       build:
         context: ./nginx
         args:
@@ -318,9 +300,13 @@ services:
       networks:
         - frontend
         - backend
+      restart: always
+      labels:
+        - "traefik.enable=false"
 
 ### PostgreSQL ###########################################
     postgres:
+      container_name: dev_electra_postgres
       build:
         context: ./postgres
         args:
@@ -336,21 +322,13 @@ services:
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       networks:
         - backend
-
-### Memcached ############################################
-    memcached:
-      build: ./memcached
-      volumes:
-        - ${DATA_PATH_HOST}/memcached:/var/lib/memcached
-      ports:
-        - "${MEMCACHED_HOST_PORT}:11211"
-      depends_on:
-        - php-fpm
-      networks:
-        - backend
+      restart: always
+      labels:
+        - "traefik.enable=false"
 
 ### Docker-in-Docker ################################################
     docker-in-docker:
+      container_name: dev_electra_docker-in-docker
       image: docker:19.03-dind
       environment:
         DOCKER_TLS_SAN: DNS:docker-in-docker      
@@ -362,3 +340,6 @@ services:
         - 2375
       networks:
         - backend
+      restart: always
+      labels:
+        - "traefik.enable=false"

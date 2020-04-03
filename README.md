@@ -10,10 +10,16 @@
     ```
     cp .env.local .env
     ```
+    ```
+    cp .env.dev .env - on dev server
+    ```
     
     Set env variables in ./laradock/.env file: 
     ```
-    COMPOSE_FILE=docker-compose.local.yml - for local development
+    COMPOSE_FILE=docker-compose.local.yml - for local server
+    ``` 
+    ```
+    COMPOSE_FILE=docker-compose.dev.yml - for dev server
     ```
    
     ```
@@ -52,6 +58,9 @@
     Copy .env.example into .env:
     ```
     cp .env.local.example .env
+    ```
+    ```
+    cp .env.dev.example .env - on dev server
     ```
    
    Apply migrations:
