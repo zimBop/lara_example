@@ -161,7 +161,6 @@ services:
       networks:
         - frontend
         - backend
-        - traefik
       links:
         - docker-in-docker
       restart: always
@@ -286,6 +285,7 @@ services:
       networks:
         - frontend
         - backend
+        - traefik
       restart: always
       labels:
         - "traefik.enable=false"
