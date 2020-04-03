@@ -282,7 +282,7 @@ services:
         - traefik
       restart: always
       labels:
-        - "traefik.enable=false"
+        - "traefik.enable=true"
         - "traefik.http.routers.dev_octomed_nginx.entrypoints=http"
         - "traefik.http.routers.dev_octomed_nginx.rule=Host(`electra.ag.digital`)"
         - "traefik.docker.network=traefik"
