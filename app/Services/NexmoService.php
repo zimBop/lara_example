@@ -36,7 +36,7 @@ class NexmoService
         try {
             $from = config('nexmo.from');
 
-            Log::info("sendSMS:   to - {$to},   from - {$from},    message - {$text}");
+            $this->log("sendSMS:   to - {$to},   from - {$from},    message - {$text}");
 
             $message = $this->client->message()->send(
                 [
@@ -55,8 +55,13 @@ class NexmoService
             $statusMessage = "SMS was not sent. Error: " . $e->getMessage() . "\n";
         }
 
-        Log::info($statusMessage);
+        $this->log($statusMessage);
 
         return $statusMessage;
+    }
+
+    protected function log(string $message): void
+    {
+        Log::channel('nexmo')->info($message);
     }
 }
