@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/clients', 'Api\ClientController@store')->name('clients.store');
 
-Route::middleware('auth:api', 'scope:access-client')->group(function () {
+Route::middleware('auth:api', 'scope:access-client', 'can:access,client')->group(function () {
     Route::post('/clients/logout/{client}', 'Api\ClientController@logout')->name('clients.logout');
 
     Route::post('/clients/forgot-password/{client}', 'Api\ClientController@forgotPassword')->name('clients.forgot-password');
