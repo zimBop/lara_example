@@ -34,11 +34,17 @@ class Client extends Authenticatable
         self::EMAIL_VERIFIED_AT,
     ];
 
+    /**
+     * This method used in Laravel Passport validation
+     */
     public function findForPassport($phone)
     {
         return $this->where(self::PHONE, $phone)->first();
     }
 
+    /**
+     * This method used in Laravel Passport validation
+     */
     public function validateForPassportPasswordGrant($smsCode)
     {
         if ($this->verificationCode && $this->verificationCode->expires_at->gt(now())) {
