@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Client;
 
+use App\Http\Resources\ClientResource;
+use App\Models\Client;
 use App\Services\NexmoService;
 use App\Services\VerificationCodeService;
 use Tests\TestCase;
@@ -27,15 +29,20 @@ class ClientRegistrationTest extends TestCase
             'phone' => $phone
         ]);
 
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                 'message' => $message,
-             ]);
-
         $this->assertDatabaseHas('clients', [
             'phone' => $phone,
         ]);
+
+        $client = Client::wherePhone($phone)->first();
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => $message,
+                'client' => (new ClientResource($client))->toArray(null),
+                'is_registration_completed' => false,
+             ]);
+
 
         $this->checkSmsSendingDelay($phone);
     }

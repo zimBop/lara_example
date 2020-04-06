@@ -39,7 +39,11 @@ class ClientController extends Controller
 
         $statusMessage = $nexmo->sendSMS($phone, $verificationCode->code);
 
-        return response()->json(['message' => $statusMessage]);
+        return response()->json([
+            'message' => $statusMessage,
+            'client' => new ClientResource($client),
+            'is_registration_completed' => $client->isRegistrationCompleted()
+        ]);
     }
 
     /**

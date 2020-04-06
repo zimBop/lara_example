@@ -57,4 +57,9 @@ class Client extends Authenticatable
     {
         return $this->hasOne(PasswordResetToken::class);
     }
+
+    public function isRegistrationCompleted(): bool
+    {
+        return $this->first_name && $this->last_name && $this->password;
+    }
 }
