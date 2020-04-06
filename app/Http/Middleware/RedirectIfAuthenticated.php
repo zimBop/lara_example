@@ -18,8 +18,13 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        $redirects = [
+            'web' => '/account',
+            'admin' => route(R_ADMIN_DASHBOARD)
+        ];
+
         if (Auth::guard($guard)->check()) {
-            return redirect(RouteServiceProvider::HOME);
+            return redirect($redirects[$guard] ?? $redirects['web']);
         }
 
         return $next($request);
