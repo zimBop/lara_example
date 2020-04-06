@@ -28,10 +28,10 @@ class NexmoService
     /**
      * @param string $to
      * @param string $text
-     * @return string
+     * @return array
      * @throws \Exception
      */
-    public function sendSMS(string $to, string $text): string
+    public function sendSMS(string $to, string $text): array
     {
         try {
             $from = config('nexmo.from');
@@ -48,16 +48,19 @@ class NexmoService
 
             $response = $message->getResponseData()['messages'][0]['status'];
 
-            $statusMessage = $response == 0
+            $messageSent = $response == 0;
+
+            $statusMessage = $messageSent
                 ? "SMS was successfully sent"
                 : "SMS sending failed with status: " . $response . "\n";
         } catch (Exception $e) {
-            $statusMessage = "SMS was not sent. Error: " . $e->getMessage() . "\n";
+            $statusMessage = "SMS was not sent - " . $e->getMessage() . "\n";
+            $messageSent = false;
         }
 
         $this->log($statusMessage);
 
-        return $statusMessage;
+        return ['sent' => $messageSent, 'message' => $statusMessage];
     }
 
     protected function log(string $message): void

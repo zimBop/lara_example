@@ -20,7 +20,7 @@ class ClientRegistrationTest extends TestCase
     {
         $mock = Mockery::mock(NexmoService::class);
         $message = 'SMS was successfully sent';
-        $mock->shouldReceive('sendSMS')->once()->andReturn($message);
+        $mock->shouldReceive('sendSMS')->once()->andReturn(['sent' => true, 'message' => $message]);
         $this->app->instance(NexmoService::class, $mock);
 
         $phone = $this->faker->phoneNumber;

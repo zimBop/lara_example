@@ -36,10 +36,14 @@ class ClientController extends ApiController
 
         $verificationCode = $codeService->get();
 
-        $statusMessage = $nexmo->sendSMS($phone, $verificationCode->code);
+        $nexmoResponse = $nexmo->sendSMS($phone, $verificationCode->code);
+
+        if (!$nexmoResponse['sent']) {
+            return $this->error($nexmoResponse['message']);
+        }
 
         return $this->done(
-            $statusMessage,
+            $nexmoResponse['message'],
             [
                 'client' => new ClientResource($client),
                 'is_registration_completed' => $client->isRegistrationCompleted()
