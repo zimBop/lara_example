@@ -15,6 +15,7 @@
         "laravel/framework": "^7.0",
         "laravel/passport": "^8.4",
         "laravel/tinker": "^2.0",
+        "laravel/ui": "^2.0",
         "nexmo/laravel": "^2.2"
     },
     "require-dev": {
@@ -39,6 +40,9 @@
         "psr-4": {
             "App\\": "app/"
         },
+        "files": [
+            "routes/names.php"
+        ],
         "classmap": [
             "database/seeds",
             "database/factories"
