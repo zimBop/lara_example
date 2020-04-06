@@ -1,0 +1,253 @@
+$sidebarActiveColor: rgba(0,0,0,.3);
+
+body {
+    font-size: 0.875rem;
+}
+
+[role=main] {
+    padding-top: 48px;
+}
+
+.main-wrapper {
+    background-color: #f6f7fb;
+    min-height: 100vh;
+}
+
+/*--------------- radio-group ------------------*/
+
+.radio-group {
+    label {
+        overflow: hidden;
+    }
+
+    input {
+        /* This is on purpose for accessibility. Using display: hidden is evil.
+          This makes things keyboard friendly right out tha box! */
+        height: 1px;
+        width: 1px;
+        position: absolute;
+        top: -20px;
+    }
+
+    .not-active {
+        color: #3276b1;
+        background-color: #fff;
+    }
+}
+
+/*--------------- /radio-group ------------------*/
+
+/*--------------- custom sidebar -------------*/
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #2F2F2F;
+    color: #fff;
+    transition: all 0.3s;
+
+    &.active {
+        min-width: 80px;
+        max-width: 80px;
+        text-align: center;
+
+        .sidebar-header h3, .CTAs {
+            display: none;
+        }
+
+        .sidebar-header strong {
+            display: block;
+        }
+    }
+
+    ul li a {
+        text-align: left;
+    }
+
+    &.active {
+        ul {
+            li a {
+                padding: 20px 10px;
+                text-align: center;
+                font-size: 0.85em;
+
+                i {
+                    margin-right: 0;
+                    display: block;
+                    font-size: 1.8em;
+                    margin-bottom: 5px;
+                }
+            }
+
+            ul a {
+                padding: 10px !important;
+            }
+        }
+
+        .dropdown-toggle::after {
+            top: auto;
+            bottom: 10px;
+            right: 50%;
+            transform: translateX(50%);
+        }
+    }
+
+    .sidebar-header {
+        padding: 20px;
+        background: #4b5469;
+
+        strong {
+            display: none;
+            font-size: 1.8em;
+        }
+    }
+
+    ul {
+        &.components {
+            padding: 40px 0;
+        }
+
+        li {
+            a {
+                color: rgba(255, 255, 255, 0.5);
+                padding: 10px;
+                font-size: 1.1em;
+                display: block;
+
+                &:hover {
+                    color: white;
+                    background: $sidebarActiveColor;
+                    transition: color 0.3s ease;
+                    text-decoration: none;
+                }
+
+                i {
+                    margin-right: 10px;
+                }
+            }
+
+            &.active > a {
+                color: #fff;
+                background: $sidebarActiveColor;
+            }
+        }
+    }
+}
+
+a {
+    &[aria-expanded=true] {
+        color: #fff;
+        background: #4b5469;
+    }
+
+    &[data-toggle=collapse] {
+        position: relative;
+    }
+}
+
+ul {
+    ul a {
+        font-size: 0.9em !important;
+        padding-left: 30px !important;
+        background: #4b5469;
+    }
+
+    &.CTAs {
+        padding: 20px;
+
+        a {
+            text-align: center;
+            font-size: 0.9em !important;
+            display: block;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+    }
+}
+
+a {
+    &.download {
+        background: #fff;
+        color: #4b5469;
+    }
+
+    &.article {
+        background: #4b5469 !important;
+        color: #fff !important;
+        transition: color 0.3s ease;
+
+        &:hover {
+            background: #4b5469 !important;
+            color: #fff !important;
+            transition: color 0.3s ease;
+        }
+    }
+}
+
+#content {
+    width: 100%;
+    min-height: 100vh;
+    transition: all 0.3s;
+    background-color: rgba(176,196,217,0.33);
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        min-width: 80px;
+        max-width: 80px;
+        text-align: center;
+        margin-left: -80px !important;
+
+        &.active {
+            margin-left: 0 !important;
+        }
+
+        .sidebar-header h3, .CTAs {
+            display: none;
+        }
+
+        .sidebar-header strong {
+            display: block;
+        }
+
+        ul {
+            li a {
+                padding: 20px 10px;
+
+                span {
+                    font-size: 0.85em;
+                }
+
+                i {
+                    margin-right: 0;
+                    display: block;
+                }
+            }
+
+            ul a {
+                padding: 10px !important;
+            }
+
+            li a i {
+                font-size: 1.3em;
+            }
+        }
+
+        margin-left: 0;
+    }
+
+    #sidebarCollapse span {
+        display: none;
+    }
+}
+
+/*--------------- /custom sidebar -------------*/
+
+.common-form label {
+    font-weight: bold;
+}
