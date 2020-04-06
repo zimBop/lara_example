@@ -28,7 +28,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Passport::routes();
+        Passport::routes(null, [
+            'prefix' => 'api/oauth',
+        ]);
 
         Passport::tokensCan([
             'access-client' => 'Access client related endpoints.',
