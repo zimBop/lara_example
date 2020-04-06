@@ -39,9 +39,10 @@
 
 2. Laravel setup
 
-    * Run command from 'workspace' container:
+    * Run commands from 'workspace' container:
         ```
         composer install
+        npm install
         ```
     
     *  Add link to storage
@@ -82,3 +83,12 @@
         sudo chown -R $USER:www-data bootstrap/cache
         sudo chmod -R 775 storage bootstrap/cache
        ```
+
+3. Run and maintenance
+    
+    * Build asserts
+    ```
+        npm run dev 
+        # or 
+        npm run production
+    ``` 
