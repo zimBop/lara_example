@@ -25,6 +25,7 @@
         ```
         sudo docker-compose build
         ```
+        In case of building issues, try: `sudo docker-compose build --no-cache`
     
     * To run docker containers:
         ```
@@ -38,14 +39,14 @@
 
 2. Laravel setup
 
-    *  Add link to storage
-        ```
-        php artisan storage:link
-        ```
-
     * Run command from 'workspace' container:
         ```
         composer install
+        ```
+    
+    *  Add link to storage
+        ```
+          php artisan storage:link
         ```
     
     * Copy .env.example into .env:
