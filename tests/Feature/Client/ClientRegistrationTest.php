@@ -38,6 +38,7 @@ class ClientRegistrationTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
+                'done' => true,
                 'message' => $message,
                 'client' => (new ClientResource($client))->toArray(null),
                 'is_registration_completed' => false,
@@ -55,6 +56,7 @@ class ClientRegistrationTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
+                'done' => false,
                 'message' => VerificationCodeService::getCannotSendMessage(),
             ]);
     }
@@ -66,6 +68,7 @@ class ClientRegistrationTest extends TestCase
         $response
             ->assertStatus(422)
             ->assertJsonStructure([
+                'done',
                 'message',
                 'errors' => [
                     'phone'

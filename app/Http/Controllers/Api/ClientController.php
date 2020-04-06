@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\ResetPasswordRequest;
 use App\Http\Requests\Client\StoreRequest;
 use App\Http\Requests\Client\UpdateRequest;
@@ -14,7 +13,7 @@ use App\Services\VerificationCodeService;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\RefreshTokenRepository;
 
-class ClientController extends Controller
+class ClientController extends ApiController
 {
     /**
      * @param StoreRequest $request
@@ -32,35 +31,37 @@ class ClientController extends Controller
         $codeService->setClient($client);
 
         if (!$codeService->canSend()) {
-            return response()->json(['message' => VerificationCodeService::getCannotSendMessage()]);
+            return $this->error(VerificationCodeService::getCannotSendMessage());
         }
 
         $verificationCode = $codeService->get();
 
         $statusMessage = $nexmo->sendSMS($phone, $verificationCode->code);
 
-        return response()->json([
-            'message' => $statusMessage,
-            'client' => new ClientResource($client),
-            'is_registration_completed' => $client->isRegistrationCompleted()
-        ]);
+        return $this->done(
+            $statusMessage,
+            [
+                'client' => new ClientResource($client),
+                'is_registration_completed' => $client->isRegistrationCompleted()
+            ]
+        );
     }
 
     /**
      * Display the specified resource.
      *
      * @param Client $client
-     * @return ClientResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Client $client)
     {
-        return new ClientResource($client);
+        return $this->data(new ClientResource($client));
     }
 
     /**
      * @param UpdateRequest $request
      * @param Client $client
-     * @return ClientResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateRequest $request, Client $client)
     {
@@ -74,13 +75,18 @@ class ClientController extends Controller
 
         $client->update($input);
 
-        return new ClientResource($client);
+        return $this->data(new ClientResource($client));
     }
 
+    /**
+     * @param Client $client
+     * @param RefreshTokenRepository $refreshTokenRepository
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout(Client $client, RefreshTokenRepository $refreshTokenRepository)
     {
         if (!$client->tokens) {
-            return response()->json(['message' => 'Already logged out.']);
+            return $this->done('Already logged out.');
         }
 
         foreach ($client->tokens as $token) {
@@ -89,9 +95,16 @@ class ClientController extends Controller
             $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($token->id);
         }
 
-        return response()->json(['message' => 'Tokens revoked.']);
+        return $this->done('Tokens revoked.');
     }
 
+    /**
+     * @param Client $client
+     * @param NexmoService $nexmo
+     * @param ResetPasswordService $passwordService
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function forgotPassword(Client $client, NexmoService $nexmo, ResetPasswordService $passwordService)
     {
         $passwordService->setClient($client);
@@ -100,23 +113,30 @@ class ClientController extends Controller
 
         $statusMessage = $nexmo->sendSMS($client->phone, $link);
 
-        return response()->json(['message' => $statusMessage]);
+        return $this->done($statusMessage);
     }
 
+    /**
+     * @param ResetPasswordRequest $request
+     * @param Client $client
+     * @param ResetPasswordService $passwordService
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function resetPassword(ResetPasswordRequest $request, Client $client, ResetPasswordService $passwordService)
     {
         $password = $request->input(Client::PASSWORD);
         $token = $request->input('token');
 
         $passwordService->setClient($client);
+
         if (!$passwordService->exists($token)) {
-            return response()->json(['message' => 'Password reset token expired or not exists.'], 422);
+            return $this->error('Password reset token expired or not exists.');
         }
 
         $client->update([
             Client::PASSWORD => Hash::make($password)
         ]);
 
-        return response()->json(['message' => 'Password reset successfully.']);
+        return $this->done('Password reset successfully.');
     }
 }
