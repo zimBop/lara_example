@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\Admin;
 
 class LoginController extends Controller
 {
@@ -29,16 +30,9 @@ class LoginController extends Controller
         return view('admin.login');
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $rules = [
-            'email' => 'required|email',
-            'password' => 'required'
-        ];
-
-        $this->validate($request, $rules);
-
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only(Admin::EMAIL, Admin::PASSWORD);
 
         if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
             return redirect()->intended(route(R_ADMIN_DASHBOARD));
@@ -53,6 +47,7 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::guard('admin')->logout();
+
         return redirect(route(R_ADMIN_LOGIN))
             ->with(['message' => 'You have successfully logged out.', 'alert_type' => 'success']);
 
