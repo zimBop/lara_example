@@ -8,13 +8,20 @@ class Admin extends Authenticatable
 {
     protected $guard = 'admin';
 
+    public const ID = 'id';
+    public const NAME = 'name';
+    public const EMAIL = 'email';
+    public const PASSWORD = 'password';
+    public const REMEMBER_TOKEN = 'remember_token';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        self::NAME,
+        self::EMAIL,
     ];
 
     /**
@@ -23,6 +30,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        self::PASSWORD,
+        self::REMEMBER_TOKEN,
     ];
 }
