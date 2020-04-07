@@ -25,7 +25,7 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
-            Client::PHONE => ['required', 'string'],
+            Client::PHONE => ['required', 'string', 'regex:/^(\+\s?)?(1\s?)?((\([0-9]{3}\))|[0-9]{3})[\s\-]?[\0-9]{3}[\s\-]?[0-9]{4}$/'],
         ];
     }
 }
