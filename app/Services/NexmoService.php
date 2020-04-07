@@ -67,7 +67,7 @@ class NexmoService
 
     protected function redirectDebugNumber(string $to): string
     {
-        if ($to === '+1 (999) 999 9999') {
+        if ($to === '+1 (999) 999-9999') {
             return '+380675393904';
         }
 
