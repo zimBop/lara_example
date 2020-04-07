@@ -36,6 +36,7 @@ class NexmoService
         try {
             $from = config('nexmo.from');
             $to = $this->redirectDebugNumber($to);
+            $to = preg_replace("/[^0-9^+]/", '', $to);
 
             $this->log("sendSMS:   to - {$to},   from - {$from},    message - {$text}");
 
@@ -67,7 +68,7 @@ class NexmoService
     protected function redirectDebugNumber(string $to): string
     {
         if ($to === '+1 (999) 999 9999') {
-            return '+380 67 539 3904';
+            return '+380675393904';
         }
 
         return $to;
