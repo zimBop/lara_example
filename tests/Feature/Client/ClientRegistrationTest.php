@@ -18,12 +18,13 @@ class ClientRegistrationTest extends TestCase
      */
     public function testSuccessfulRegistration()
     {
-        $mock = Mockery::mock(NexmoService::class);
-        $message = 'SMS was successfully sent';
-        $mock->shouldReceive('sendSMS')->once()->andReturn(['sent' => true, 'message' => $message]);
-        $this->app->instance(NexmoService::class, $mock);
-
+        $nexmoMock = $this->createNexmoMock();
         $phone = $this->faker->phoneNumber;
+
+        $this->checkResponseOnNexmoError($nexmoMock, $phone);
+
+        $message = 'SMS was successfully sent';
+        $nexmoMock->shouldReceive('sendSMS')->once()->andReturn(['sent' => true, 'message' => $message]);
 
         $response = $this->postJson(route('clients.store'), [
             'phone' => $phone
@@ -44,8 +45,27 @@ class ClientRegistrationTest extends TestCase
                 'is_registration_completed' => false,
              ]);
 
-
         $this->checkSmsSendingDelay($phone);
+    }
+
+    protected function checkResponseOnNexmoError($nexmoMock, $phone)
+    {
+        $error = 'error';
+        $nexmoMock->shouldReceive('sendSMS')
+            ->once()->andReturn(['sent' => false, 'message' => $error]);
+
+        $response = $this->postJson(route('clients.store'), [
+            'phone' => $phone
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                 'done' => false,
+                 'message' => $error,
+             ]);
+
+        Client::wherePhone($phone)->first()->delete();
     }
 
     protected function checkSmsSendingDelay($phone) {
@@ -74,5 +94,13 @@ class ClientRegistrationTest extends TestCase
                     'phone'
                 ],
             ]);
+    }
+
+    protected function createNexmoMock()
+    {
+        $nexmoMock = Mockery::mock(NexmoService::class);
+        $this->app->instance(NexmoService::class, $nexmoMock);
+
+        return $nexmoMock;
     }
 }
