@@ -18,6 +18,7 @@ class Client extends Authenticatable
     public const EMAIL = 'email';
     public const EMAIL_VERIFIED_AT = 'email_verified_at';
     public const PASSWORD = 'password';
+    public const CUSTOMER_ID = 'customer_id';
 
     protected $fillable = [
         self::BIRTHDAY,
@@ -32,7 +33,13 @@ class Client extends Authenticatable
     protected $hidden = [
         self::PASSWORD,
         self::EMAIL_VERIFIED_AT,
+        self::CUSTOMER_ID,
     ];
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     /**
      * This method used in Laravel Passport validation

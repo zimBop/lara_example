@@ -9,6 +9,7 @@ use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
+use App\Services\StripeService;
 use App\Services\VerificationCodeService;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\RefreshTokenRepository;
@@ -145,5 +146,16 @@ class ClientController extends ApiController
         ]);
 
         return $this->done('Password reset successfully.');
+    }
+
+    public function getStripeSecret(Client $client, StripeService $stripeService)
+    {
+        $stripeService->setClient($client);
+
+        return $this->data(
+            [
+                'secret' => $stripeService->getSecret()
+            ]
+        );
     }
 }

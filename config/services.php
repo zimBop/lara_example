@@ -30,4 +30,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'stripe' => [
+        'public_key' => env('STRIPE_PUBLISHABLE_KEY'),
+        'secret_key' => env('STRIPE_SECRET_KEY'),
+        'test_public_key' => env('STRIPE_TEST_PUBLISHABLE_KEY'),
+        'test_secret_key' => env('STRIPE_TEST_SECRET_KEY'),
+    ],
+
 ];
