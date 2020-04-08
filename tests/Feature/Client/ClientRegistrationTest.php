@@ -4,6 +4,7 @@ namespace Tests\Feature\Client;
 
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use App\Services\ClientService;
 use App\Services\NexmoService;
 use App\Services\VerificationCodeService;
 use Tests\TestCase;
@@ -19,7 +20,7 @@ class ClientRegistrationTest extends TestCase
     public function testSuccessfulRegistration()
     {
         $nexmoMock = $this->createNexmoMock();
-        $phone = $this->faker->phoneNumber;
+        $phone = ClientService::generatePhoneNumber();
 
         $this->checkResponseOnNexmoError($nexmoMock, $phone);
 
