@@ -18,6 +18,7 @@ class Client extends Authenticatable
     public const EMAIL = 'email';
     public const EMAIL_VERIFIED_AT = 'email_verified_at';
     public const PASSWORD = 'password';
+    public const IS_ACTIVE = 'is_active';
 
     protected $fillable = [
         self::BIRTHDAY,
@@ -27,11 +28,17 @@ class Client extends Authenticatable
         self::FIRST_NAME,
         self::LAST_NAME,
         self::PHONE,
+        self::IS_ACTIVE,
     ];
 
     protected $hidden = [
         self::PASSWORD,
         self::EMAIL_VERIFIED_AT,
+    ];
+
+    protected $casts = [
+        self::IS_ACTIVE => 'boolean',
+        self::BIRTHDAY => 'date',
     ];
 
     /**
@@ -67,5 +74,16 @@ class Client extends Authenticatable
     public function isRegistrationCompleted(): bool
     {
         return $this->first_name && $this->last_name && $this->password;
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return sprintf('%s %s', $this->first_name, $this->last_name);
+    }
+
+    public function getAgeAttribute(): int
+    {
+        // Consider refactoring here with Carbon
+        return (new \DateTime())->diff(new \DateTime($this->birthday))->y;
     }
 }
