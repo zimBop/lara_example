@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('oauth/token', 'Api\TokenController@getAccessToken');
 
 Route::post('/clients', 'Api\ClientController@store')->name('clients.store');
 

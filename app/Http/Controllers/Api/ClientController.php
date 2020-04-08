@@ -43,8 +43,7 @@ class ClientController extends ApiController
             return $this->error($nexmoResponse['message']);
         }
 
-        return $this->done(
-            $nexmoResponse['message'],
+        return $this->data(
             [
                 'client' => new ClientResource($client),
                 'is_registration_completed' => $client->isRegistrationCompleted()
@@ -119,9 +118,13 @@ class ClientController extends ApiController
         $token = $passwordService->create();
         $link = config('app.password_reset.ios_link') . "?token=$token";
 
-        $statusMessage = $nexmo->sendSMS($client->phone, $link);
+        $nexmoResponse = $nexmo->sendSMS($client->phone, $link);
 
-        return $this->done($statusMessage);
+        if (!$nexmoResponse['sent']) {
+            return $this->error($nexmoResponse['message']);
+        }
+
+        return $this->done($nexmoResponse['message']);
     }
 
     /**

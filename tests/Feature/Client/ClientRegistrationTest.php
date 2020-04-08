@@ -41,9 +41,10 @@ class ClientRegistrationTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => $message,
-                'client' => (new ClientResource($client))->toArray(null),
-                'is_registration_completed' => false,
+                'data' => [
+                    'client' => (new ClientResource($client))->toArray(null),
+                    'is_registration_completed' => false,
+                ],
              ]);
 
         $this->checkSmsSendingDelay($phone);
