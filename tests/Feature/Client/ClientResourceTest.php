@@ -27,7 +27,10 @@ class ClientResourceTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                  'done' => true,
-                 'data' => (new ClientResource($clientOne))->toArray(null),
+                 'data' => [
+                     'client' => (new ClientResource($clientOne))->toArray(null),
+                     'is_registration_completed' => $clientOne->isRegistrationCompleted(),
+                 ],
              ]);
 
         $clientTwo = factory(Client::class)->create();

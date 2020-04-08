@@ -59,7 +59,10 @@ class ClientController extends ApiController
      */
     public function show(Client $client)
     {
-        return $this->data(new ClientResource($client));
+        return $this->data([
+           'client' => new ClientResource($client),
+           'is_registration_completed' => $client->isRegistrationCompleted(),
+        ]);
     }
 
     /**
