@@ -24,7 +24,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
 
             Route::prefix('clients')
                 ->group(static function(){
-                    Route::get('/', 'DashboardController@index')->name(R_ADMIN_CLIENTS_LIST);
+                    Route::get('/', 'ClientController@index')->name(R_ADMIN_CLIENTS_LIST);
                 });
         });
 });
