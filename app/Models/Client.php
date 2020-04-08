@@ -19,6 +19,7 @@ class Client extends Authenticatable
     public const EMAIL_VERIFIED_AT = 'email_verified_at';
     public const PASSWORD = 'password';
     public const IS_ACTIVE = 'is_active';
+    public const CUSTOMER_ID = 'customer_id';
 
     protected $fillable = [
         self::BIRTHDAY,
@@ -34,6 +35,7 @@ class Client extends Authenticatable
     protected $hidden = [
         self::PASSWORD,
         self::EMAIL_VERIFIED_AT,
+        self::CUSTOMER_ID,
     ];
 
     protected $casts = [

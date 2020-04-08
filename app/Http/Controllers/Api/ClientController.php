@@ -9,6 +9,7 @@ use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
+use App\Services\StripeService;
 use App\Services\VerificationCodeService;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\RefreshTokenRepository;
@@ -35,15 +36,14 @@ class ClientController extends ApiController
         }
 
         $verificationCode = $codeService->get();
-
-        $nexmoResponse = $nexmo->sendSMS($phone, $verificationCode->code);
+        $message = "Your Electra code {$verificationCode->code} some text";
+        $nexmoResponse = $nexmo->sendSMS($phone, $message);
 
         if (!$nexmoResponse['sent']) {
             return $this->error($nexmoResponse['message']);
         }
 
-        return $this->done(
-            $nexmoResponse['message'],
+        return $this->data(
             [
                 'client' => new ClientResource($client),
                 'is_registration_completed' => $client->isRegistrationCompleted()
@@ -59,7 +59,10 @@ class ClientController extends ApiController
      */
     public function show(Client $client)
     {
-        return $this->data(new ClientResource($client));
+        return $this->data([
+           'client' => new ClientResource($client),
+           'is_registration_completed' => $client->isRegistrationCompleted(),
+        ]);
     }
 
     /**
@@ -115,9 +118,13 @@ class ClientController extends ApiController
         $token = $passwordService->create();
         $link = config('app.password_reset.ios_link') . "?token=$token";
 
-        $statusMessage = $nexmo->sendSMS($client->phone, $link);
+        $nexmoResponse = $nexmo->sendSMS($client->phone, $link);
 
-        return $this->done($statusMessage);
+        if (!$nexmoResponse['sent']) {
+            return $this->error($nexmoResponse['message']);
+        }
+
+        return $this->done($nexmoResponse['message']);
     }
 
     /**
@@ -142,5 +149,16 @@ class ClientController extends ApiController
         ]);
 
         return $this->done('Password reset successfully.');
+    }
+
+    public function getStripeSecret(Client $client, StripeService $stripeService)
+    {
+        $stripeService->setClient($client);
+
+        return $this->data(
+            [
+                'secret' => $stripeService->getSecret()
+            ]
+        );
     }
 }

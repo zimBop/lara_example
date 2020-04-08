@@ -20,7 +20,7 @@ class CreatePasswordResetTokensTable extends Migration
                 ->on('clients')
                 ->onDelete('cascade');
 
-            $table->string('token');
+            $table->string('token')->unique();
             $table->timestamp('created_at');
         });
     }

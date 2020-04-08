@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('oauth/token', 'Api\TokenController@getAccessToken');
 
 Route::post('/clients', 'Api\ClientController@store')->name('clients.store');
 
@@ -20,6 +21,8 @@ Route::middleware('auth:api', 'scope:access-client', 'can:access,client')->group
 
     Route::post('/clients/forgot-password/{client}', 'Api\ClientController@forgotPassword')->name('clients.forgot-password');
     Route::patch('/clients/reset-password/{client}', 'Api\ClientController@resetPassword')->name('clients.reset-password');
+
+    Route::get('/clients/stripe-secret/{client}', 'Api\ClientController@getStripeSecret')->name('clients.stripe-secret');
 
     Route::apiResource('clients', 'Api\ClientController')->except('index', 'store', 'destroy');
 });
