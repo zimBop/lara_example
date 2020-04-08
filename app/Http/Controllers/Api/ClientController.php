@@ -35,8 +35,8 @@ class ClientController extends ApiController
         }
 
         $verificationCode = $codeService->get();
-
-        $nexmoResponse = $nexmo->sendSMS($phone, $verificationCode->code);
+        $message = "Your Electra code {$verificationCode->code} some text";
+        $nexmoResponse = $nexmo->sendSMS($phone, $message);
 
         if (!$nexmoResponse['sent']) {
             return $this->error($nexmoResponse['message']);
