@@ -54,9 +54,9 @@ class NexmoService
 
             $statusMessage = $messageSent
                 ? "SMS was successfully sent"
-                : "SMS sending failed with status: " . $response . "\n";
+                : "SMS sending failed with status: " . $response;
         } catch (Exception $e) {
-            $statusMessage = "SMS was not sent - " . $e->getMessage() . "\n";
+            $statusMessage = "SMS was not sent - " . $e->getMessage();
             $messageSent = false;
         }
 
