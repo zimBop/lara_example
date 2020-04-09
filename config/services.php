@@ -35,6 +35,13 @@ return [
         'secret_key' => env('STRIPE_SECRET_KEY'),
         'test_public_key' => env('STRIPE_TEST_PUBLISHABLE_KEY'),
         'test_secret_key' => env('STRIPE_TEST_SECRET_KEY'),
+        'test_customer_id' => 'cus_H3ilXcI1KG3ILL',
+        /*
+         * Stripe tests send requests to the Stripe API and their
+         * execution can be time consuming. We can skip these tests
+         * setting 'skip_tests' to true.
+         */
+        'skip_tests' => env('STRIPE_SKIP_TESTS', true),
     ],
 
 ];
