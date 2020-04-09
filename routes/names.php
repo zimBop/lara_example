@@ -8,3 +8,4 @@ define('R_ADMIN_LOGOUT', 'admin.logout');
 define('R_ADMIN_DASHBOARD', 'admin.dashboard');
 
 define('R_ADMIN_CLIENTS_LIST', 'admin.clients.list');
+define('R_ADMIN_VEHICLES_LIST', 'admin.vehicles.list');
