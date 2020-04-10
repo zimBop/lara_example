@@ -10,11 +10,6 @@ use Tests\TestCase;
 
 class ClientResourceTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
     public function testGetClient()
     {
         $clientOne = factory(Client::class)->create();
@@ -43,11 +38,26 @@ class ClientResourceTest extends TestCase
              ]);
     }
 
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+    public function testDeleteClient()
+    {
+        $client = factory(Client::class)->create();
+
+        Passport::actingAs($client, ['access-client']);
+
+        $response = $this->deleteJson(route('clients.destroy', ['client' => $client->id]));
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                 'done' => true,
+                 'message' => "Client with ID = {$client->id} deleted.",
+             ]);
+
+        $this->assertDatabaseMissing('clients', [
+            'id' => $client->id,
+        ]);
+    }
+
     public function testPatchClient()
     {
         $client = factory(Client::class)->create([

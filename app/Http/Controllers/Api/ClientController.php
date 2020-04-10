@@ -12,6 +12,7 @@ use App\Services\ResetPasswordService;
 use App\Services\StripeService;
 use App\Services\VerificationCodeService;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Passport\Passport;
 use Laravel\Passport\RefreshTokenRepository;
 
 class ClientController extends ApiController
@@ -105,6 +106,24 @@ class ClientController extends ApiController
         }
 
         return $this->done('Tokens revoked.');
+    }
+
+    /**
+     * @param Client $client
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function destroy(Client $client)
+    {
+        foreach ($client->tokens as $token) {
+            $token->delete();
+
+            Passport::refreshToken()->where('access_token_id', $token->id)->delete();
+        }
+
+        $client->delete();
+
+        return $this->done("Client with ID = {$client->id} deleted.");
     }
 
     /**

@@ -24,5 +24,5 @@ Route::middleware('auth:api', 'scope:access-client', 'can:access,client')->group
 
     Route::get('/clients/stripe-secret/{client}', 'Api\ClientController@getStripeSecret')->name('clients.stripe-secret');
 
-    Route::apiResource('clients', 'Api\ClientController')->except('index', 'store', 'destroy');
+    Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
 });
