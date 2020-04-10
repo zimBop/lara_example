@@ -22,9 +22,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
     Route::middleware('auth:admin')
         ->group(static function () {
 
-            Route::prefix('clients')
-                ->group(static function(){
+            Route::prefix('clients')->group(static function(){
                     Route::get('/', 'ClientController@index')->name(R_ADMIN_CLIENTS_LIST);
+
+                    Route::prefix('ajax')->group(static function(){
+                        Route::post('change_activity', 'ClientController@changeActivity')
+                            ->middleware('ajax')
+                            ->name(R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY);
+                    });
                 });
         });
 });
