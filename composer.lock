@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2375464e8cb64eeddb4c67335261d9dd",
+    "content-hash": "eefcb0f5eb992ca30e16293da4c3725e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3270,6 +3270,54 @@
                 "uuid"
             ],
             "time": "2020-03-22T02:34:13+00:00"
+        },
+        {
+            "name": "spatie/color",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/color.git",
+                "reference": "5c424dbfa919cc7acdacbf6fdcedb89f790bc04b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/color/zipball/5c424dbfa919cc7acdacbf6fdcedb89f790bc04b",
+                "reference": "5c424dbfa919cc7acdacbf6fdcedb89f790bc04b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Color\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian De Deyne",
+                    "email": "sebastian@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A little library to handle color conversions",
+            "homepage": "https://github.com/spatie/color",
+            "keywords": [
+                "color",
+                "conversion",
+                "rgb",
+                "spatie"
+            ],
+            "time": "2017-02-03T10:05:49+00:00"
         },
         {
             "name": "stripe/stripe-php",

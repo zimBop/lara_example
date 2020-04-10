@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "nexmo/laravel": "^2.2",
+        "spatie/color": "^1.1",
         "stripe/stripe-php": "^7.28"
     },
     "require-dev": {
