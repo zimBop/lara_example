@@ -50,9 +50,15 @@ class ClientResourceTest extends TestCase
      */
     public function testPatchClient()
     {
-        $client = factory(Client::class)->create();
+        $client = factory(Client::class)->create([
+            Client::FIRST_NAME => null,
+            Client::LAST_NAME => null,
+            Client::PASSWORD => null,
+        ]);
 
         Passport::actingAs($client, ['access-client']);
+
+        $this->checkPatchClientValidationErrors($client);
 
         $data = [
             Client::FIRST_NAME => $this->faker->firstName,
@@ -78,20 +84,34 @@ class ClientResourceTest extends TestCase
                  'data' => $data,
              ]);
 
+        // Password not required in case $client->isRegistrationCompleted()
+        // So errors will differ and we must check them again
+        $this->checkPatchClientValidationErrors($client);
+    }
+
+    protected function checkPatchClientValidationErrors(Client $client)
+    {
+        $client->refresh();
+
         $response = $this->patchJson(
             route('clients.update', ['client' => $client->id]),
             []
         );
 
+        $errors = [
+            Client::FIRST_NAME,
+            Client::LAST_NAME,
+        ];
+
+        if (!$client->isRegistrationCompleted()) {
+            $errors[] = Client::PASSWORD;
+        }
+
         $response
             ->assertStatus(422)
             ->assertJsonStructure([
                 'done',
-                'errors' => [
-                    Client::FIRST_NAME,
-                    Client::LAST_NAME,
-                    Client::PASSWORD,
-                ]
+                'errors' => $errors
             ]);
     }
 }

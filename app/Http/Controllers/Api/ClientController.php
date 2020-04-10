@@ -76,8 +76,10 @@ class ClientController extends ApiController
 
         $password = $request->input(Client::PASSWORD);
 
-        if ($password) {
+        if ($password && !$client->isRegistrationCompleted()) {
             $input[Client::PASSWORD] = Hash::make($password);
+        } else {
+            unset($input[Client::PASSWORD]);
         }
 
         $client->update($input);

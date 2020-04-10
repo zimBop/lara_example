@@ -25,16 +25,23 @@ class UpdateRequest extends FormRequest
      */
     public function rules()
     {
+        /**
+         * @var $client Client
+         */
         $client = Auth::guard('api')->user();
-
         $clientIdPart = $client ? ",email," . $client->id : '';
 
-        return [
+        $rules = [
             Client::FIRST_NAME => ['required', 'string', 'max:255'],
             Client::LAST_NAME => ['required', 'string', 'max:255'],
             Client::EMAIL => ['email', 'max:255', 'unique:clients' . $clientIdPart],
             Client::BIRTHDAY => ['date_format:m/d/Y'],
-            Client::PASSWORD => ['required', 'string', 'min:6'],
         ];
+
+        if ($client && !$client->isRegistrationCompleted()) {
+            $rules[Client::PASSWORD] = ['required', 'string', 'min:6', 'max:255'];
+        }
+
+        return $rules;
     }
 }
