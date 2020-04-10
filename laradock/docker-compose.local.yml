@@ -257,43 +257,6 @@ services:
       links:
         - docker-in-docker
 
-### PHP Worker ############################################
-    php-worker:
-      build:
-        context: ./php-worker
-        args:
-          - CHANGE_SOURCE=${CHANGE_SOURCE}
-          - LARADOCK_PHP_VERSION=${PHP_VERSION}
-          - PHALCON_VERSION=${PHALCON_VERSION}
-          - INSTALL_BZ2=${PHP_WORKER_INSTALL_BZ2}
-          - INSTALL_GD=${PHP_WORKER_INSTALL_GD}
-          - INSTALL_GMP=${PHP_WORKER_INSTALL_GMP}
-          - INSTALL_PGSQL=${PHP_WORKER_INSTALL_PGSQL}
-          - INSTALL_BCMATH=${PHP_WORKER_INSTALL_BCMATH}
-          - INSTALL_PHALCON=${PHP_WORKER_INSTALL_PHALCON}
-          - INSTALL_SOAP=${PHP_WORKER_INSTALL_SOAP}
-          - INSTALL_ZIP_ARCHIVE=${PHP_WORKER_INSTALL_ZIP_ARCHIVE}
-          - INSTALL_MYSQL_CLIENT=${PHP_WORKER_INSTALL_MYSQL_CLIENT}
-          - INSTALL_AMQP=${PHP_WORKER_INSTALL_AMQP}
-          - INSTALL_CASSANDRA=${PHP_WORKER_INSTALL_CASSANDRA}
-          - INSTALL_GEARMAN=${PHP_WORKER_INSTALL_GEARMAN}
-          - INSTALL_GHOSTSCRIPT=${PHP_WORKER_INSTALL_GHOSTSCRIPT}
-          - INSTALL_SWOOLE=${PHP_WORKER_INSTALL_SWOOLE}
-          - INSTALL_TAINT=${PHP_WORKER_INSTALL_TAINT}
-          - INSTALL_FFMPEG=${PHP_WORKER_INSTALL_FFMPEG}
-          - INSTALL_REDIS=${PHP_WORKER_INSTALL_REDIS}
-          - PUID=${PHP_WORKER_PUID}
-          - PGID=${PHP_WORKER_PGID}
-      volumes:
-        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
-        - ./php-worker/supervisord.d:/etc/supervisord.d
-      depends_on:
-        - workspace
-      extra_hosts:
-        - "dockerhost:${DOCKER_HOST_IP}"
-      networks:
-        - backend
-
 ### NGINX Server #########################################
     nginx:
       build:
@@ -334,18 +297,6 @@ services:
         - POSTGRES_DB=${POSTGRES_DB}
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      networks:
-        - backend
-
-### Memcached ############################################
-    memcached:
-      build: ./memcached
-      volumes:
-        - ${DATA_PATH_HOST}/memcached:/var/lib/memcached
-      ports:
-        - "${MEMCACHED_HOST_PORT}:11211"
-      depends_on:
-        - php-fpm
       networks:
         - backend
 
