@@ -51,10 +51,10 @@
                     @forelse($clients as $client)
                         <tr>
                             <td>{{ $client->id }}</td>
-                            <td>{{ $client->full_name }}</td>
-                            <td>{{ $client->phone }}</td>
-                            <td>{{ $client->email }}</td>
-                            <td>{{ $client->birthday->format('M d, Y') }} <span title="Age">({{ $client->age }})</span></td>
+                            <td>{{ optional($client)->full_name }}</td>
+                            <td>{{ optional($client)->phone }}</td>
+                            <td>{{ optional($client)->email }}</td>
+                            <td>{{ optional($client->birthday)->format('M d, Y') }} @if($client->birthday)<span title="Age">({{ $client->age }})</span>@endif</td>
                             <td>{{ $client->created_at->format('M d, Y H:i') }}</td>
                             <td>
                                 <div class="custom-control custom-switch" title="{{ $client->is_active ? 'Active' : 'Inactive' }}">
