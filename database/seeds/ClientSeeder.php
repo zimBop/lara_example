@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Client;
 
 class ClientSeeder extends Seeder
 {
@@ -9,8 +10,9 @@ class ClientSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        //
+        // Generate 75 random users
+        factory(Client::class, 75)->create();
     }
 }

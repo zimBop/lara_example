@@ -8,7 +8,7 @@
         </li>
         <li class="{{ request()->routeIs(R_ADMIN_CLIENTS_LIST) ? 'active' : '' }}">
             <a href="{{ route(R_ADMIN_CLIENTS_LIST) }}">
-                <i class="fas fa-laptop-medical"></i> Clients
+                <i class="fas fa-users"></i> Clients
             </a>
         </li>
     </ul>

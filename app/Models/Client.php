@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
 
 /**
@@ -57,6 +58,7 @@ class Client extends Authenticatable
     public const EMAIL = 'email';
     public const EMAIL_VERIFIED_AT = 'email_verified_at';
     public const PASSWORD = 'password';
+    public const IS_ACTIVE = 'is_active';
     public const CUSTOMER_ID = 'customer_id';
 
     protected $fillable = [
@@ -67,6 +69,7 @@ class Client extends Authenticatable
         self::FIRST_NAME,
         self::LAST_NAME,
         self::PHONE,
+        self::IS_ACTIVE,
     ];
 
     protected $hidden = [
@@ -75,10 +78,10 @@ class Client extends Authenticatable
         self::CUSTOMER_ID,
     ];
 
-    public function getFullNameAttribute()
-    {
-        return $this->first_name . ' ' . $this->last_name;
-    }
+    protected $casts = [
+        self::IS_ACTIVE => 'boolean',
+        self::BIRTHDAY => 'date',
+    ];
 
     /**
      * This method used in Laravel Passport validation
@@ -104,6 +107,16 @@ class Client extends Authenticatable
         return false;
     }
 
+    /**
+     * Change Client's status from current to opposite one 1 > 0, 0 > 1
+     * @param $clientId
+     * @return true | false
+     */
+    public function changeActivity(int $clientId): bool
+    {
+        return (bool) $this->whereId($clientId)->update([self::IS_ACTIVE => DB::raw('NOT '.self::IS_ACTIVE)]);
+    }
+
     public function verificationCode()
     {
         return $this->hasOne(VerificationCode::class);
@@ -117,5 +130,16 @@ class Client extends Authenticatable
     public function isRegistrationCompleted(): bool
     {
         return $this->first_name && $this->last_name && $this->password;
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return sprintf('%s %s', $this->first_name, $this->last_name);
+    }
+
+    public function getAgeAttribute(): int
+    {
+        // Consider refactoring here with Carbon
+        return (new \DateTime())->diff(new \DateTime($this->birthday))->y;
     }
 }
