@@ -15,5 +15,7 @@ $factory->define(Vehicle::class, static function (Faker $faker) {
         Vehicle::MODEL_ID => $model_id,
         Vehicle::COLOR_ID => VehicleService::generateRandomColor(),
         Vehicle::STATUS_ID => VehicleService::generateRandomStatus(),
+        Vehicle::CREATED_AT => $faker->dateTimeBetween('-5 days', '-3 days', 'America/New_York'),
+        Vehicle::UPDATED_AT => $faker->dateTimeBetween('-2 days', 'now', 'America/New_York'),
     ];
 });
