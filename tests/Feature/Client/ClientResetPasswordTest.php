@@ -4,7 +4,7 @@ namespace Tests\Feature\Client;
 
 use App\Models\Client;
 use App\Services\ResetPasswordService;
-use Laravel\Passport\Passport;
+use SMartins\PassportMultiauth\PassportMultiauth;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,7 +17,7 @@ class ClientResetPasswordTest extends TestCase
         $passwordService->setClient($client);
         $token = $passwordService->create();
 
-        Passport::actingAs($client, ['access-client']);
+        PassportMultiauth::actingAs($client, ['access-client']);
 
         $newPassword = $this->faker->password;
 

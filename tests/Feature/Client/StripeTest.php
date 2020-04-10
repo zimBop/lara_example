@@ -23,7 +23,7 @@ class StripeTest extends TestCase
             Client::CUSTOMER_ID => config('services.stripe.test_customer_id')
         ]);
 
-        Passport::actingAs($client, ['access-client']);
+        PassportMultiauth::actingAs($client, ['access-client']);
 
         $response = $this->getJson(
             route('clients.stripe-secret', ['client' => $client->id])

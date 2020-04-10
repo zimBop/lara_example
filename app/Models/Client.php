@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
+use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
 /**
  * App\Models\Client
@@ -47,7 +47,7 @@ use Laravel\Passport\HasApiTokens;
  */
 class Client extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasMultiAuthApiTokens, Notifiable;
 
     public const ID = 'id';
     public const PHONE = 'phone';

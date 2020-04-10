@@ -7,6 +7,7 @@ use App\Policies\ClientPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Route;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,15 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes(null, [
             'prefix' => 'api/oauth',
         ]);
+
+        Route::group(['middleware' => 'oauth.providers'], function () {
+            Passport::routes(
+                function ($router) {
+                    return $router->forAccessTokens();
+                },
+                ['prefix' => 'api/oauth']
+            );
+        });
 
         Passport::tokensCan([
             'access-client' => 'Access client related endpoints.',

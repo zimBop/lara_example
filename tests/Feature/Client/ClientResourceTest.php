@@ -5,7 +5,7 @@ namespace Tests\Feature\Client;
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Passport\Passport;
+use SMartins\PassportMultiauth\PassportMultiauth;
 use Tests\TestCase;
 
 class ClientResourceTest extends TestCase
@@ -14,7 +14,7 @@ class ClientResourceTest extends TestCase
     {
         $clientOne = factory(Client::class)->create();
 
-        Passport::actingAs($clientOne, ['access-client']);
+        PassportMultiauth::actingAs($clientOne, ['access-client']);
 
         $response = $this->getJson(route('clients.show', ['client' => $clientOne->id]));
 
@@ -42,7 +42,7 @@ class ClientResourceTest extends TestCase
     {
         $client = factory(Client::class)->create();
 
-        Passport::actingAs($client, ['access-client']);
+        PassportMultiauth::actingAs($client, ['access-client']);
 
         $response = $this->deleteJson(route('clients.destroy', ['client' => $client->id]));
 
@@ -66,7 +66,7 @@ class ClientResourceTest extends TestCase
             Client::PASSWORD => null,
         ]);
 
-        Passport::actingAs($client, ['access-client']);
+        PassportMultiauth::actingAs($client, ['access-client']);
 
         $this->checkPatchClientValidationErrors($client);
 

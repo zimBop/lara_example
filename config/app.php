@@ -190,6 +190,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        SMartins\PassportMultiauth\Providers\MultiauthServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
 
     ],
 

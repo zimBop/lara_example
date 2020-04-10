@@ -95,11 +95,13 @@ class ClientController extends ApiController
      */
     public function logout(Client $client, RefreshTokenRepository $refreshTokenRepository)
     {
-        if (!$client->tokens) {
+        $tokens = $client->tokens();
+
+        if ($tokens->isEmpty()) {
             return $this->done('Already logged out.');
         }
 
-        foreach ($client->tokens as $token) {
+        foreach ($tokens as $token) {
             $token->revoke();
 
             $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($token->id);
@@ -115,7 +117,9 @@ class ClientController extends ApiController
      */
     public function destroy(Client $client)
     {
-        foreach ($client->tokens as $token) {
+        $tokens = $client->tokens();
+
+        foreach ($tokens as $token) {
             $token->delete();
 
             Passport::refreshToken()->where('access_token_id', $token->id)->delete();
