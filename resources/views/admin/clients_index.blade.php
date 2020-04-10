@@ -43,7 +43,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Birthday</th>
                         <th scope="col">Created at</th>
-                        <th scope="col">Statuses</th>
+                        <th scope="col">Is&nbsp;active?</th>
                         <th scope="col">Actions</th>
                     </tr>
                     </thead>
@@ -57,15 +57,15 @@
                             <td>{{ $client->birthday->format('M d, Y') }} <span title="Age">({{ $client->age }})</span></td>
                             <td>{{ $client->created_at->format('M d, Y H:i') }}</td>
                             <td>
-                                @if($client->is_active)
-                                    <span class="badge badge-success">Active</span>
-                                @else
-                                    <span class="badge badge-danger">InActive</span>
-                                @endif
+                                <div class="custom-control custom-switch" title="{{ $client->is_active ? 'Active' : 'Inactive' }}">
+                                    <input type="checkbox" class="custom-control-input client-activity-switch" data-client-id="{{ $client->id }}"
+                                           id="customSwitch{{ $client->id }}" @if($client->is_active) checked @endif>
+                                    <label class="custom-control-label" for="customSwitch{{ $client->id }}"></label>
+                                </div>
                             </td>
                             <td>
-                                <a href="#" title="Edit" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
-                                <a href="#" title="Remove" data-toggle="tooltip"><i class="fas fa-trash"></i></a>
+                                {{--<a href="#" title="Edit" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
+                                <a href="#" title="Remove" data-toggle="tooltip"><i class="fas fa-trash"></i></a>--}}
                             </td>
                         </tr>
                     @empty
