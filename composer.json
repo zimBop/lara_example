@@ -20,6 +20,7 @@
         "stripe/stripe-php": "^7.28"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^2.6",
         "facade/ignition": "^2.0",
         "fzaninotto/faker": "^1.9.1",
