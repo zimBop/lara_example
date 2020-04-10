@@ -128,7 +128,9 @@ return [
         'lifetime' => 15,
         'length' => 4,
         //delay between sms sending in minutes
-        'delay' => 1
+        'delay' => 1,
+        //code for testing
+        'test' => '1111'
     ],
 
     'password_reset' => [

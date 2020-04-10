@@ -93,6 +93,10 @@ class Client extends Authenticatable
      */
     public function validateForPassportPasswordGrant($smsCode)
     {
+        if (app()->env !== 'production' && $smsCode == config('app.verification_code.test')) {
+            return true;
+        }
+
         if ($this->verificationCode && $this->verificationCode->expires_at->gt(now())) {
             return $smsCode == $this->verificationCode->code;
         }
