@@ -31,5 +31,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
                             ->name(R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY);
                     });
                 });
+
+            Route::prefix('vehicles')
+                ->group(static function(){
+                    Route::get('/', 'VehicleController@index')->name(R_ADMIN_VEHICLES_LIST);
+                });
+
         });
 });
