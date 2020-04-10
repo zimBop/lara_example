@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Constants\VehicleConstants;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Color\Hex;
 
 class Vehicle extends Model
 {
@@ -81,9 +82,17 @@ class Vehicle extends Model
         return $this->getColorData($this->color_id);
     }
 
-    public function getColorData(?int $color_id): array
+    public function getColorData(?int $color_id)
     {
-        $colors = VehicleConstants::COLORS;
+        $colors = collect(VehicleConstants::COLORS)->map(static function($item){
+            $rgb = Hex::fromString($item['hex'])->toRgb();
+            $item['red'] = $rgb->red();
+            $item['green'] = $rgb->green();
+            $item['blue'] = $rgb->blue();
+
+            return $item;
+        })->toArray();
+
         return ($color_id && array_key_exists($color_id, $colors)) ? $colors[$color_id] : $colors;
     }
 }
