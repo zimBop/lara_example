@@ -11,7 +11,7 @@ class ClientController extends Controller
 
     public function index(Request $request)
     {
-        $clients = Client::paginate(25);
+        $clients = Client::latest()->paginate(25);
         return view('admin.clients_index', get_defined_vars());
     }
 
