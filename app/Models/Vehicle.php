@@ -7,6 +7,42 @@ use App\Constants\VehicleConstants;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Color\Hex;
 
+/**
+ * App\Models\Vehicle
+ *
+ * @property int $id
+ * @property string $license_plate
+ * @property int $brand_id
+ * @property int $model_id
+ * @property int|null $color_id
+ * @property int $status_id
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $brand
+ * @property-read mixed $color_data
+ * @property-read string $model
+ * @property-read string $name
+ * @property-read mixed $status_data
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Vehicle onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle query()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereColorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereLicensePlate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereModelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereStatusId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vehicle whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Vehicle withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Vehicle withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Vehicle extends Model
 {
     use SoftDeletes;

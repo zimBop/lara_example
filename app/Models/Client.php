@@ -44,6 +44,9 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property bool $is_active
+ * @property-read mixed $age
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereIsActive($value)
  */
 class Client extends Authenticatable
 {
