@@ -66,6 +66,24 @@ class Vehicle extends Model
         return sprintf('%s %s', $this->brand, $this->model);
     }
 
+    /**
+     * Set color to null if empty value saved
+     * @param $value
+     */
+    public function setColorIdAttribute($value)
+    {
+        $this->attributes[self::COLOR_ID] = $value ?? null;
+    }
+
+    /**
+     * Capitalize license plate number before save to DB
+     * @param $value
+     */
+    public function setLicensePlateAttribute($value)
+    {
+        $this->attributes[self::LICENSE_PLATE] = mb_strtoupper($value);
+    }
+
     public function getStatusDataAttribute()
     {
         return $this->getStatusData($this->status_id);
@@ -82,8 +100,12 @@ class Vehicle extends Model
         return $this->getColorData($this->color_id);
     }
 
-    public function getColorData(?int $color_id)
+    public function getColorData(?int $color_id = null)
     {
+        if(!$color_id) {
+            return null;
+        }
+
         $colors = collect(VehicleConstants::COLORS)->map(static function($item){
             $rgb = Hex::fromString($item['hex'])->toRgb();
             $item['red'] = $rgb->red();
@@ -93,6 +115,6 @@ class Vehicle extends Model
             return $item;
         })->toArray();
 
-        return ($color_id && array_key_exists($color_id, $colors)) ? $colors[$color_id] : $colors;
+        return (array_key_exists($color_id, $colors)) ? $colors[$color_id] : $colors;
     }
 }

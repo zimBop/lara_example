@@ -8,7 +8,7 @@
             Some extra text or controls
         </div>--}}
         <div class="col-12 col-md-6 d-flex justify-content-end">
-            <a href="#" class="btn btn-primary disabled">Add vehicle</a>
+            <a href="{{ route(R_ADMIN_VEHICLES_CREATE) }}" class="btn btn-primary">Add vehicle</a>
         </div>
     </div>
     <div class="card">
@@ -40,14 +40,20 @@
                             <td>{{ $vehicle->license_plate }}</td>
                             <td>{{ $vehicle->name }}</td>
                             <td>
-                                <span class="px-2 mr-2 border" style="background-color: {{ $vehicle->color_data['hex'] }}"></span>
-                                <span>{{ $vehicle->color_data['name'] }}</span>
+                                @if($vehicle->color_data)
+                                    <span class="px-2 mr-2 border" style="background-color: {{ $vehicle->color_data['hex'] }}"></span>
+                                    <span>{{ $vehicle->color_data['name'] }}</span>
+                                @else
+                                    No color specified
+                                @endif
                             </td>
                             <td>{{ $vehicle->created_at->format('M d, Y H:i') }}</td>
                             <td><span class="badge badge-{{ $vehicle->status_data['badge'] }}">{{ $vehicle->status_data['name'] }}</span></td>
                             <td>
-                                {{--<a href="#" title="Edit" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
-                                <a href="#" title="Remove" data-toggle="tooltip"><i class="fas fa-trash"></i></a>--}}
+                                <a href="{{ route(R_ADMIN_VEHICLES_EDIT, $vehicle) }}" title="Edit" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
+                                <a href="{{ route(R_ADMIN_VEHICLES_DELETE, $vehicle) }}" title="Remove" data-toggle="tooltip" class="are-you-sure">
+                                    <i class="fas fa-trash"></i>
+                                </a>
                             </td>
                         </tr>
                     @empty
