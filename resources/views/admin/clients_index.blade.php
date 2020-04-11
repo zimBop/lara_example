@@ -58,7 +58,7 @@
                             <td>{{ $client->created_at->format('M d, Y H:i') }}</td>
                             <td>
                                 <div class="custom-control custom-switch" title="{{ $client->is_active ? 'Active' : 'Inactive' }}">
-                                    <input type="checkbox" class="custom-control-input client-activity-switch" data-client-id="{{ $client->id }}"
+                                    <input type="checkbox" class="custom-control-input client-activity-switch" data-route="{{ route(R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY, ['client' => $client->id]) }}"
                                            id="customSwitch{{ $client->id }}" @if($client->is_active) checked @endif>
                                     <label class="custom-control-label" for="customSwitch{{ $client->id }}"></label>
                                 </div>

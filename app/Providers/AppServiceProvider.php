@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
+use App\Services\ClientService;
 use App\Services\StripeService;
 use App\Services\VerificationCodeService;
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
         VerificationCodeService::class => VerificationCodeService::class,
         ResetPasswordService::class => ResetPasswordService::class,
         StripeService::class => StripeService::class,
+        ClientService::class => ClientService::class,
     ];
 
     /**

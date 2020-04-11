@@ -12,11 +12,11 @@ $(function(){
     // Clients list
     // Toggle activity switch
     $('.client-activity-switch').on('change', function () {
-        let clientId = $(this).data('client-id'),
+        let route = $(this).data('route'),
             isChecked = $(this).attr('checked'),
             that = $(this);
 
-        $.post(ROUTES.R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY, {clientId : clientId}, function(data){
+        $.post(route, {}, function(data){
             if(data.status === 'success') {
                 $.jGrowl("Availability successfully changed");
                 $(that).attr('checked', !isChecked);
