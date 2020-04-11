@@ -84,6 +84,7 @@ class ClientResourceTest extends TestCase
         );
 
         unset($data[Client::PASSWORD]);
+        unset($data[Client::BIRTHDAY]);
         $data[Client::ID] = $client->id;
         $data[Client::PHONE] = $client->phone;
 

@@ -20,7 +20,7 @@ class ClientResource extends JsonResource
             Client::PHONE => $this->phone,
             Client::FIRST_NAME => $this->first_name,
             Client::LAST_NAME => $this->last_name,
-            Client::BIRTHDAY => $this->birthday,
+            Client::BIRTHDAY => $this->birthday ? $this->birthday->format('m/d/Y') : null,
             Client::EMAIL => $this->email,
         ];
     }
