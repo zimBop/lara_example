@@ -35,6 +35,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
             Route::prefix('vehicles')
                 ->group(static function(){
                     Route::get('/', 'VehicleController@index')->name(R_ADMIN_VEHICLES_LIST);
+                    Route::get('/create', 'VehicleController@create')->name(R_ADMIN_VEHICLES_CREATE);
+                    Route::get('/edit/{vehicle}', 'VehicleController@edit')->name(R_ADMIN_VEHICLES_EDIT);
+                    Route::post('/store/{vehicle?}', 'VehicleController@store')->name(R_ADMIN_VEHICLES_STORE);
+                    Route::get('/delete/{vehicle}', 'VehicleController@delete')->name(R_ADMIN_VEHICLES_DELETE);
                 });
 
         });
