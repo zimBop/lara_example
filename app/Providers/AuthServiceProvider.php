@@ -44,6 +44,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::tokensCan([
             'access-client' => 'Access client related endpoints.',
+            'access-driver' => 'Access driver related endpoints.',
         ]);
     }
 }

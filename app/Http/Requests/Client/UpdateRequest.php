@@ -28,7 +28,7 @@ class UpdateRequest extends FormRequest
         /**
          * @var $client Client
          */
-        $client = Auth::guard('api')->user();
+        $client = Auth::guard('client')->user();
         $clientIdPart = $client ? ",email," . $client->id : '';
 
         $rules = [

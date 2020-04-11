@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('oauth/token', 'Api\TokenController@getAccessToken');
+Route::middleware('oauth.providers')->post('oauth/token', 'Api\TokenController@getAccessToken');
 
 Route::post('/clients', 'Api\ClientController@store')->name('clients.store');
 
-Route::middleware('auth:api', 'scope:access-client', 'can:access,client')->group(function () {
+Route::middleware('multiauth:client', 'scope:access-client', 'can:access,client')->group(function () {
     Route::post('/clients/logout/{client}', 'Api\ClientController@logout')->name('clients.logout');
 
     Route::post('/clients/forgot-password/{client}', 'Api\ClientController@forgotPassword')->name('clients.forgot-password');
