@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\ClientService;
 use Illuminate\Http\Request;
 use App\Models\Client;
 
@@ -15,10 +16,11 @@ class ClientController extends Controller
         return view('admin.clients_index', get_defined_vars());
     }
 
-    public function changeActivity(Request $request)
+    public function changeActivity(Client $client, ClientService $clientService)
     {
-        $client = new Client();
-        $status = $client->changeActivity($request->clientId);
+        $status = $clientService->setClient($client)
+            ->changeActivity();
+
         return response()->json(['status' => $status ? 'success' : 'error']);
     }
 }

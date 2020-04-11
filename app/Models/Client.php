@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
 
 /**
@@ -105,16 +104,6 @@ class Client extends Authenticatable
         }
 
         return false;
-    }
-
-    /**
-     * Change Client's status from current to opposite one 1 > 0, 0 > 1
-     * @param $clientId
-     * @return true | false
-     */
-    public function changeActivity(int $clientId): bool
-    {
-        return (bool) $this->whereId($clientId)->update([self::IS_ACTIVE => DB::raw('NOT '.self::IS_ACTIVE)]);
     }
 
     public function verificationCode()

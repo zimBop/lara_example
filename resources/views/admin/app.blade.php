@@ -80,9 +80,6 @@
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         }
     });
-
-    const ROUTES = {};
-    ROUTES.R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY = '{{ route(R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY, [], false) }}';
 </script>
 
 <script src="{{ mix('js/admin/custom.min.js') }}"></script>

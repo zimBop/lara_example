@@ -26,7 +26,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
                     Route::get('/', 'ClientController@index')->name(R_ADMIN_CLIENTS_LIST);
 
                     Route::prefix('ajax')->group(static function(){
-                        Route::post('change_activity', 'ClientController@changeActivity')
+                        Route::post('change_activity/{client}', 'ClientController@changeActivity')
                             ->middleware('ajax')
                             ->name(R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY);
                     });
