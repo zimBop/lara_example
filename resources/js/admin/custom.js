@@ -26,4 +26,9 @@ $(function(){
             }
         }, 'json');
     });
+
+    // Ask remove confirmation
+    $('.are-you-sure').on('click', function(e){
+        return confirm('Are you sure want to proceed?');
+    });
 });
