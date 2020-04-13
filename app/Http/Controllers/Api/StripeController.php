@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
 
-class StripeController extends Controller
+class StripeController extends ApiController
 {
     public function getEphemeralKey(Client $client, StripeService $stripeService)
     {
         $stripeService->setClient($client);
 
-        return response()->json(
+        return $this->data(
             $stripeService->getEphemeralKey()
         );
     }
@@ -22,7 +21,7 @@ class StripeController extends Controller
     {
         $stripeService->setClient($client);
 
-        return response()->json(
+        return $this->data(
             $stripeService->getPaymentIntentSecret(100)
         );
     }

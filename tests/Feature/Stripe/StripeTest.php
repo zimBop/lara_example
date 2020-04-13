@@ -36,4 +36,24 @@ class StripeTest extends TestCase
                 'data' => [],
             ]);
     }
+
+    public function testGetPaymentIntent()
+    {
+        $client = factory(Client::class)->create([
+            Client::CUSTOMER_ID => config('services.stripe.test_customer_id')
+         ]);
+
+        PassportMultiauth::actingAs($client, ['access-client']);
+
+        $response = $this->getJson(
+            route('stripe.payment-intent', ['client' => $client->id])
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'done',
+                'data' => [],
+            ]);
+    }
 }
