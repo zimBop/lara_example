@@ -14,7 +14,12 @@ class TokenController extends AccessTokenController
     public function getAccessToken(ServerRequestInterface $request)
     {
         try {
-            return $this->server->respondToAccessTokenRequest($request, new Response());
+            $response = $this->server->respondToAccessTokenRequest($request, new Response());
+
+            return response()->json([
+                'done' => true,
+                'data' => json_decode($response->getBody())
+            ]);
         } catch (ClientException $exception) {
             $error = json_decode($exception->getResponse()->getBody());
 
