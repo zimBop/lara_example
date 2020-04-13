@@ -175,15 +175,4 @@ class ClientController extends ApiController
 
         return $this->done('Password reset successfully.');
     }
-
-    public function getEphemeralKey(Client $client, StripeService $stripeService)
-    {
-        $stripeService->setClient($client);
-
-        return $this->data(
-            [
-                $stripeService->getEphemeralKey()
-            ]
-        );
-    }
 }

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Client;
 use Stripe\Customer;
 use Stripe\EphemeralKey;
-use Stripe\SetupIntent;
+use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
 class StripeService
@@ -57,5 +57,15 @@ class StripeService
             ['customer' => $this->getCustomerId()],
             ['stripe_version' => Stripe::getApiVersion()]
         );
+    }
+
+    public function getPaymentIntentSecret(int $amount, string $currency = 'usd'): ?string
+    {
+        $intent = PaymentIntent::create([
+            'amount' => $amount,
+            'currency' => $currency,
+        ]);
+
+        return $intent->client_secret;
     }
 }

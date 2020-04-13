@@ -26,7 +26,7 @@ class StripeTest extends TestCase
         PassportMultiauth::actingAs($client, ['access-client']);
 
         $response = $this->getJson(
-            route('clients.stripe-secret', ['client' => $client->id])
+            route('stripe.ephemeral-key', ['client' => $client->id])
         );
 
         $response
