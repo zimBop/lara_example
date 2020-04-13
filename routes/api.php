@@ -23,6 +23,7 @@ Route::middleware('multiauth:client', 'scope:access-client', 'can:access,client'
     Route::patch('/clients/reset-password/{client}', 'Api\ClientController@resetPassword')->name('clients.reset-password');
 
     Route::get('/stripe/ephemeral-key/{client}', 'Api\StripeController@getEphemeralKey')->name('stripe.ephemeral-key');
+    Route::get('/stripe/payment-intent/{client}', 'Api\StripeController@getPaymentIntent')->name('stripe.payment-intent');
 
     Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
 });
