@@ -33,6 +33,10 @@ class NexmoService
      */
     public function sendSMS(string $to, string $text): array
     {
+        if (config('app.env') === 'dev') {
+            return ['sent' => true, 'message' => 'Skip SMS sending on dev environment'];
+        }
+
         try {
             $from = config('nexmo.from');
             $to = $this->redirectDebugNumber($to);
