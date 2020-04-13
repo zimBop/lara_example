@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use GuzzleHttp\Psr7\Response;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
 
-class TokenController extends ApiController
+use GuzzleHttp\Exception\ClientException;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Psr\Http\Message\ServerRequestInterface;
+
+class TokenController extends AccessTokenController
 {
-    public function getAccessToken(Request $request)
+    public function getAccessToken(ServerRequestInterface $request)
     {
         try {
-            $response = app()->call(
-                '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken',
-                $request->input()
-            );
-        } catch (\Exception $exception) {
-            return $this->error($exception->getMessage());
-        }
+            return $this->server->respondToAccessTokenRequest($request, new Response());
+        } catch (ClientException $exception) {
+            $error = json_decode($exception->getResponse()->getBody());
 
-        return $this->data(json_decode($response->content()));
+            throw OAuthServerException::invalidRequest('access_token', object_get($error, 'error.message'));
+        }
     }
 }

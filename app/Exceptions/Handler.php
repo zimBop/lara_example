@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -54,6 +55,18 @@ class Handler extends ExceptionHandler
             $data = $response->getData(true);
             $data['done'] = false;
             $response->setData($data);
+        }
+
+        switch (get_class($exception)) {
+            case OAuthServerException::class:
+                return response()->json(
+                    [
+                        'done' => false,
+                        'error' => $exception->getErrorType(),
+                        'message' => $exception->getMessage(),
+                    ],
+                    $exception->getHttpStatusCode()
+                );
         }
 
         return $response;
