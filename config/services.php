@@ -31,6 +31,7 @@ return [
     ],
 
     'stripe' => [
+        'version' => '2020-03-02',
         'public_key' => env('STRIPE_PUBLISHABLE_KEY'),
         'secret_key' => env('STRIPE_SECRET_KEY'),
         'test_public_key' => env('STRIPE_TEST_PUBLISHABLE_KEY'),

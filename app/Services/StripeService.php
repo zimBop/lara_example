@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Client;
 use Stripe\Customer;
+use Stripe\EphemeralKey;
 use Stripe\SetupIntent;
 use Stripe\Stripe;
 
@@ -18,6 +19,7 @@ class StripeService
         }
 
         Stripe::setApiKey(config('services.stripe.test_secret_key'));
+        Stripe::setApiVersion(config('services.stripe.version'));
     }
 
     public function setClient(Client $client)
@@ -49,14 +51,11 @@ class StripeService
         return $customer;
     }
 
-    public function getSecret()
+    public function getEphemeralKey()
     {
-        $setupIntent = SetupIntent::create(
-            [
-                'customer' => $this->getCustomerId()
-            ]
+        return EphemeralKey::create(
+            ['customer' => $this->getCustomerId()],
+            ['stripe_version' => Stripe::getApiVersion()]
         );
-
-        return $setupIntent->client_secret;
     }
 }

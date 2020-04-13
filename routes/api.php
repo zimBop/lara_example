@@ -22,7 +22,7 @@ Route::middleware('multiauth:client', 'scope:access-client', 'can:access,client'
     Route::post('/clients/forgot-password/{client}', 'Api\ClientController@forgotPassword')->name('clients.forgot-password');
     Route::patch('/clients/reset-password/{client}', 'Api\ClientController@resetPassword')->name('clients.reset-password');
 
-    Route::get('/clients/stripe-secret/{client}', 'Api\ClientController@getStripeSecret')->name('clients.stripe-secret');
+    Route::get('/clients/ephemeral-key/{client}', 'Api\ClientController@getEphemeralKey')->name('clients.stripe-secret');
 
     Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
 });

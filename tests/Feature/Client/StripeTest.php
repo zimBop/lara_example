@@ -3,7 +3,7 @@
 namespace Tests\Feature\Client;
 
 use App\Models\Client;
-use Laravel\Passport\Passport;
+use SMartins\PassportMultiauth\PassportMultiauth;
 use Tests\TestCase;
 
 class StripeTest extends TestCase
@@ -17,7 +17,7 @@ class StripeTest extends TestCase
         }
     }
 
-    public function testGetClientSecret()
+    public function testGetEphemeralKey()
     {
         $client = factory(Client::class)->create([
             Client::CUSTOMER_ID => config('services.stripe.test_customer_id')
@@ -33,9 +33,7 @@ class StripeTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure([
                 'done',
-                'data' => [
-                    'secret'
-                ],
+                'data' => [],
             ]);
     }
 }
