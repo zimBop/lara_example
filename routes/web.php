@@ -32,6 +32,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
                     });
                 });
 
+            Route::prefix('drivers')->group(static function(){
+                Route::get('/', 'DriverController@index')->name(R_ADMIN_DRIVERS_LIST);
+            });
+
             Route::prefix('vehicles')
                 ->group(static function(){
                     Route::get('/', 'VehicleController@index')->name(R_ADMIN_VEHICLES_LIST);

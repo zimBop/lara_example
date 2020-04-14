@@ -10,6 +10,8 @@ define('R_ADMIN_DASHBOARD', 'admin.dashboard');
 define('R_ADMIN_CLIENTS_LIST', 'admin.clients.list');
 define('R_ADMIN_AJAX_CLIENTS_CHANGE_ACTIVITY', 'admin.ajax.clients.change_activity');
 
+define('R_ADMIN_DRIVERS_LIST', 'admin.drivers.list');
+
 define('R_ADMIN_VEHICLES_LIST', 'admin.vehicles.list');
 define('R_ADMIN_VEHICLES_CREATE', 'admin.vehicles.create');
 define('R_ADMIN_VEHICLES_EDIT', 'admin.vehicles.edit');
