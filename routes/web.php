@@ -34,6 +34,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
 
             Route::prefix('drivers')->group(static function(){
                 Route::get('/', 'DriverController@index')->name(R_ADMIN_DRIVERS_LIST);
+                Route::get('/create', 'DriverController@create')->name(R_ADMIN_DRIVERS_CREATE);
+                Route::get('/edit/{driver}', 'DriverController@edit')->name(R_ADMIN_DRIVERS_EDIT);
+                Route::post('/store/{driver?}', 'DriverController@store')->name(R_ADMIN_DRIVERS_STORE);
+                Route::get('/delete/{driver}', 'DriverController@delete')->name(R_ADMIN_DRIVERS_DELETE);
             });
 
             Route::prefix('vehicles')
