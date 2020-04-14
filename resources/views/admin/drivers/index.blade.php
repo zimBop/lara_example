@@ -6,11 +6,10 @@
     <div class="row mb-3 justify-content-end">
         {{--<div class="col-12 col-md-6">
             Some extra text or controls
-        </div>
-        <div class="col-12 col-md-6 d-flex justify-content-end">
-            <a href="#" class="btn btn-secondary mr-3">Add driver</a>
-            <a href="#" class="btn btn-primary">Another action button</a>
         </div>--}}
+        <div class="col-12 col-md-6 d-flex justify-content-end">
+            <a href="{{ route(R_ADMIN_DRIVERS_CREATE) }}" class="btn btn-primary"><i class="fa fa-user-plus"></i> Add driver</a>
+        </div>
     </div>
     <div class="card">
         <div class="card-header">
@@ -52,8 +51,12 @@
                             <td>{{ optional($driver)->email }}</td>
                             <td>{{ $driver->created_at->format('M d, Y H:i') }}</td>
                             <td>
-                                {{--<a href="#" title="Edit" data-toggle="tooltip"><i class="fas fa-edit"></i></a>
-                                <a href="#" title="Remove" data-toggle="tooltip"><i class="fas fa-trash"></i></a>--}}
+                                <a href="{{ route(R_ADMIN_DRIVERS_EDIT, $driver) }}" title="Edit" data-toggle="tooltip">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ route(R_ADMIN_DRIVERS_DELETE, $driver) }}" title="Remove" data-toggle="tooltip" class="are-you-sure">
+                                    <i class="fas fa-trash"></i>
+                                </a>
                             </td>
                         </tr>
                     @empty
