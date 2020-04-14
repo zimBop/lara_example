@@ -48,4 +48,13 @@ class Driver extends Authenticatable
         self::FIRST_NAME,
         self::LAST_NAME,
     ];
+
+    /**
+     * Full Name attribute getter
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return sprintf('%s %s', $this->first_name, $this->last_name);
+    }
 }
