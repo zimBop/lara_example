@@ -6,6 +6,7 @@ use App\Rules\Admin\ArrayKeyExists;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Vehicle;
 use App\Constants\VehicleConstants;
+use Illuminate\Validation\Rule;
 
 class VehicleRequest extends FormRequest
 {
@@ -26,8 +27,14 @@ class VehicleRequest extends FormRequest
      */
     public function rules()
     {
+        $vehicle = $this->route('vehicle');
         return [
-            Vehicle::LICENSE_PLATE => ['required', 'string', 'max:15'],
+            Vehicle::LICENSE_PLATE => [
+                'required',
+                'string',
+                'max:15',
+                Rule::unique('vehicles')->ignore(optional($vehicle)->id),
+            ],
             Vehicle::BRAND_ID => ['required', 'integer', new ArrayKeyExists(VehicleConstants::BRANDS)],
             Vehicle::MODEL_ID => ['required', 'integer', new ArrayKeyExists(VehicleConstants::BRANDS[request()->brand_id]['models'])],
             Vehicle::COLOR_ID => ['nullable', 'integer', new ArrayKeyExists(VehicleConstants::COLORS)],
