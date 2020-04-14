@@ -11,7 +11,7 @@
                 <i class="fas fa-users"></i> Clients
             </a>
         </li>
-        <li class="{{ request()->routeIs(R_ADMIN_DRIVERS_LIST) ? 'active' : '' }}">
+        <li class="{{ request()->routeIs(R_ADMIN_DRIVERS_LIST, R_ADMIN_DRIVERS_CREATE, R_ADMIN_DRIVERS_EDIT) ? 'active' : '' }}">
             <a href="{{ route(R_ADMIN_DRIVERS_LIST) }}">
                 <i class="fas fa-id-card"></i> Drivers
             </a>
