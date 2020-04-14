@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
 /**
@@ -58,5 +59,10 @@ class Driver extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return sprintf('%s %s', $this->first_name, $this->last_name);
+    }
+
+    public function setPasswordAttribute($value): void
+    {
+        $this->attributes[self::PASSWORD] = Hash::make($value);
     }
 }
