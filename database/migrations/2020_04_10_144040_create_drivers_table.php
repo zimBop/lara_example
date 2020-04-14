@@ -11,14 +11,16 @@ class CreateDriversTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('drivers', function (Blueprint $table) {
+        Schema::create('drivers', static function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email')->unique();
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
+            $table->string('email', 100)->unique();
             $table->string('password');
+            $table->boolean('is_active')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -28,7 +30,7 @@ class CreateDriversTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('drivers');
     }
