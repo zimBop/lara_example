@@ -41,12 +41,14 @@ class Driver extends Authenticatable
     public const LAST_NAME = 'last_name';
     public const EMAIL = 'email';
     public const PASSWORD = 'password';
+    public const IS_ACTIVE = 'is_active';
 
     protected $fillable = [
         self::EMAIL,
         self::PASSWORD,
         self::FIRST_NAME,
         self::LAST_NAME,
+        self::IS_ACTIVE,
     ];
 
     /**
