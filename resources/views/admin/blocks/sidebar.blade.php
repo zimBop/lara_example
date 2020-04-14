@@ -16,7 +16,7 @@
                 <i class="fas fa-id-card"></i> Drivers
             </a>
         </li>
-        <li class="{{ request()->routeIs(R_ADMIN_VEHICLES_LIST) ? 'active' : '' }}">
+        <li class="{{ request()->routeIs(R_ADMIN_VEHICLES_LIST, R_ADMIN_VEHICLES_CREATE, R_ADMIN_VEHICLES_EDIT) ? 'active' : '' }}">
             <a href="{{ route(R_ADMIN_VEHICLES_LIST) }}">
                 <i class="fas fa-car"></i> Garage
             </a>
