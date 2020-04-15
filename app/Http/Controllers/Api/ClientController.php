@@ -10,7 +10,6 @@ use App\Models\Client;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\VerificationCodeService;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\Passport;
 use Laravel\Passport\RefreshTokenRepository;
 
@@ -77,7 +76,7 @@ class ClientController extends ApiController
         $password = $request->input(Client::PASSWORD);
 
         if ($password && !$client->isRegistrationCompleted()) {
-            $input[Client::PASSWORD] = Hash::make($password);
+            $input[Client::PASSWORD] = $password;
         } else {
             unset($input[Client::PASSWORD]);
         }

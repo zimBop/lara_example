@@ -74,7 +74,6 @@ class ResetPasswordService
 
     public function setNewPassword($input)
     {
-        $password = $input['password'];
         $token = $input['token'];
 
         if (!$this->exists($token)) {
@@ -82,7 +81,7 @@ class ResetPasswordService
         }
 
         $this->model->update([
-            'password' => Hash::make($password)
+            'password' => $input['password']
         ]);
     }
 }
