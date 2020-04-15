@@ -14,7 +14,7 @@ class ClientResetPasswordTest extends TestCase
     {
         $client = factory(Client::class)->create();
         $passwordService = $this->app->make(ResetPasswordService::class);
-        $passwordService->setClient($client);
+        $passwordService->setModel($client);
         $token = $passwordService->create();
 
         PassportMultiauth::actingAs($client, ['access-client']);

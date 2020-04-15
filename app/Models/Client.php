@@ -116,7 +116,7 @@ class Client extends Authenticatable
 
     public function passwordResetToken()
     {
-        return $this->hasOne(PasswordResetToken::class);
+        return $this->morphOne(PasswordResetToken::class, 'model');
     }
 
     public function isRegistrationCompleted(): bool

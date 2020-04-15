@@ -66,4 +66,9 @@ class Driver extends Authenticatable
     {
         $this->attributes[self::PASSWORD] = Hash::make($value);
     }
+
+    public function passwordResetToken()
+    {
+        return $this->morphOne(PasswordResetToken::class, 'model');
+    }
 }

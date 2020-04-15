@@ -9,7 +9,6 @@ use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
-use App\Services\StripeService;
 use App\Services\VerificationCodeService;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\Passport;
@@ -139,7 +138,7 @@ class ClientController extends ApiController
      */
     public function forgotPassword(Client $client, NexmoService $nexmo, ResetPasswordService $passwordService)
     {
-        $passwordService->setClient($client);
+        $passwordService->setModel($client);
         $token = $passwordService->create();
         $link = config('app.password_reset.ios_link') . "?token=$token";
 
@@ -160,18 +159,8 @@ class ClientController extends ApiController
      */
     public function resetPassword(ResetPasswordRequest $request, Client $client, ResetPasswordService $passwordService)
     {
-        $password = $request->input(Client::PASSWORD);
-        $token = $request->input('token');
-
-        $passwordService->setClient($client);
-
-        if (!$passwordService->exists($token)) {
-            return $this->error('Password reset token expired or not exists.');
-        }
-
-        $client->update([
-            Client::PASSWORD => Hash::make($password)
-        ]);
+        $passwordService->setModel($client);
+        $passwordService->setNewPassword($request->input(), $client);
 
         return $this->done('Password reset successfully.');
     }

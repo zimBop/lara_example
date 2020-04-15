@@ -27,3 +27,6 @@ Route::middleware('multiauth:client', 'scope:access-client', 'can:access,client'
 
     Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
 });
+
+Route::post('/drivers/forgot-password', 'Api\DriverController@forgotPassword')->name('drivers.forgot-password');
+Route::patch('/drivers/reset-password', 'Api\DriverController@resetPassword')->name('drivers.reset-password');

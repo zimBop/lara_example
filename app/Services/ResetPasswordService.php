@@ -2,42 +2,43 @@
 
 namespace App\Services;
 
-use App\Models\Client;
 use App\Models\PasswordResetToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ResetPasswordService
 {
-    protected $client;
+    protected $model;
 
     /**
-     * @param mixed $client
+     * @param mixed $model
      */
-    public function setClient(Client $client): void
+    public function setModel(Model $model): void
     {
-        $this->client = $client;
+        $this->model = $model;
     }
 
     public function create(): string
     {
         $token = $this->generateToken();
 
-        if ($this->client->passwordResetToken) {
-            $this->client->passwordResetToken->delete();
+        if ($this->model->passwordResetToken) {
+            $this->model->passwordResetToken->delete();
         }
 
-        PasswordResetToken::create([
-            PasswordResetToken::CLIENT_ID => $this->client->id,
+        $this->model->passwordResetToken()->create([
             PasswordResetToken::TOKEN => Hash::make($token),
             PasswordResetToken::CREATED_AT => now(),
-        ]);
+            PasswordResetToken::EMAIL => $this->model->email
+         ]);
 
         return $token;
     }
 
     /**
-     * Create a new token for the client.
+     * Create a new token for the model.
      *
      * @return string
      */
@@ -65,9 +66,23 @@ class ResetPasswordService
      */
     public function exists(string $token)
     {
-        $tokenModel = $this->client->passwordResetToken;
+        $tokenModel = $this->model->passwordResetToken;
 
         return $tokenModel && !$this->tokenExpired($tokenModel) &&
             Hash::check($token, $tokenModel->token);
+    }
+
+    public function setNewPassword($input)
+    {
+        $password = $input['password'];
+        $token = $input['token'];
+
+        if (!$this->exists($token)) {
+            throw new HttpException(200, 'Password reset token expired or not exists.');
+        }
+
+        $this->model->update([
+            'password' => Hash::make($password)
+        ]);
     }
 }
