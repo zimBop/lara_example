@@ -283,20 +283,20 @@ services:
       restart: always
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.dev_octomed_nginx.entrypoints=http"
-        - "traefik.http.routers.dev_octomed_nginx.rule=Host(`electra.ag.digital`)"
+        - "traefik.http.routers.dev_electra_nginx.entrypoints=http"
+        - "traefik.http.routers.dev_electra_nginx.rule=Host(`electra.ag.digital`)"
         - "traefik.docker.network=traefik"
         - "traefik.http.middlewares.redirect.redirectscheme.scheme=https"
-        - "traefik.http.routers.dev_octomed_nginx.middlewares=redirect"
-        - "traefik.http.routers.dev_octomed_nginx-https.entrypoints=https"
+        - "traefik.http.routers.dev_electra_nginx.middlewares=redirect"
+        - "traefik.http.routers.dev_electra_nginx-https.entrypoints=https"
         - "traefik.http.middlewares.secure-headers.headers.customresponseheaders.x-powered-by=NotYourBusiness/9.7.2"
         - "traefik.http.middlewares.secure-headers.headers.framedeny=true"
         - "traefik.http.middlewares.secure-headers.headers.sslredirect=true"
-        - "traefik.http.routers.dev_octomed_nginx-https.middlewares=secure-headers"
-        - "traefik.http.routers.dev_octomed_nginx-https.rule=Host(`electra.ag.digital`)"
-        - "traefik.http.routers.dev_octomed_nginx-https.tls=true"
-        - "traefik.http.routers.dev_octomed_nginx-https.tls.certresolver=mytlschallenge"
-        - "traefik.http.routers.dev_octomed_nginx-https.tls.domains[0].main=electra.ag.digital"
+        - "traefik.http.routers.dev_electra_nginx-https.middlewares=secure-headers"
+        - "traefik.http.routers.dev_electra_nginx-https.rule=Host(`electra.ag.digital`)"
+        - "traefik.http.routers.dev_electra_nginx-https.tls=true"
+        - "traefik.http.routers.dev_electra_nginx-https.tls.certresolver=mytlschallenge"
+        - "traefik.http.routers.dev_electra_nginx-https.tls.domains[0].main=electra.ag.digital"
 
 ### PostgreSQL ###########################################
     postgres:
