@@ -43,7 +43,7 @@ class ForgotPassword extends Notification
      */
     public function toMail($notifiable)
     {
-        $url = config('app.password_reset.ios_link') . "?token={$this->token}";
+        $url = config('app.password_reset.ios_link') . "?token={$this->token}&email={$notifiable->email}";
 
         return (new MailMessage)
             ->subject('Reset Password Notification')
