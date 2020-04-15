@@ -151,7 +151,7 @@ class ClientController extends ApiController
     public function resetPassword(ResetPasswordRequest $request, Client $client, ResetPasswordService $passwordService)
     {
         $passwordService->setModel($client);
-        $passwordService->setNewPassword($request->input(), $client);
+        $passwordService->setNewPassword($request->input());
 
         return $this->done('Password reset successfully.');
     }
