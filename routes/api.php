@@ -30,3 +30,7 @@ Route::middleware('multiauth:client', 'scope:access-client', 'can:access,client'
 
 Route::post('/drivers/forgot-password', 'Api\DriverController@forgotPassword')->name('drivers.forgot-password');
 Route::patch('/drivers/reset-password', 'Api\DriverController@resetPassword')->name('drivers.reset-password');
+
+Route::middleware('multiauth:driver', 'scope:access-driver', 'can:access,driver')->group(function () {
+    Route::post('/drivers/logout/{driver}', 'Api\DriverController@logout')->name('drivers.logout');
+});

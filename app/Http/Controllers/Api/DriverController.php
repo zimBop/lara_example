@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\Driver\ResetPasswordRequest;
 use App\Http\Requests\Driver\ForgotPasswordRequest;
 use App\Models\Driver;
-use App\Models\PasswordResetToken;
+use Laravel\Passport\RefreshTokenRepository;
 use App\Notifications\ForgotPassword;
 use App\Services\ResetPasswordService;
 
@@ -38,5 +38,16 @@ class DriverController extends ApiController
         $passwordService->setNewPassword($request->input());
 
         return $this->done('Password reset successfully.');
+    }
+
+    public function logout(Driver $driver, RefreshTokenRepository $refreshTokenRepository)
+    {
+        foreach ($driver->tokens() as $token) {
+            $token->revoke();
+
+            $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($token->id);
+        }
+
+        return $this->done('Tokens revoked.');
     }
 }
