@@ -29,8 +29,8 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="license_plate">License plate<sup>*</sup></label>
-                            <input type="text" name="license_plate" id="license_plate" value="{{ old('license_plate', $vehicle->license_plate ?? '') }}"
+                            <label for="license-plate">License plate<sup>*</sup></label>
+                            <input type="text" name="license_plate" id="license-plate" value="{{ old('license_plate', $vehicle->license_plate ?? '') }}"
                                    class="form-control @error('license_plate') is-invalid @enderror">
                             @error('license_plate')
                             <div class="invalid-feedback">{{ $message }}</div>
