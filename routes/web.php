@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/reset-password-page', 'Web\DriverResetPasswordController')
+    ->middleware('throttle:60,1')->name(R_DRIVER_RESET_PASSWORD);
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
     Route::get('/login', 'LoginController@showLoginForm')->name(R_ADMIN_LOGIN);
