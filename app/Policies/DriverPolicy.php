@@ -11,6 +11,6 @@ class DriverPolicy
 
     public function access(Driver $authorizedDriver, Driver $requestedDriver)
     {
-        return $authorizedDriver->id === $requestedDriver->id;
+        return $authorizedDriver->is($requestedDriver);
     }
 }

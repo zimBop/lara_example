@@ -11,6 +11,6 @@ class ClientPolicy
 
     public function access(Client $authorizedClient, Client $requestedClient)
     {
-        return $authorizedClient->id === $requestedClient->id;
+        return $authorizedClient->is($requestedClient);
     }
 }
