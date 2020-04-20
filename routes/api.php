@@ -16,16 +16,29 @@ Route::middleware('oauth.providers')->post('oauth/token', 'Api\TokenController@g
 
 Route::post('/clients', 'Api\ClientController@store')->name('clients.store');
 
-Route::middleware('multiauth:client', 'scope:access-client', 'can:access,client')->group(function () {
-    Route::post('/clients/logout/{client}', 'Api\ClientController@logout')->name('clients.logout');
+Route::middleware('multiauth:client', 'scope:access-client')->group(function () {
 
-    Route::post('/clients/forgot-password/{client}', 'Api\ClientController@forgotPassword')->name('clients.forgot-password');
-    Route::patch('/clients/reset-password/{client}', 'Api\ClientController@resetPassword')->name('clients.reset-password');
+    Route::middleware('can:access,client')->group(function () {
+        Route::post('/clients/logout/{client}', 'Api\ClientController@logout')->name('clients.logout');
 
-    Route::get('/stripe/ephemeral-key/{client}', 'Api\StripeController@getEphemeralKey')->name('stripe.ephemeral-key');
-    Route::get('/stripe/payment-intent/{client}', 'Api\StripeController@getPaymentIntent')->name('stripe.payment-intent');
+        Route::post('/clients/forgot-password/{client}', 'Api\ClientController@forgotPassword')->name(
+            'clients.forgot-password'
+        );
+        Route::patch('/clients/reset-password/{client}', 'Api\ClientController@resetPassword')->name(
+            'clients.reset-password'
+        );
 
-    Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
+        Route::get('/stripe/ephemeral-key/{client}', 'Api\StripeController@getEphemeralKey')->name(
+            'stripe.ephemeral-key'
+        );
+        Route::get('/stripe/payment-intent/{client}', 'Api\StripeController@getPaymentIntent')->name(
+            'stripe.payment-intent'
+        );
+
+        Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
+    });
+
+    Route::get('/places-autocomplete', 'Api\Google\PlacesAutocomplete')->name('google.places-autocomplete');
 });
 
 Route::post('/drivers/forgot-password', 'Api\DriverController@forgotPassword')->name('drivers.forgot-password');
