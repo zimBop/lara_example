@@ -36,6 +36,7 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
         );
 
         Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
+        Route::apiResource('clients.places', 'Api\PlaceController')->except('update');
     });
 
     Route::get('/places-autocomplete', 'Api\Google\PlacesAutocomplete')->name('google.places-autocomplete');

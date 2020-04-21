@@ -110,16 +110,6 @@ class Client extends Authenticatable
         return false;
     }
 
-    public function verificationCode()
-    {
-        return $this->hasOne(VerificationCode::class);
-    }
-
-    public function passwordResetToken()
-    {
-        return $this->morphOne(PasswordResetToken::class, 'model');
-    }
-
     public function isRegistrationCompleted(): bool
     {
         return $this->first_name && $this->last_name && $this->password;
@@ -139,5 +129,20 @@ class Client extends Authenticatable
     public function setPasswordAttribute($value): void
     {
         $this->attributes[self::PASSWORD] = Hash::make($value);
+    }
+
+    public function verificationCode()
+    {
+        return $this->hasOne(VerificationCode::class);
+    }
+
+    public function passwordResetToken()
+    {
+        return $this->morphOne(PasswordResetToken::class, 'model');
+    }
+
+    public function places()
+    {
+        return $this->hasMany(Place::class);
     }
 }
