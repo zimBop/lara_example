@@ -4,20 +4,16 @@ namespace Tests\Feature\Client;
 
 use App\Models\Client;
 use App\Services\ResetPasswordService;
-use SMartins\PassportMultiauth\PassportMultiauth;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 
-class ClientResetPasswordTest extends TestCase
+class ClientResetPasswordTest extends ClientTestCase
 {
     public function testResetPassword()
     {
-        $client = factory(Client::class)->create();
+        $client = $this->makeAuthClient();
         $passwordService = $this->app->make(ResetPasswordService::class);
         $passwordService->setModel($client);
         $token = $passwordService->create();
-
-        PassportMultiauth::actingAs($client, ['access-client']);
 
         $newPassword = $this->faker->password;
 
