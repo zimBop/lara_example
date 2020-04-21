@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PasswordResetToken whereModelType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PasswordResetToken whereToken($value)
  * @mixin \Eloquent
+ * @property string|null $email
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $model
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PasswordResetToken whereEmail($value)
  */
 class PasswordResetToken extends Model
 {

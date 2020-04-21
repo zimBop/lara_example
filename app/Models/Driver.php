@@ -33,6 +33,17 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read string $full_name
+ * @property-read \App\Models\PasswordResetToken $passwordResetToken
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Driver onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver whereIsActive($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Driver withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Driver withoutTrashed()
  */
 class Driver extends Authenticatable
 {
