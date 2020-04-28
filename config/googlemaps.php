@@ -76,7 +76,7 @@ return [
                         'key'                   =>  null,
                         'endpoint'              =>  true,
                         'responseDefaultKey'    =>  'geocoded_waypoints',
-                        'decodePolyline'        =>  true, // true = decode overview_polyline.points to an array of points
+                        'decodePolyline'        =>  false, // true = decode overview_polyline.points to an array of points
                         'param'                 => [
                                                     'origin'          => null, // required
                                                     'destination'     => null, //required

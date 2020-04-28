@@ -37,6 +37,9 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
 
         Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
         Route::apiResource('clients.places', 'Api\PlaceController')->except('update');
+
+        Route::post('clients/{client}/trip-request', 'Api\TripOrderController@store')->name('trip.order.store');
+        Route::get('clients/{client}/trip-request', 'Api\TripOrderController@show')->name('trip.order.show');
     });
 
     Route::get('/places-autocomplete', 'Api\Google\PlacesAutocompleteController')->name('google.places-autocomplete');

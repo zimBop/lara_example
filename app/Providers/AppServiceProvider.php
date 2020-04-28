@@ -6,6 +6,7 @@ use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\ClientService;
 use App\Services\StripeService;
+use App\Services\TripService;
 use App\Services\VerificationCodeService;
 use Illuminate\Support\ServiceProvider;
 use Nexmo\Client as NexmoClient;
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
         ResetPasswordService::class => ResetPasswordService::class,
         StripeService::class => StripeService::class,
         ClientService::class => ClientService::class,
+        TripService::class => TripService::class,
     ];
 
     /**

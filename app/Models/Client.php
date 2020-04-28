@@ -147,4 +147,9 @@ class Client extends Authenticatable
     {
         return $this->hasMany(Place::class);
     }
+
+    public function tripOrder()
+    {
+        return $this->hasOne(TripOrder::class);
+    }
 }
