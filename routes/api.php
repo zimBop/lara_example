@@ -39,7 +39,8 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
         Route::apiResource('clients.places', 'Api\PlaceController')->except('update');
     });
 
-    Route::get('/places-autocomplete', 'Api\Google\PlacesAutocomplete')->name('google.places-autocomplete');
+    Route::get('/places-autocomplete', 'Api\Google\PlacesAutocompleteController')->name('google.places-autocomplete');
+    Route::get('/reverse-geocoding', 'Api\Google\ReverseGeocodingController')->name('google.reverse-geocoding');
 });
 
 Route::post('/drivers/forgot-password', 'Api\DriverController@forgotPassword')->name('drivers.forgot-password');

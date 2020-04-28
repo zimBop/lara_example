@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Google;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Google\PlacesAutocompleteRequest;
 
-class PlacesAutocomplete extends ApiController
+class PlacesAutocompleteController extends ApiController
 {
     /**
      * @param PlacesAutocompleteRequest $request
