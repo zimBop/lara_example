@@ -35,8 +35,8 @@ class TripService
         $destination = $request->input('destination');
 
         $params = [
-            'origin' => 'place_id:' . $origin,
-            'destination' => 'place_id:' . $destination,
+            'origin' => $origin,
+            'destination' => $destination,
         ];
 
         $waypoints = $request->input('waypoints', null);
@@ -61,7 +61,7 @@ class TripService
         if ($waypoints) {
             $waypoints = array_map(
                 static function ($waypoint) {
-                    return 'via:place_id:' . $waypoint;
+                    return 'via:' . $waypoint;
                 },
                 $waypoints
             );
@@ -79,7 +79,7 @@ class TripService
 
         $response = $this->requestDirectionsApi(
             [
-                'origin' => 'place_id:' . $clientOrigin,
+                'origin' => $clientOrigin,
                 //Ensure that no space exists between the latitude and longitude values
                 'destination' => $driverLocation,
             ]
