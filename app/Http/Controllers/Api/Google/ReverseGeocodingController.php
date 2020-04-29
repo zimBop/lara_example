@@ -23,9 +23,8 @@ class ReverseGeocodingController extends ApiController
 
         $response = json_decode($response, true);
 
-        if ($response['status'] !== 'OK') {
-            $errorMessage = $response['error_message'] ?? $response['status'];
-            throw new GoogleApiException($errorMessage);
+        if (!in_array($response['status'],  ['OK', 'ZERO_RESULTS'])) {
+            throw new GoogleApiException($response);
         }
 
         return $this->data(

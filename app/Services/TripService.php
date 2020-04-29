@@ -107,8 +107,7 @@ class TripService
         $response = json_decode($response, true);
 
         if ($response['status'] !== 'OK') {
-            $errorMessage = $response['error_message'] ?? $response['status'];
-            throw new GoogleApiException($errorMessage);
+            throw new GoogleApiException($response);
         }
 
         return $response;
