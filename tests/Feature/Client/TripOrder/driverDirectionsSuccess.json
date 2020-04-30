@@ -1,0 +1,233 @@
+{
+    "geocoded_waypoints": [
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJTYPjdjRV5okRIn-weMnRXXw",
+            "types": [
+                "street_address"
+            ]
+        },
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJ4ZNi32ZT5okRXCpxzI_-W2w",
+            "types": [
+                "street_address"
+            ]
+        }
+    ],
+    "routes": [
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": 41.8378819,
+                    "lng": -72.6546193
+                },
+                "southwest": {
+                    "lat": 41.7679275,
+                    "lng": -72.7057949
+                }
+            },
+            "copyrights": "Map data ©2020",
+            "legs": [
+                {
+                    "distance": {
+                        "text": "8.2 mi",
+                        "value": 13273
+                    },
+                    "duration": {
+                        "text": "12 mins",
+                        "value": 696
+                    },
+                    "end_address": "523 Asylum Ave, Hartford, CT 06105, USA",
+                    "end_location": {
+                        "lat": 41.7679275,
+                        "lng": -72.68280109999999
+                    },
+                    "start_address": "153 School St, Bloomfield, CT 06002, USA",
+                    "start_location": {
+                        "lat": 41.8304407,
+                        "lng": -72.7057949
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "2.3 mi",
+                                "value": 3696
+                            },
+                            "duration": {
+                                "text": "5 mins",
+                                "value": 282
+                            },
+                            "end_location": {
+                                "lat": 41.8378819,
+                                "lng": -72.6660873
+                            },
+                            "html_instructions": "Head <b>northeast</b> on <b>CT-178 E</b> toward <b>Camelot Dr</b>",
+                            "polyline": {
+                                "points": "g_i~FdjwzLGICGAIAIAIAOEiAGiBGsAAa@CQCQG]EUGSGQIQGMGIGKMOMOIIOMOMWQa@Sy@a@qAo@{@a@SOMIKIWUMMMOQUMUu@qAi@aAS[s@oAACOYU[AKS[SYWYCC[[UUOMk@m@GQMc@EQG_@ESCUAQAMAK?M?gAAIDmA\\cHDw@Du@Dy@@IBg@?GBm@@[@[AWAWCUCYE[EQGUGYM_@IY{@mC_BaF_@mASo@Uq@_@oAMc@EMCMGWCQE[?ECWAYAe@?]CiAAs@A]AYAIASCSCWIa@G[I[Oc@Og@K]EMGQIe@EUGc@CgAAg@A[A_@A[?UA[?]?S?I@K?I@I?K@I@MBM@EBOBMBKBKBIDIBKDKDIDGBEDIl@}@V_@PYJOHMJQHQDMHUFSBMDO@CDSF_@Jo@PoA@OFa@F]Da@BU@C@MBOBc@BS@Y?Q@]?U@i@?a@?Y@o@?[?A?a@?aDCg@Ew@Gg@E[EWIo@EUMy@My@OcAAIQqAKi@W{AM_AMs@COM{@Q}@?CG_@Io@CQCSCQEc@AUC]Cm@A]AYCk@AOMuCCe@Ce@Ck@Gy@Co@KgBM_CGcAO{C"
+                            },
+                            "start_location": {
+                                "lat": 41.8304407,
+                                "lng": -72.7057949
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "4.7 mi",
+                                "value": 7523
+                            },
+                            "duration": {
+                                "text": "5 mins",
+                                "value": 276
+                            },
+                            "end_location": {
+                                "lat": 41.77500440000001,
+                                "lng": -72.6682969
+                            },
+                            "html_instructions": "Turn <b>right</b> to merge onto <b>I-91 S</b> toward <b>Hartford</b>",
+                            "maneuver": "ramp-right",
+                            "polyline": {
+                                "points": "wmj~F`rozLVIZGTE~@O^GVCTCn@Er@EF?lAE`ACnACVCB?^QdAB^@~FHnCDnCD`@@tDHtABlFFjDDd@@d@@hA@xBDrABxCFbFH|FH|ABlBBvEArAAp@CfBGhCMpAItAE~Da@bC[fAQZEb@IdCa@z@Qz@Qh@M\\I^GtBg@d@MNGdCs@^MpAc@~Ai@b@O`A_@b@QhCgAnAk@`Ag@ZORMb@Ul@[hAm@j@_@`Am@r@e@lAw@bAq@n@e@TQhAu@zB}ApA}@|@s@j@e@~@y@~@{@VURS~@{@FG\\[v@w@fAcANO\\[~@_ApAoAZYjB{Av@g@t@_@r@]dAc@~@_@t@Qf@KTE\\GhAM@?j@Er@Cn@?R?j@?x@D\\Bp@F`@FxBVF@jANvC^fBTjANdBRbALvAPd@Fx@JVD^Dl@Jb@Fr@LnA\\f@LlBl@d@Ln@RVHz@^t@\\r@\\^R^TLHdAp@ZRp@d@ZRrB`Bh@^BBfAv@lA`AlA|@pA~@fDfC|B`BpAdAZTB@p@h@~CdCrAbAj@d@`@\\PPRTb@b@t@v@\\b@PTNP^d@`@f@^f@PTbC`Dj@v@dAtAb@h@^b@XXPTh@b@f@`@d@^r@`@f@Xn@X|@\\j@P\\FvATx@F"
+                            },
+                            "start_location": {
+                                "lat": 41.8378819,
+                                "lng": -72.6660873
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.5 mi",
+                                "value": 759
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 38
+                            },
+                            "end_location": {
+                                "lat": 41.7697253,
+                                "lng": -72.67234069999999
+                            },
+                            "html_instructions": "Take exit <b>32A-32B</b> for <b>I-84 W</b> toward <b>Waterbury</b>",
+                            "maneuver": "ramp-right",
+                            "polyline": {
+                                "points": "wd~}Fz_pzLNP@@B@n@Hn@F@?v@Jr@Fr@HzBZhBVh@HtBZB?RDHBD?D@HBHBH@JDVJ\\NPLNJPPNLJJLNBBDFDDDFBFBBBFDHDHFJBHFLDJDJBHBHBJDLDRL\\BZDZ@LB\\?BBd@JlC"
+                            },
+                            "start_location": {
+                                "lat": 41.77500440000001,
+                                "lng": -72.6682969
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.6 mi",
+                                "value": 923
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 43
+                            },
+                            "end_location": {
+                                "lat": 41.7700282,
+                                "lng": -72.682515
+                            },
+                            "html_instructions": "Merge onto <b>I-84</b>",
+                            "maneuver": "merge",
+                            "polyline": {
+                                "points": "yc}}FbypzLCx@ClB?VEnCCzAAb@A^AVC^Gd@Kz@CPEVERIZGTIZYx@Wr@c@lAEJ[z@A?Ur@IXGZKf@E\\E\\CJC\\Eh@ATAZ?L?V?d@@d@Bf@Dn@D^Jr@@JHXR|@L\\Rj@BFFNPXR\\LR`@h@h@h@"
+                            },
+                            "start_location": {
+                                "lat": 41.7697253,
+                                "lng": -72.67234069999999
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "472 ft",
+                                "value": 144
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 12
+                            },
+                            "end_location": {
+                                "lat": 41.7690232,
+                                "lng": -72.6835661
+                            },
+                            "html_instructions": "Take exit <b>48</b> toward <b>Asylum Street</b>",
+                            "maneuver": "ramp-right",
+                            "polyline": {
+                                "points": "ue}}FtxrzLBNBD@F@B@@BDHH\\Vv@p@r@n@b@d@"
+                            },
+                            "start_location": {
+                                "lat": 41.7700282,
+                                "lng": -72.682515
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "354 ft",
+                                "value": 108
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 17
+                            },
+                            "end_location": {
+                                "lat": 41.7681589,
+                                "lng": -72.6841293
+                            },
+                            "html_instructions": "Merge onto <b>Garden St</b>",
+                            "maneuver": "merge",
+                            "polyline": {
+                                "points": "k_}}Fh_szLv@r@VPHFHFLDDBXLX@"
+                            },
+                            "start_location": {
+                                "lat": 41.7690232,
+                                "lng": -72.6835661
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "394 ft",
+                                "value": 120
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 28
+                            },
+                            "end_location": {
+                                "lat": 41.7679275,
+                                "lng": -72.68280109999999
+                            },
+                            "html_instructions": "Turn <b>left</b> onto <b>Asylum Ave</b><div style=\"font-size:0.9em\">Destination will be on the right</div>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "_z|}FxbszLN@Bi@@EDm@Be@LgC"
+                            },
+                            "start_location": {
+                                "lat": 41.7681589,
+                                "lng": -72.6841293
+                            },
+                            "travel_mode": "DRIVING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "overview_polyline": {
+                "points": "g_i~FdjwzLKQCSQmEIuBGc@Ms@Oe@a@u@u@w@g@_@{Au@mCqAa@Yc@_@[]_@k@_BsCyAiCU[AKg@u@mAoA{@{@Uu@W{AEy@?gAAIb@qJRqDHyB?s@Em@Iu@Mg@{AaFiDqKw@oCQkAGuBIuDKiAQ}@Y_Ai@eBO{@Gc@CgACcAC{@AcBBi@Fq@Lo@Pk@Tc@|AaCj@aAZeATgAz@kGLuAB_BBwJI_BMcAc@wCqBsM}@cGOiBKqCs@oNUcEO{CVIp@M~AWpCSfFMZC^QdAB~GJ~GJzOV`IJjQZzILdI@dCEpFUfDObI}@lGcA~D{@tCo@t@UdDaApDmAdBo@lDyApCsAn@]pAq@tBmAfG}DdAw@dEsCnCqBjB_BjDaDdD_D~D{DfCuBlBgAxBaA~@_@t@Q|@QfBUl@EbBC~@?vAHtEh@vKtAfM~AvATvBj@zExAdDzArCdBlAx@nCtBbE|CdMfJbDfC`IlG~BbC~ApBvEfGtDzEj@n@pAdAxA`AvAr@hBn@tB\\x@FNPDBxC\\fBPdFr@vDj@^Hv@Vn@\\`@\\l@l@h@|@j@zAJ`@Px@JjANrDGfDKfHO|B[xBu@fC}AhEi@hB[nBMxB@pBHvAPrAl@`Cp@|A`@p@jArAJ`@l@h@jB`BzAxA`@XVL^Ph@BNcCLgC"
+            },
+            "summary": "CT-178 E and I-91 S",
+            "warnings": [],
+            "waypoint_order": []
+        }
+    ],
+    "status": "OK"
+}

@@ -1,0 +1,388 @@
+{
+    "geocoded_waypoints": [
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJTYPjdjRV5okRIn-weMnRXXw",
+            "types": [
+                "street_address"
+            ]
+        },
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJk1_Sr3Gr54kRcACgP1AcAgM",
+            "types": [
+                "street_address"
+            ]
+        },
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJAyXbH3ur54kRnQxjrox_hR0",
+            "types": [
+                "establishment",
+                "point_of_interest",
+                "transit_station"
+            ]
+        },
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJzeZ1iHyr54kR4tA85sx6RGM",
+            "types": [
+                "establishment",
+                "point_of_interest",
+                "transit_station"
+            ]
+        }
+    ],
+    "routes": [
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": 41.8304407,
+                    "lng": -72.7057949
+                },
+                "southwest": {
+                    "lat": 41.7879616,
+                    "lng": -72.75088660000002
+                }
+            },
+            "copyrights": "Map data ©2020",
+            "legs": [
+                {
+                    "distance": {
+                        "text": "6.2 mi",
+                        "value": 10014
+                    },
+                    "duration": {
+                        "text": "13 mins",
+                        "value": 801
+                    },
+                    "end_address": "N Main St and Overhill Rd, West Hartford, CT 06117, USA",
+                    "end_location": {
+                        "lat": 41.7879616,
+                        "lng": -72.74785419999999
+                    },
+                    "start_address": "153 School St, Bloomfield, CT 06002, USA",
+                    "start_location": {
+                        "lat": 41.8304407,
+                        "lng": -72.7057949
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "0.5 mi",
+                                "value": 802
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 62
+                            },
+                            "end_location": {
+                                "lat": 41.823535,
+                                "lng": -72.708349
+                            },
+                            "html_instructions": "Head <b>southwest</b> on <b>CT-178 W</b> toward <b>Norman Dr</b>",
+                            "polyline": {
+                                "points": "g_i~FdjwzLHHDBBBH@FBp@Dj@DdAJXDd@Fj@Jx@NlATt@Nl@N^L^Nt@`@XL~@h@`@RFBt@\\d@PtAd@z@\\pAd@|@\\RFNDTHTB^BxAF"
+                            },
+                            "start_location": {
+                                "lat": 41.8304407,
+                                "lng": -72.7057949
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.4 mi",
+                                "value": 564
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 45
+                            },
+                            "end_location": {
+                                "lat": 41.82233550000001,
+                                "lng": -72.7149135
+                            },
+                            "html_instructions": "Turn <b>right</b> to stay on <b>CT-178 W</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "ctg~FdzwzL?dAB\\BXFh@RbADVl@hDv@vERfANhAHp@DZ@NFt@@LDx@D~@FvADdADlA"
+                            },
+                            "start_location": {
+                                "lat": 41.823535,
+                                "lng": -72.708349
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.3 mi",
+                                "value": 472
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 59
+                            },
+                            "end_location": {
+                                "lat": 41.818206,
+                                "lng": -72.7161044
+                            },
+                            "html_instructions": "Turn <b>left</b> onto <b>Tyler St</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "slg~FdcyzLjIlBhCn@`Cn@dB^NBJBJ@P?P?JA@?`@G"
+                            },
+                            "start_location": {
+                                "lat": 41.82233550000001,
+                                "lng": -72.7149135
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "3.0 mi",
+                                "value": 4851
+                            },
+                            "duration": {
+                                "text": "6 mins",
+                                "value": 341
+                            },
+                            "end_location": {
+                                "lat": 41.7977209,
+                                "lng": -72.7479602
+                            },
+                            "html_instructions": "Turn <b>right</b> onto <b>CT-218 W</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "yrf~FrjyzL?|@@`@?X@L?P@N@N?F@PBRJdA`AbGJl@Jt@DZFb@B\\BT@R?JDfAD~DBrBBjC?XF~DDbC@fA@`A@b@D~DFzE@d@FtF?FJpIB~A@fAHxGBnC@lA@bADjE@tABhE@nBDjD@rAAZJfJFzGFnF?jA?|@?nA?f@Ar@EvBIbECrAA\\?T?X@L?L@J@JBJJf@Pf@RZHJPPHHFDJDJDF@NDVDHBH@P?bGbAnBZfC^jAR\\Dr@B\\@hCAr@C~@Ez@Cl@C`AGB?`BIb@AR?N?D@H?VB`@H`@NZLZNvGvCfAf@TZh@VpAn@PJdARjBDt@CNMl@AdBC\\?|@GjAQpAYdDs@z@UVG^KXKTIbAa@t@_@?A`Ae@`B{@`Ag@tDmB`Ae@NIp@]"
+                            },
+                            "start_location": {
+                                "lat": 41.818206,
+                                "lng": -72.7161044
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.1 mi",
+                                "value": 185
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 23
+                            },
+                            "end_location": {
+                                "lat": 41.7982081,
+                                "lng": -72.74585019999999
+                            },
+                            "html_instructions": "Turn <b>left</b> onto <b>Old Meadow Rd</b>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "wrb~Fvq_{LGKGMAMKs@WuA?ASqAGu@AEEi@Gy@"
+                            },
+                            "start_location": {
+                                "lat": 41.7977209,
+                                "lng": -72.7479602
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.4 mi",
+                                "value": 609
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 43
+                            },
+                            "end_location": {
+                                "lat": 41.7932727,
+                                "lng": -72.7428351
+                            },
+                            "html_instructions": "Turn <b>right</b> at the 1st cross street onto <b>King Philip Dr</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "yub~Fpd_{Ll@a@`BiAl@a@tDoCvDmCd@[LINKVMTK^QXK`@Q`@KZIb@I^E^C~@G"
+                            },
+                            "start_location": {
+                                "lat": 41.7982081,
+                                "lng": -72.74585019999999
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.2 mi",
+                                "value": 313
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 32
+                            },
+                            "end_location": {
+                                "lat": 41.7927779,
+                                "lng": -72.7465469
+                            },
+                            "html_instructions": "Turn <b>right</b> onto <b>Huron Dr</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "}va~Fvq~zL@`Al@hHDn@Dl@RnCJ|ADl@"
+                            },
+                            "start_location": {
+                                "lat": 41.7932727,
+                                "lng": -72.7428351
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.3 mi",
+                                "value": 563
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 42
+                            },
+                            "end_location": {
+                                "lat": 41.7977209,
+                                "lng": -72.7479602
+                            },
+                            "html_instructions": "Turn <b>right</b> onto <b>N Main St</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "{sa~F|h_{La@BYB]F{AXeDr@WF_F~@y@NgDf@k@JI@c@Hc@NSHSH"
+                            },
+                            "start_location": {
+                                "lat": 41.7927779,
+                                "lng": -72.7465469
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.1 mi",
+                                "value": 185
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 24
+                            },
+                            "end_location": {
+                                "lat": 41.7982081,
+                                "lng": -72.74585019999999
+                            },
+                            "html_instructions": "Turn <b>right</b> onto <b>Old Meadow Rd</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "wrb~Fvq_{LGKGMAMKs@WuA?ASqAGu@AEEi@Gy@"
+                            },
+                            "start_location": {
+                                "lat": 41.7977209,
+                                "lng": -72.7479602
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.4 mi",
+                                "value": 609
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 43
+                            },
+                            "end_location": {
+                                "lat": 41.7932727,
+                                "lng": -72.7428351
+                            },
+                            "html_instructions": "Turn <b>right</b> at the 1st cross street onto <b>King Philip Dr</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "yub~Fpd_{Ll@a@`BiAl@a@tDoCvDmCd@[LINKVMTK^QXK`@Q`@KZIb@I^E^C~@G"
+                            },
+                            "start_location": {
+                                "lat": 41.7982081,
+                                "lng": -72.74585019999999
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.2 mi",
+                                "value": 313
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 32
+                            },
+                            "end_location": {
+                                "lat": 41.7927779,
+                                "lng": -72.7465469
+                            },
+                            "html_instructions": "Turn <b>right</b> onto <b>Huron Dr</b>",
+                            "maneuver": "turn-right",
+                            "polyline": {
+                                "points": "}va~Fvq~zL@`Al@hHDn@Dl@RnCJ|ADl@"
+                            },
+                            "start_location": {
+                                "lat": 41.7932727,
+                                "lng": -72.7428351
+                            },
+                            "travel_mode": "DRIVING"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.3 mi",
+                                "value": 548
+                            },
+                            "duration": {
+                                "text": "1 min",
+                                "value": 55
+                            },
+                            "end_location": {
+                                "lat": 41.7879616,
+                                "lng": -72.74785419999999
+                            },
+                            "html_instructions": "Turn <b>left</b> onto <b>N Main St</b><div style=\"font-size:0.9em\">Destination will be on the right</div>",
+                            "maneuver": "turn-left",
+                            "polyline": {
+                                "points": "{sa~F|h_{LpA@tAJd@Bv@Df@DRDZFZFl@LbEdAND|Cz@^JfAX`AR"
+                            },
+                            "start_location": {
+                                "lat": 41.7927779,
+                                "lng": -72.7465469
+                            },
+                            "travel_mode": "DRIVING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": [
+                        {
+                            "location": {
+                                "lat": 41.7962095,
+                                "lng": -72.7474948
+                            },
+                            "step_index": 7,
+                            "step_interpolation": 0.6928213361471547
+                        },
+                        {
+                            "location": {
+                                "lat": 41.7907986,
+                                "lng": -72.7468404
+                            },
+                            "step_index": 11,
+                            "step_interpolation": 0.4046122584134004
+                        }
+                    ]
+                }
+            ],
+            "overview_polyline": {
+                "points": "g_i~FdjwzLNLLDjDZ~@LdBZbCd@lA\\tAp@xAv@h@VzAn@`HfCb@Lj@LxBJBbBJbAXzAdB`Kb@pCXrCT~EJrCtM|CfFnAZF\\@\\Ab@G@~ABhAF|@JdA`AbGVbBTrB@^JfGNxMJpHh@xd@^vc@`@xg@GbHOjIB`ADV\\nA\\f@ZZRJRFz@PP?bGbAvFz@jARpAHfD?rBInDOdCKb@?N@x@L|@\\rHfDfAf@TZzBfAPJdARjBDt@CNMl@AbCC|@GjAQvFmAlCu@xAk@t@a@zKwFpAo@p@]GKI[c@iC]oCMcBnCkB`M{IjAo@x@]bA]~@S~@I~@G@`Ar@xIj@hI{@FyB`@}Dz@yGnAaG~@w@XSHGKI[c@iC]oCMcBnCkB`M{IjAo@x@]bA]~@S~@I~@G@`Ar@xIj@hIpA@tAJ|AHz@Jv@NpFrAlD`AhDx@"
+            },
+            "summary": "CT-218 W",
+            "warnings": [],
+            "waypoint_order": []
+        }
+    ],
+    "status": "OK"
+}
