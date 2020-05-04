@@ -44,15 +44,16 @@ class TripService
 
         $response = $this->requestDirectionsApi($params);
 
-        $routes = $response['routes'][0];
+        $route = $response['routes'][0];
 
         return [
             TripOrder::ORIGIN => $origin,
             TripOrder::DESTINATION => $destination,
             TripOrder::WAYPOINTS =>  $waypoints,
-            TripOrder::DISTANCE => $routes['legs'][0]['distance']['value'],
-            TripOrder::TRIP_DURATION => $routes['legs'][0]['duration']['value'],
-            TripOrder::OVERVIEW_POLYLINE => $routes['overview_polyline'],
+            TripOrder::COORDINATES =>  $this->prepareCoordinates($route['legs'][0]),
+            TripOrder::DISTANCE => $route['legs'][0]['distance']['value'],
+            TripOrder::TRIP_DURATION => $route['legs'][0]['duration']['value'],
+            TripOrder::OVERVIEW_POLYLINE => $route['overview_polyline'],
         ];
     }
 
@@ -68,6 +69,21 @@ class TripService
 
             $params['waypoints'] = implode('|', $waypoints);
         }
+    }
+
+    protected function prepareCoordinates(array $routeLeg): array
+    {
+        $waypoints = [];
+
+        foreach ($routeLeg['via_waypoint'] as $waypoint) {
+            $waypoints[] = $waypoint['location'];
+        }
+
+        return [
+            'origin' => $routeLeg['start_location'],
+            'destination' => $routeLeg['end_location'],
+            'waypoints' => $waypoints,
+        ];
     }
 
     protected function getDriverPartData($clientOrigin): array

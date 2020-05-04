@@ -21,6 +21,7 @@ class TripOrderResource extends JsonResource
             TripOrder::WAIT_DURATION => $this->wait_duration,
             TripOrder::TRIP_DURATION => $this->trip_duration,
             TripOrder::OVERVIEW_POLYLINE => $this->overview_polyline,
+            TripOrder::COORDINATES => $this->coordinates,
             TripOrder::STATUS => $this->status,
         ];
     }

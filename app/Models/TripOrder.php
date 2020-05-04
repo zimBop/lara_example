@@ -13,6 +13,7 @@ class TripOrder extends Model
     public const ORIGIN = 'origin';
     public const DESTINATION = 'destination';
     public const WAYPOINTS = 'waypoints';
+    public const COORDINATES = 'coordinates';
     public const OVERVIEW_POLYLINE = 'overview_polyline';
     public const PRICE = 'price';
     public const WAIT_DURATION = 'wait_duration';
@@ -27,6 +28,7 @@ class TripOrder extends Model
         self::ORIGIN,
         self::DESTINATION,
         self::WAYPOINTS,
+        self::COORDINATES,
         self::OVERVIEW_POLYLINE,
         self::PRICE,
         self::WAIT_DURATION,
@@ -37,6 +39,7 @@ class TripOrder extends Model
 
     protected $casts = [
         self::WAYPOINTS => 'array',
+        self::COORDINATES => 'array',
         self::OVERVIEW_POLYLINE => 'array',
     ];
 
