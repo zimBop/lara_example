@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\TripOrderStatuses;
 use App\Http\Requests\TripOrder\StoreTripOrderRequest;
 use App\Http\Resources\TripOrderResource;
 use App\Models\Client;
@@ -38,13 +39,12 @@ class TripOrderController extends ApiController
      * @param Client $client
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Client $client)
+    public function show(Client $client, TripService $tripService)
     {
-        if ($client->tripOrder) {
-            return $this->data(new TripOrderResource($client->tripOrder));
-        }
+        $tripService->setOrder($client->tripOrder);
+        $tripService->checkTripOrderExists();
 
-        return $this->error('Trip Request not found.');
+        return $this->data(new TripOrderResource($client->tripOrder));
     }
 
     /**
@@ -57,6 +57,25 @@ class TripOrderController extends ApiController
     public function update(Request $request, TripOrder $tripOrder)
     {
         //
+    }
+
+    /**
+     * @param Request $request
+     * @param Client $client
+     * @param TripService $tripService
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function confirm(Request $request, Client $client, TripService $tripService)
+    {
+        $tripService->setOrder($client->tripOrder);
+        $tripService->checkTripOrderExists();
+        $tripService->checkDriverAvailable();
+
+        $client->tripOrder->update([
+            TripOrder::STATUS => TripOrderStatuses::SEARCHING_CAR
+        ]);
+
+        return $this->data(new TripOrderResource($client->tripOrder));
     }
 
     /**

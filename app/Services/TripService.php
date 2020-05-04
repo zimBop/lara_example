@@ -11,6 +11,33 @@ use App\Logic\TripPriceCalculator;
 
 class TripService
 {
+    protected $order;
+
+    public function setOrder(TripOrder $order): void
+    {
+        $this->order = $order;
+    }
+
+    public function checkTripOrderExists(): void
+    {
+        if (!$this->order) {
+            abort(404, 'Trip Request not found.');
+        }
+    }
+
+    public function checkDriverAvailable(): void
+    {
+        if (!$this->isDriverAvailable()) {
+            abort(200, 'Driver is not available.');
+        }
+    }
+
+    // TODO add real check
+    public function isDriverAvailable(): bool
+    {
+        return true;
+    }
+
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
         $clientData = $this->getClientPartData($request);
