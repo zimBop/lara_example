@@ -20,6 +20,8 @@ class TripOrder extends Model
     public const TRIP_DURATION = 'trip_duration';
     public const DISTANCE = 'distance';
     public const DRIVER_DISTANCE = 'driver_distance';
+    public const MESSAGE_FOR_DRIVER = 'message_for_driver';
+    public const PAYMENT_METHOD_ID = 'payment_method_id';
 
     protected $fillable = [
         self::CLIENT_ID,
@@ -35,6 +37,8 @@ class TripOrder extends Model
         self::TRIP_DURATION,
         self::DISTANCE,
         self::DRIVER_DISTANCE,
+        self::MESSAGE_FOR_DRIVER,
+        self::PAYMENT_METHOD_ID,
     ];
 
     protected $casts = [

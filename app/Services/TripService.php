@@ -13,9 +13,11 @@ class TripService
 {
     protected $order;
 
-    public function setOrder(TripOrder $order): void
+    public function setOrder(?TripOrder $order): self
     {
         $this->order = $order;
+
+        return $this;
     }
 
     public function checkTripOrderExists(): void

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Constants\TripOrderStatuses;
+use App\Http\Requests\TripOrder\ConfirmTripOrderRequest;
 use App\Http\Requests\TripOrder\StoreTripOrderRequest;
 use App\Http\Resources\TripOrderResource;
 use App\Models\Client;
@@ -41,8 +42,8 @@ class TripOrderController extends ApiController
      */
     public function show(Client $client, TripService $tripService)
     {
-        $tripService->setOrder($client->tripOrder);
-        $tripService->checkTripOrderExists();
+        $tripService->setOrder($client->tripOrder)
+            ->checkTripOrderExists();
 
         return $this->data(new TripOrderResource($client->tripOrder));
     }
@@ -65,15 +66,17 @@ class TripOrderController extends ApiController
      * @param TripService $tripService
      * @return \Illuminate\Http\JsonResponse
      */
-    public function confirm(Request $request, Client $client, TripService $tripService)
+    public function confirm(ConfirmTripOrderRequest $request, Client $client, TripService $tripService)
     {
-        $tripService->setOrder($client->tripOrder);
-        $tripService->checkTripOrderExists();
+        $tripService->setOrder($client->tripOrder)
+            ->checkTripOrderExists();
+
         $tripService->checkDriverAvailable();
 
-        $client->tripOrder->update([
-            TripOrder::STATUS => TripOrderStatuses::SEARCHING_CAR
-        ]);
+        $client->tripOrder->update(array_merge(
+            [TripOrder::STATUS => TripOrderStatuses::SEARCHING_CAR],
+            $request->only([TripOrder::MESSAGE_FOR_DRIVER, TripOrder::PAYMENT_METHOD_ID])
+       ));
 
         return $this->data(new TripOrderResource($client->tripOrder));
     }
