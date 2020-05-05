@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Client\TripOrder;
 
+use App\Constants\TripOrderStatuses;
 use App\Http\Resources\TripOrderResource;
 use App\Models\TripOrder;
+use App\Services\TripService;
 use GoogleMaps\Directions;
 use Tests\Feature\Client\ClientTestCase;
 
@@ -102,6 +104,84 @@ class TripOrderTest extends ClientTestCase
             ->assertJson([
                 'done' => true,
                 'data' => (new TripOrderResource($tripOrder))->toArray(null)
+            ]);
+    }
+
+    public function testIsTripOrderSuccessfullyConfirmed(): void
+    {
+        $client = $this->makeAuthClient();
+
+        $tripOrder = factory(TripOrder::class)->create(
+            [
+                TripOrder::CLIENT_ID => $client->id,
+                TripOrder::STATUS => TripOrderStatuses::WAITING_FOR_CONFIRMATION,
+            ]
+        );
+
+        $response = $this->postJson(
+            route('trip.order.confirm', ['client' => $client->id]),
+            [
+                TripOrder::PAYMENT_METHOD_ID => 'test payment method',
+                TripOrder::MESSAGE_FOR_DRIVER => 'test message for driver',
+            ]
+        );
+
+        $tripOrder->refresh();
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => true,
+                'data' => (new TripOrderResource($tripOrder))->toArray(null)
+            ]);
+
+        $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id, 'status' => TripOrderStatuses::SEARCHING_CAR]);
+    }
+
+    public function testIsTripOrderNotFoundErrorShown(): void
+    {
+        $client = $this->makeAuthClient();
+
+        $response = $this->postJson(
+            route('trip.order.confirm', ['client' => $client->id]),
+            [TripOrder::PAYMENT_METHOD_ID => 'test payment method']
+        );
+
+        $response
+            ->assertStatus(404)
+            ->assertJson([
+                'done' => false,
+                'message' => 'Trip Request not found.'
+            ]);
+    }
+
+    public function testIsDriverNotAvailableErrorShown(): void
+    {
+        $client = $this->makeAuthClient();
+
+        factory(TripOrder::class)->create([TripOrder::CLIENT_ID => $client->id]);
+
+        $tripServiceMock = \Mockery::mock(TripService::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+
+        $tripServiceMock->shouldReceive('isDriverAvailable')
+            ->once()
+            ->andReturn(false);
+
+        $this->app->instance(TripService::class, $tripServiceMock);
+
+        $response = $this->postJson(
+            route('trip.order.confirm', ['client' => $client->id]),
+            [TripOrder::PAYMENT_METHOD_ID => 'test payment method']
+        );
+
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => false,
+                'message' => 'Driver is not available.'
             ]);
     }
 
