@@ -53,17 +53,16 @@ class TripService
 
     protected function getClientPartData(StoreTripOrderRequest $request): array
     {
-        $origin = json_decode($request->input('origin'), true);
-        $destination = json_decode($request->input('destination'), true);
+        $origin = $request->input('origin');
+        $destination = $request->input('destination');
 
         $directionsApiParams = [
             'origin' => $origin['id'],
             'destination' => $destination['id'],
         ];
 
-        $waypoints = $this->decodeWaypoints(
-            $request->input('waypoints', null)
-        );
+        $waypoints = $request->input('waypoints', []);
+
         $this->prepareWaypoints($directionsApiParams, $waypoints);
 
         $response = $this->requestDirectionsApi($directionsApiParams);
@@ -80,20 +79,6 @@ class TripService
             TripOrder::TRIP_DURATION => $route['legs'][0]['duration']['value'],
             TripOrder::OVERVIEW_POLYLINE => $route['overview_polyline'],
         ];
-    }
-
-    protected function decodeWaypoints(?array $waypoints = null): ?array
-    {
-        if ($waypoints === null) {
-            return null;
-        }
-
-        $decodedWaypoints = [];
-        foreach ($waypoints as $waypoint) {
-            $decodedWaypoints[] = json_decode($waypoint, true);
-        }
-
-        return $decodedWaypoints;
     }
 
     protected function prepareWaypoints(array &$directionsApiParams, ?array $waypoints): void

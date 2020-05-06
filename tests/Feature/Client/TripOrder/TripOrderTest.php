@@ -12,11 +12,23 @@ use Tests\Feature\Client\ClientTestCase;
 class TripOrderTest extends ClientTestCase
 {
     protected const REQUEST_DATA = [
-        TripOrder::ORIGIN => '{"id":"place_id:ChIJTYPjdjRV5okRIn-weMnRXXw","label":"test origin label"}',
-        TripOrder::DESTINATION => '{"id":"place_id:ChIJzeZ1iHyr54kR4tA85sx6RGM","label":"test destination label"}',
+        TripOrder::ORIGIN => [
+            'id' => 'place_id:ChIJTYPjdjRV5okRIn-weMnRXXw',
+            'label' => 'test origin label',
+        ],
+        TripOrder::DESTINATION => [
+            'id' => 'place_id:ChIJzeZ1iHyr54kR4tA85sx6RGM',
+            'label' => 'test destination label',
+        ],
         TripOrder::WAYPOINTS => [
-            '{"id":"place_id:ChIJk1_Sr3Gr54kRcACgP1AcAgM","label":"test waypoint1 label"}',
-            '{"id":"41.790789,-72.746783","label":"test waypoint2 label"}',
+            [
+                'id' => 'place_id:ChIJk1_Sr3Gr54kRcACgP1AcAgM',
+                'label' => 'test waypoint1 label',
+            ],
+            [
+                'id' => '41.790789,-72.746783',
+                'label' => 'test waypoint1 label',
+            ],
         ],
     ];
 
