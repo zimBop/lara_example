@@ -148,9 +148,9 @@ class TripOrderTest extends ClientTestCase
         );
 
         $response
-            ->assertStatus(404)
+            ->assertStatus(200)
             ->assertJson([
-                'done' => false,
+                'done' => true,
                 'message' => 'Trip Request not found.'
             ]);
     }

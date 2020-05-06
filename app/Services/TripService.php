@@ -20,13 +20,6 @@ class TripService
         return $this;
     }
 
-    public function checkTripOrderExists(): void
-    {
-        if (!$this->order) {
-            abort(404, 'Trip Request not found.');
-        }
-    }
-
     public function checkDriverAvailable(): void
     {
         if (!$this->isDriverAvailable()) {

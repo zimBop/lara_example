@@ -38,12 +38,16 @@ class TripOrderController extends ApiController
 
     /**
      * @param Client $client
+     * @param TripService $tripService
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(Client $client, TripService $tripService)
     {
-        $tripService->setOrder($client->tripOrder)
-            ->checkTripOrderExists();
+        if (!$client->tripOrder) {
+            return $this->done('Trip Request not found.');
+        }
+
+        $tripService->setOrder($client->tripOrder);
 
         return $this->data(new TripOrderResource($client->tripOrder));
     }
@@ -68,8 +72,11 @@ class TripOrderController extends ApiController
      */
     public function confirm(ConfirmTripOrderRequest $request, Client $client, TripService $tripService)
     {
-        $tripService->setOrder($client->tripOrder)
-            ->checkTripOrderExists();
+        if (!$client->tripOrder) {
+            return $this->done('Trip Request not found.');
+        }
+
+        $tripService->setOrder($client->tripOrder);
 
         $tripService->checkDriverAvailable();
 
