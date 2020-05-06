@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Google;
 
+use App\Exceptions\Google\GoogleApiException;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Google\PlacesAutocompleteRequest;
 
@@ -16,7 +17,13 @@ class PlacesAutocompleteController extends ApiController
     {
         $response = \GoogleMaps::load('placequeryautocomplete')
             ->setParamByKey('input', $request->input('input'))
-            ->get('predictions');
+            ->get();
+
+        $response = json_decode($response, true);
+
+        if (!in_array($response['status'],  ['OK', 'ZERO_RESULTS'])) {
+            throw new GoogleApiException($response);
+        }
 
         return $this->data($response['predictions']);
     }
