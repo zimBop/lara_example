@@ -77,11 +77,12 @@ class TripService
 
         $route = $response['routes'][0];
 
+        $this->addCoordinates($route['legs'][0], $origin, $destination, $waypoints);
+
         return [
             TripOrder::ORIGIN => $origin,
             TripOrder::DESTINATION => $destination,
             TripOrder::WAYPOINTS =>  $waypoints,
-            TripOrder::COORDINATES =>  $this->prepareCoordinates($route['legs'][0]),
             TripOrder::DISTANCE => $route['legs'][0]['distance']['value'],
             TripOrder::TRIP_DURATION => $route['legs'][0]['duration']['value'],
             TripOrder::OVERVIEW_POLYLINE => $route['overview_polyline'],
@@ -116,19 +117,14 @@ class TripService
         }
     }
 
-    protected function prepareCoordinates(array $routeLeg): array
+    protected function addCoordinates(array $routeLeg, array &$origin, array &$destination, array &$waypoints): void
     {
-        $waypoints = [];
-
-        foreach ($routeLeg['via_waypoint'] as $waypoint) {
-            $waypoints[] = $waypoint['location'];
+        foreach ($routeLeg['via_waypoint'] as $key => $apiWaypoint) {
+            $waypoints[$key]['coordinates'] = $apiWaypoint['location'];
         }
 
-        return [
-            'origin' => $routeLeg['start_location'],
-            'destination' => $routeLeg['end_location'],
-            'waypoints' => $waypoints,
-        ];
+        $origin['coordinates'] = $routeLeg['start_location'];
+        $destination['coordinates'] = $routeLeg['end_location'];
     }
 
     protected function getDriverPartData($clientOrigin): array

@@ -50,6 +50,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereIsActive($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Place[] $places
  * @property-read int|null $places_count
+ * @property-read \App\Models\TripOrder $tripOrder
  */
 class Client extends Authenticatable
 {
