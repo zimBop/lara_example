@@ -24,10 +24,10 @@ class StoreTripOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'origin' => ['required', 'string'],
-            'destination' => ['required', 'string'],
+            'origin' => ['required', 'json'],
+            'destination' => ['required', 'json'],
             'waypoints' => 'array',
-            'waypoints.*' => 'string',
+            'waypoints.*' => 'json',
         ];
     }
 }

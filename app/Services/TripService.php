@@ -43,7 +43,7 @@ class TripService
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
         $clientData = $this->getClientPartData($request);
-        $driverData = $this->getDriverPartData($clientData[TripOrder::ORIGIN]);
+        $driverData = $this->getDriverPartData($clientData[TripOrder::ORIGIN]['id']);
 
         return TripOrder::updateOrCreate(
             [TripOrder::CLIENT_ID => $client->id],
@@ -60,18 +60,20 @@ class TripService
 
     protected function getClientPartData(StoreTripOrderRequest $request): array
     {
-        $origin = $request->input('origin');
-        $destination = $request->input('destination');
+        $origin = json_decode($request->input('origin'), true);
+        $destination = json_decode($request->input('destination'), true);
 
-        $params = [
-            'origin' => $origin,
-            'destination' => $destination,
+        $directionsApiParams = [
+            'origin' => $origin['id'],
+            'destination' => $destination['id'],
         ];
 
-        $waypoints = $request->input('waypoints', null);
-        $this->prepareWaypoints($params, $waypoints);
+        $waypoints = $this->decodeWaypoints(
+            $request->input('waypoints', null)
+        );
+        $this->prepareWaypoints($directionsApiParams, $waypoints);
 
-        $response = $this->requestDirectionsApi($params);
+        $response = $this->requestDirectionsApi($directionsApiParams);
 
         $route = $response['routes'][0];
 
@@ -86,17 +88,31 @@ class TripService
         ];
     }
 
-    protected function prepareWaypoints(array &$params, ?array $waypoints): void
+    protected function decodeWaypoints(?array $waypoints = null): ?array
+    {
+        if ($waypoints === null) {
+            return null;
+        }
+
+        $decodedWaypoints = [];
+        foreach ($waypoints as $waypoint) {
+            $decodedWaypoints[] = json_decode($waypoint, true);
+        }
+
+        return $decodedWaypoints;
+    }
+
+    protected function prepareWaypoints(array &$directionsApiParams, ?array $waypoints): void
     {
         if ($waypoints) {
             $waypoints = array_map(
                 static function ($waypoint) {
-                    return 'via:' . $waypoint;
+                    return 'via:' . $waypoint['id'];
                 },
                 $waypoints
             );
 
-            $params['waypoints'] = implode('|', $waypoints);
+            $directionsApiParams['waypoints'] = implode('|', $waypoints);
         }
     }
 

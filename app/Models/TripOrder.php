@@ -42,6 +42,8 @@ class TripOrder extends Model
     ];
 
     protected $casts = [
+        self::ORIGIN => 'array',
+        self::DESTINATION => 'array',
         self::WAYPOINTS => 'array',
         self::COORDINATES => 'array',
         self::OVERVIEW_POLYLINE => 'array',

@@ -8,11 +8,23 @@ use Faker\Generator as Faker;
 $factory->define(TripOrder::class, function (Faker $faker) {
     return [
         TripOrder::STATUS => $faker->randomElement(\App\Constants\TripOrderStatuses::getList()),
-        TripOrder::ORIGIN => 'place_id:ChIJTYPjdjRV5okRIn-weMnRXXw',
-        TripOrder::DESTINATION => 'place_id:ChIJzeZ1iHyr54kR4tA85sx6RGM',
+        TripOrder::ORIGIN => [
+            'id' => 'place_id:ChIJTYPjdjRV5okRIn-weMnRXXw',
+            'label' => 'test origin label',
+        ],
+        TripOrder::DESTINATION => [
+            'id' => 'place_id:ChIJzeZ1iHyr54kR4tA85sx6RGM',
+            'label' => 'test destination label',
+        ],
         TripOrder::WAYPOINTS => [
-            'place_id:ChIJk1_Sr3Gr54kRcACgP1AcAgM',
-            '41.790789,-72.746783',
+            [
+                'id' => 'place_id:ChIJk1_Sr3Gr54kRcACgP1AcAgM',
+                'label' => 'test waypoint1 label',
+            ],
+            [
+                'id' => '41.790789,-72.746783',
+                'label' => 'test waypoint1 label',
+            ],
         ],
         TripOrder::COORDINATES => [
             'origin' => [

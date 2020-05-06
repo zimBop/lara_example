@@ -29,8 +29,8 @@ class CreateTripOrdersTable extends Migration
                 ->onDelete('set null');
 
             $table->tinyInteger('status')->comment('Trip Order Status');
-            $table->string('origin')->comment('Origin Google Place Id');
-            $table->string('destination')->comment('Destination Google Place Id');
+            $table->json('origin')->comment('Origin Google Place info');
+            $table->json('destination')->comment('Destination Google Place info');
             $table->json('waypoints')->nullable()->comment('Google Place Ids (or lat/lng coords) for waypoints');
             $table->json('coordinates')->comment('Lat/Lng coords for origin, waypoints and destination');
             $table->json('overview_polyline')->comment('Contains a single points object that holds an encoded polyline representation of the route');
