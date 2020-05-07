@@ -9,7 +9,9 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "ext-json": "*",
         "alexpechkarev/google-maps": "7.0",
+        "edujugon/push-notification": "^4.3",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
@@ -20,8 +22,7 @@
         "nexmo/laravel": "^2.2",
         "smartins/passport-multiauth": "^7.0",
         "spatie/color": "^1.1",
-        "stripe/stripe-php": "^7.28",
-        "ext-json": "*"
+        "stripe/stripe-php": "^7.28"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
