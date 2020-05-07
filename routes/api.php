@@ -53,3 +53,8 @@ Route::patch('/drivers/reset-password', 'Api\DriverController@resetPassword')->n
 Route::middleware('multiauth:driver', 'scope:access-driver', 'can:access,driver')->group(function () {
     Route::post('/drivers/logout/{driver}', 'Api\DriverController@logout')->name('drivers.logout');
 });
+
+Route::middleware('multiauth:driver,client', 'scope:access-driver,access-client')->group(function () {
+    Route::post('devices', 'Api\DeviceController@store')->name('devices.store');
+    Route::delete('devices', 'Api\DeviceController@destroy')->name('devices.delete');
+});

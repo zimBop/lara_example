@@ -82,4 +82,8 @@ class Driver extends Authenticatable
     {
         return $this->morphOne(PasswordResetToken::class, 'model');
     }
+
+    public function devices() {
+        return $this->morphMany(Device::class, 'model');
+    }
 }

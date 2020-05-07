@@ -153,4 +153,8 @@ class Client extends Authenticatable
     {
         return $this->hasOne(TripOrder::class);
     }
+
+    public function devices() {
+        return $this->morphMany(Device::class, 'model');
+    }
 }
