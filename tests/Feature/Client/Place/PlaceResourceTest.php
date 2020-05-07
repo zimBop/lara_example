@@ -4,9 +4,9 @@ namespace Tests\Feature\Client\Place;
 
 use App\Http\Resources\PlaceResource;
 use App\Models\Place;
-use Tests\Feature\Client\ClientTestCase;
+use Tests\TestCase;
 
-class PlaceResourceTest extends ClientTestCase
+class PlaceResourceTest extends TestCase
 {
     public function testIsPlacesListAvailable(): void
     {

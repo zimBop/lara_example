@@ -7,9 +7,9 @@ use App\Http\Resources\TripOrderResource;
 use App\Models\TripOrder;
 use App\Services\TripService;
 use GoogleMaps\Directions;
-use Tests\Feature\Client\ClientTestCase;
+use Tests\TestCase;
 
-class TripOrderTest extends ClientTestCase
+class TripOrderTest extends TestCase
 {
     protected const REQUEST_DATA = [
         TripOrder::ORIGIN => [

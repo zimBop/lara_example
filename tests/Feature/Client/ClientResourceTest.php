@@ -4,8 +4,9 @@ namespace Tests\Feature\Client;
 
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use Tests\TestCase;
 
-class ClientResourceTest extends ClientTestCase
+class ClientResourceTest extends TestCase
 {
     public function testGetClient()
     {

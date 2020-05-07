@@ -5,8 +5,9 @@ namespace Tests\Feature\Client;
 use App\Models\Client;
 use App\Services\ResetPasswordService;
 use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
-class ClientResetPasswordTest extends ClientTestCase
+class ClientResetPasswordTest extends TestCase
 {
     public function testResetPassword()
     {
