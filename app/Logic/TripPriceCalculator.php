@@ -44,7 +44,7 @@ class TripPriceCalculator
      */
     protected static function calculateClientPartPrice(int $duration, int $distance)
     {
-        $distanceInMiles = self::convertMetersToMiles($distance);
+        $distanceInMiles = MetricConverter::metersToMiles($distance);
 
         return self::BOOKING_FEE + self::PER_MINUTE * ($duration / 60) + self::PER_MILE * $distanceInMiles;
     }
@@ -57,18 +57,9 @@ class TripPriceCalculator
     protected static function calculateDriverPartPrice(int $duration, int $distance)
     {
         $longPickupFee = $duration > self::LONG_PICKUP_SECONDS ? self::LONG_PICKUP_FEE : 0;
-        $distanceInMiles = self::convertMetersToMiles($distance);
+        $distanceInMiles = MetricConverter::metersToMiles($distance);
 
         return self::DRIVER_BASE_FARE + $longPickupFee + self::PER_MINUTE * ($duration / 60)
             + self::PER_MILE * $distanceInMiles;
-    }
-
-    /**
-     * @param int Trip distance in meters
-     * @return float Trip distance in miles
-     */
-    protected static function convertMetersToMiles(int $meters): float
-    {
-        return $meters * 0.000621371192;
     }
 }
