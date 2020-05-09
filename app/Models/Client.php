@@ -54,7 +54,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  */
 class Client extends Authenticatable
 {
-    use HasMultiAuthApiTokens, Notifiable;
+    use HasMultiAuthApiTokens, Notifiable, CanReceiveIosPush;
 
     public const ID = 'id';
     public const PHONE = 'phone';
@@ -156,5 +156,15 @@ class Client extends Authenticatable
 
     public function devices() {
         return $this->morphMany(Device::class, 'model');
+    }
+
+    public function trips()
+    {
+        return $this->hasMany(Trip::class);
+    }
+
+    public function getActiveTripAttribute()
+    {
+        return $this->trips()->active()->first();
     }
 }

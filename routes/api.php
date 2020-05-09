@@ -38,9 +38,9 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
         Route::apiResource('clients', 'Api\ClientController')->except('index', 'store');
         Route::apiResource('clients.places', 'Api\PlaceController')->except('update');
 
-        Route::post('clients/{client}/trip-request', 'Api\TripOrderController@store')->name('trip.order.store');
-        Route::get('clients/{client}/trip-request', 'Api\TripOrderController@show')->name('trip.order.show');
-        Route::post('clients/{client}/trip-request/confirm', 'Api\TripOrderController@confirm')->name('trip.order.confirm');
+        Route::post('clients/{client}/trip-request', 'Api\TripOrderController@store')->name('trip-order.store');
+        Route::get('clients/{client}/trip-request', 'Api\TripOrderController@show')->name('trip-order.show');
+        Route::post('clients/{client}/trip-request/confirm', 'Api\TripOrderController@confirm')->name('trip-order.confirm');
     });
 
     Route::get('/places-autocomplete', 'Api\Google\PlacesAutocompleteController')->name('google.places-autocomplete');
@@ -52,6 +52,12 @@ Route::patch('/drivers/reset-password', 'Api\DriverController@resetPassword')->n
 
 Route::middleware('multiauth:driver', 'scope:access-driver', 'can:access,driver')->group(function () {
     Route::post('/drivers/logout/{driver}', 'Api\DriverController@logout')->name('drivers.logout');
+
+    Route::post('/drivers/{driver}/trip-request/{tripOrder}/accept', 'Api\TripOrderController@accept')
+        ->name('trip-order.accept');
+
+    Route::post('/drivers/{driver}/shift/start', 'Api\ShiftController@start')->name('shift.start');
+    Route::post('/drivers/{driver}/shift/finish', 'Api\ShiftController@finish')->name('shift.finish');
 });
 
 Route::middleware('multiauth:driver,client', 'scope:access-driver,access-client')->group(function () {

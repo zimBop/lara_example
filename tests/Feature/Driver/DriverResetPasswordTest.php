@@ -4,7 +4,6 @@ namespace Tests\Feature\Driver;
 
 use App\Models\Driver;
 use App\Notifications\ForgotPassword;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 

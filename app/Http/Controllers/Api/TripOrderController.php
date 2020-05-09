@@ -2,27 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Constants\TripOrderStatuses;
+use App\Constants\TripStatuses;
 use App\Http\Requests\TripOrder\ConfirmTripOrderRequest;
 use App\Http\Requests\TripOrder\StoreTripOrderRequest;
 use App\Http\Resources\TripOrderResource;
+use App\Http\Resources\TripResource;
 use App\Models\Client;
+use App\Models\Driver;
 use App\Models\TripOrder;
+use App\Notifications\TripOrderAccepted;
 use App\Services\TripService;
 use Illuminate\Http\Request;
 
 class TripOrderController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * @param StoreTripOrderRequest $request
      * @param Client $client
@@ -53,18 +46,6 @@ class TripOrderController extends ApiController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TripOrder  $tripOrder
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, TripOrder $tripOrder)
-    {
-        //
-    }
-
-    /**
      * @param Request $request
      * @param Client $client
      * @param TripService $tripService
@@ -78,24 +59,34 @@ class TripOrderController extends ApiController
 
         $tripService->setOrder($client->tripOrder);
 
-        $tripService->checkDriverAvailable();
-
         $client->tripOrder->update(array_merge(
-            [TripOrder::STATUS => TripOrderStatuses::SEARCHING_CAR],
+            [TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER],
             $request->only([TripOrder::MESSAGE_FOR_DRIVER, TripOrder::PAYMENT_METHOD_ID])
        ));
 
         return $this->data(new TripOrderResource($client->tripOrder));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\TripOrder  $tripOrder
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(TripOrder $tripOrder)
+    public function accept(Driver $driver, TripOrder $tripOrder, TripService $tripService)
     {
-        //
+        if ((int)$tripOrder->status !== TripStatuses::LOOKING_FOR_DRIVER) {
+            return $this->error('Trip Request already accepted.');
+        }
+
+        if (!$driver->activeShift) {
+            return $this->error('Driver doesnt have active shift.');
+        }
+
+        if ($tripService->isDriverHasActiveTrips($driver)) {
+            return $this->error('Driver already has active trips.');
+        }
+
+        $trip = $tripService->createTrip($tripOrder, $driver);
+
+        $trip->client->notify(new TripOrderAccepted($trip->id));
+
+        $tripOrder->update([TripOrder::STATUS => TripStatuses::DRIVER_IS_ON_THE_WAY]);
+
+        return $this->data(new TripResource($trip));
     }
 }

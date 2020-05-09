@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int|null $client_id
- * @property int|null $shift_id
  * @property int $status Trip Order Status
  * @property array $origin Origin Google Place info
  * @property array $destination Destination Google Place info
@@ -51,7 +50,6 @@ class TripOrder extends Model
 {
     public const ID = 'id';
     public const CLIENT_ID = 'client_id';
-    public const SHIFT_ID = 'shift_id';
     public const STATUS = 'status';
     public const ORIGIN = 'origin';
     public const DESTINATION = 'destination';
@@ -67,7 +65,6 @@ class TripOrder extends Model
 
     protected $fillable = [
         self::CLIENT_ID,
-        self::SHIFT_ID,
         self::STATUS,
         self::ORIGIN,
         self::DESTINATION,

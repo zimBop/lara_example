@@ -47,7 +47,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  */
 class Driver extends Authenticatable
 {
-    use HasMultiAuthApiTokens, Notifiable, SoftDeletes;
+    use HasMultiAuthApiTokens, Notifiable, SoftDeletes, CanReceiveIosPush;
 
     public const ID = 'id';
     public const FIRST_NAME = 'first_name';
@@ -55,6 +55,7 @@ class Driver extends Authenticatable
     public const EMAIL = 'email';
     public const PASSWORD = 'password';
     public const IS_ACTIVE = 'is_active';
+    public const RATING = 'rating';
 
     protected $fillable = [
         self::EMAIL,
@@ -83,7 +84,18 @@ class Driver extends Authenticatable
         return $this->morphOne(PasswordResetToken::class, 'model');
     }
 
-    public function devices() {
+    public function devices()
+    {
         return $this->morphMany(Device::class, 'model');
+    }
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
+
+    public function getActiveShiftAttribute()
+    {
+        return $this->shifts()->active()->first();
     }
 }

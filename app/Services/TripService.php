@@ -2,16 +2,27 @@
 
 namespace App\Services;
 
-use App\Constants\TripOrderStatuses;
+use App\Constants\TripStatuses;
 use App\Exceptions\Google\GoogleApiException;
 use App\Http\Requests\TripOrder\StoreTripOrderRequest;
 use App\Models\Client;
+use App\Models\Driver;
+use App\Models\Trip;
 use App\Models\TripOrder;
 use App\Logic\TripPriceCalculator;
 
 class TripService
 {
     protected $order;
+    protected $trip;
+
+    /**
+     * @param mixed $trip
+     */
+    public function setTrip(Trip $trip): void
+    {
+        $this->trip = $trip;
+    }
 
     public function setOrder(?TripOrder $order): self
     {
@@ -20,23 +31,15 @@ class TripService
         return $this;
     }
 
-    public function checkDriverAvailable(): void
+    public function isDriverHasActiveTrips(Driver $driver): bool
     {
-        if (!$this->isDriverAvailable()) {
-            abort(200, 'Driver is not available.');
-        }
-    }
-
-    // TODO add real check
-    public function isDriverAvailable(): bool
-    {
-        return true;
+        return Trip::active()->whereShiftId($driver->activeShift->id)->exists();
     }
 
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
-        $clientData = $this->getClientPartData($request);
-        $driverData = $this->getDriverPartData($clientData[TripOrder::ORIGIN]['id']);
+        $clientData = $this->getClientData($request);
+        $driverData = $this->getDriverData($clientData[TripOrder::ORIGIN]['id']);
 
         return TripOrder::updateOrCreate(
             [TripOrder::CLIENT_ID => $client->id],
@@ -45,13 +48,13 @@ class TripService
                 $driverData,
                 [
                     TripOrder::PRICE => TripPriceCalculator::calculatePrice(array_merge($clientData, $driverData)),
-                    TripOrder::STATUS => TripOrderStatuses::WAITING_FOR_CONFIRMATION,
+                    TripOrder::STATUS => TripStatuses::WAITING_FOR_CONFIRMATION,
                 ]
             )
         );
     }
 
-    protected function getClientPartData(StoreTripOrderRequest $request): array
+    protected function getClientData(StoreTripOrderRequest $request): array
     {
         $origin = $request->input('origin');
         $destination = $request->input('destination');
@@ -105,7 +108,7 @@ class TripService
         $destination['coordinates'] = $routeLeg['end_location'];
     }
 
-    protected function getDriverPartData($clientOrigin): array
+    protected function getDriverData($clientOrigin): array
     {
         //TODO find closest driver location
 //        $driver = $this->findClosestDriver($clientOrigin);
@@ -146,5 +149,19 @@ class TripService
         }
 
         return $response;
+    }
+
+    public function createTrip(TripOrder $tripOrder, Driver $driver): Trip
+    {
+        $driverData = $this->getDriverData($tripOrder->origin['id']);
+
+        $tripData = $tripOrder->toArray();
+        $tripData[Trip::DRIVER_DISTANCE] = $driverData[TripOrder::DRIVER_DISTANCE];
+        $tripData[Trip::CO2] = $driverData[TripOrder::DRIVER_DISTANCE];
+        $tripData[Trip::WAIT_DURATION] = (int)$driverData[TripOrder::WAIT_DURATION];
+        $tripData[Trip::SHIFT_ID] = $driver->activeShift->id;
+        $tripData[Trip::STATUS] = TripStatuses::DRIVER_IS_ON_THE_WAY;
+
+        return Trip::create($tripData);
     }
 }

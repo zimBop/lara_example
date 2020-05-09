@@ -1,13 +1,17 @@
 <?php
 
-namespace Tests\Feature\Client\TripOrder;
+namespace Tests\Feature\TripOrder;
 
-use App\Constants\TripOrderStatuses;
+use App\Constants\TripStatuses;
 use App\Http\Resources\TripOrderResource;
+use App\Http\Resources\TripResource;
+use App\Models\Shift;
+use App\Models\Trip;
 use App\Models\TripOrder;
-use App\Services\TripService;
+use App\Notifications\TripOrderAccepted;
 use GoogleMaps\Directions;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Notification;
 
 class TripOrderTest extends TestCase
 {
@@ -40,7 +44,7 @@ class TripOrderTest extends TestCase
         $this->setupGoogleMapsMock($directionsMock);
 
         $response = $this->postJson(
-            route('trip.order.store', ['client' => $client->id]),
+            route('trip-order.store', ['client' => $client->id]),
             self::REQUEST_DATA
         );
 
@@ -61,7 +65,7 @@ class TripOrderTest extends TestCase
         $client = $this->makeAuthClient();
 
         $response = $this->postJson(
-            route('trip.order.store', ['client' => $client->id]),
+            route('trip-order.store', ['client' => $client->id]),
             []
         );
 
@@ -85,7 +89,7 @@ class TripOrderTest extends TestCase
         $this->setupGoogleMapsMock($directionsMock);
 
         $response = $this->postJson(
-            route('trip.order.store', ['client' => $client->id]),
+            route('trip-order.store', ['client' => $client->id]),
             self::REQUEST_DATA
         );
 
@@ -108,7 +112,7 @@ class TripOrderTest extends TestCase
         );
 
         $response = $this->getJson(
-            route('trip.order.show', ['client' => $client->id])
+            route('trip-order.show', ['client' => $client->id])
         );
 
         $response
@@ -126,12 +130,12 @@ class TripOrderTest extends TestCase
         $tripOrder = factory(TripOrder::class)->create(
             [
                 TripOrder::CLIENT_ID => $client->id,
-                TripOrder::STATUS => TripOrderStatuses::WAITING_FOR_CONFIRMATION,
+                TripOrder::STATUS => TripStatuses::WAITING_FOR_CONFIRMATION,
             ]
         );
 
         $response = $this->postJson(
-            route('trip.order.confirm', ['client' => $client->id]),
+            route('trip-order.confirm', ['client' => $client->id]),
             [
                 TripOrder::PAYMENT_METHOD_ID => 'test payment method',
                 TripOrder::MESSAGE_FOR_DRIVER => 'test message for driver',
@@ -147,7 +151,7 @@ class TripOrderTest extends TestCase
                 'data' => (new TripOrderResource($tripOrder))->toArray(null)
             ]);
 
-        $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id, 'status' => TripOrderStatuses::SEARCHING_CAR]);
+        $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id, 'status' => TripStatuses::LOOKING_FOR_DRIVER]);
     }
 
     public function testIsTripOrderNotFoundErrorShown(): void
@@ -155,7 +159,7 @@ class TripOrderTest extends TestCase
         $client = $this->makeAuthClient();
 
         $response = $this->postJson(
-            route('trip.order.confirm', ['client' => $client->id]),
+            route('trip-order.confirm', ['client' => $client->id]),
             [TripOrder::PAYMENT_METHOD_ID => 'test payment method']
         );
 
@@ -167,33 +171,91 @@ class TripOrderTest extends TestCase
             ]);
     }
 
-    public function testIsDriverNotAvailableErrorShown(): void
+    public function testIsTripOrderSuccessfullyAccepted(): void
     {
-        $client = $this->makeAuthClient();
+        $directionsMock = $this->setupDirectionsMock();
+        $this->setupGoogleMapsMock($directionsMock);
+        Notification::fake();
 
-        factory(TripOrder::class)->create([TripOrder::CLIENT_ID => $client->id]);
+        $driver = $this->makeAuthDriver();
 
-        $tripServiceMock = \Mockery::mock(TripService::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
+        $tripOrder = factory(TripOrder::class)
+            ->create([TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER]);
 
-        $tripServiceMock->shouldReceive('isDriverAvailable')
-            ->once()
-            ->andReturn(false);
-
-        $this->app->instance(TripService::class, $tripServiceMock);
+        factory(Shift::class)->create([
+            Shift::DRIVER_ID => $driver->id
+        ]);
 
         $response = $this->postJson(
-            route('trip.order.confirm', ['client' => $client->id]),
-            [TripOrder::PAYMENT_METHOD_ID => 'test payment method']
+            route('trip-order.accept', ['driver' => $driver->id, 'tripOrder' => $tripOrder->id])
         );
 
+        $client = $tripOrder->client;
+        Notification::assertSentTo($client, TripOrderAccepted::class);
+
+        $tripOrder->refresh();
+        $this->assertEquals(TripStatuses::DRIVER_IS_ON_THE_WAY, $tripOrder->status);
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'done' => true,
+                // TODO check 'data'
+//                'data' => (new TripResource($client->activeTrip))->toArray(null)
+            ]);
+    }
+
+    public function testIsDriverDoesntHaveActiveShiftErrorShown(): void
+    {
+        $driver = $this->makeAuthDriver();
+
+        $tripOrder = factory(TripOrder::class)
+            ->create([TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER]);
+
+        $response = $this->postJson(
+            route('trip-order.accept', [
+                'driver' => $driver->id,
+                'tripOrder' => $tripOrder->id,
+            ])
+        );
 
         $response
             ->assertStatus(200)
             ->assertJson([
                 'done' => false,
-                'message' => 'Driver is not available.'
+                'message' => 'Driver doesnt have active shift.'
+            ]);
+    }
+
+    public function testIsDriverAlreadyHasActiveTripErrorShown(): void
+    {
+        $driver = $this->makeAuthDriver();
+
+        $tripOrder = factory(TripOrder::class)->create([
+            TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER,
+        ]);
+
+        $shift = factory(Shift::class)->create([
+            Shift::DRIVER_ID => $driver->id,
+        ]);
+
+        factory(Trip::class)->create([
+            Trip::SHIFT_ID => $shift->id,
+            Trip::STATUS => TripStatuses::DRIVER_IS_ON_THE_WAY
+        ]);
+
+        $response = $this->postJson(
+            route('trip-order.accept', [
+                'driver' => $driver->id,
+                'tripOrder' => $tripOrder->id,
+            ])
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => false,
+                'message' => 'Driver already has active trips.'
             ]);
     }
 
