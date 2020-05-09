@@ -17,6 +17,9 @@ return [
     'apn' => [
         /*
          * @see https://github.com/Edujugon/PushNotification/wiki/APNS-Certificate
+         *
+         * Note: on step 2 '-in' parameter should be 'apns-dev-cert.p12' in case 'apns-dev-key.p12' is not exists
+         *
          */
         'certificate' => __DIR__ . '/iosCertificates/'
             . (env('APP_ENV') === 'production' ? 'apns.pem' : 'apns-dev.pem'),
