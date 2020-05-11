@@ -19,7 +19,7 @@ class VehicleResource extends JsonResource
             Vehicle::BRAND => $this->brand,
             Vehicle::MODEL => $this->model,
             Vehicle::LICENSE_PLATE => $this->license_plate,
-            'color' => $this->color_data->name,
+            'color' => $this->color_data,
         ];
     }
 }
