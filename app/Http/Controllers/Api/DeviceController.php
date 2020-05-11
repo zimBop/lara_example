@@ -21,7 +21,7 @@ class DeviceController extends ApiController
             Device::TYPE => $request->input('type'),
          ]);
 
-        $msgPart = $device->wasRecentlyCreated ? 'added' : 'updated';
+        $msgPart = $device->wasRecentlyCreated ? 'added.' : 'updated.';
 
         return $this->done('Device successfully ' . $msgPart);
     }
