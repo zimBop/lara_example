@@ -16,9 +16,14 @@ class DeviceController extends ApiController
     {
         $user = Auth::user();
 
-        $user->devices()->create($request->input());
+        $device = $user->devices()->updateOrCreate([
+            Device::TOKEN => $request->input('token'),
+            Device::TYPE => $request->input('type'),
+         ]);
 
-        return $this->done('Device successfully added.');
+        $msgPart = $device->wasRecentlyCreated ? 'added' : 'updated';
+
+        return $this->done('Device successfully ' . $msgPart);
     }
 
     /**
