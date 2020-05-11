@@ -44,6 +44,11 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver whereIsActive($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Driver withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Driver withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Device[] $devices
+ * @property-read int|null $devices_count
+ * @property-read mixed $active_shift
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Shift[] $shifts
+ * @property-read int|null $shifts_count
  */
 class Driver extends Authenticatable
 {

@@ -51,6 +51,11 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Place[] $places
  * @property-read int|null $places_count
  * @property-read \App\Models\TripOrder $tripOrder
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Device[] $devices
+ * @property-read int|null $devices_count
+ * @property-read mixed $active_trip
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Trip[] $trips
+ * @property-read int|null $trips_count
  */
 class Client extends Authenticatable
 {
