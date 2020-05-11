@@ -3,13 +3,16 @@
 namespace Tests\Feature\TripOrder;
 
 use App\Constants\TripStatuses;
+use App\Http\Resources\DriverResource;
 use App\Http\Resources\TripOrderResource;
 use App\Http\Resources\TripResource;
+use App\Http\Resources\VehicleResource;
 use App\Models\Shift;
 use App\Models\Trip;
 use App\Models\TripOrder;
 use App\Notifications\TripOrderAccepted;
 use GoogleMaps\Directions;
+use SMartins\PassportMultiauth\PassportMultiauth;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Notification;
 
@@ -196,12 +199,30 @@ class TripOrderTest extends TestCase
         $tripOrder->refresh();
         $this->assertEquals(TripStatuses::DRIVER_IS_ON_THE_WAY, $tripOrder->status);
 
+        $data = (new TripResource($client->activeTrip))->toArray(null);
+        $data['driver'] = (new DriverResource($driver))->toArray(null);
+        $data['vehicle'] = (new VehicleResource($driver->active_shift->vehicle))->toArray(null);
+
         $response
             ->assertStatus(200)
-            ->assertJsonFragment([
+            ->assertJson([
                 'done' => true,
-                // TODO check 'data'
-//                'data' => (new TripResource($client->activeTrip))->toArray(null)
+                'data' => $data
+            ]);
+
+        // check Trip available after TripOrder accepted
+        // TODO move this check to separate test
+        PassportMultiauth::actingAs($client, ['access-client']);
+
+        $response = $this->getJson(
+            route('trip-order.show', ['client' => $client->id])
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => true,
+                'data' => $data
             ]);
     }
 

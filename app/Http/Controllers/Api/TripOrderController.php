@@ -38,6 +38,10 @@ class TripOrderController extends ApiController
             return $this->done('Trip Request not found.');
         }
 
+        if ($client->active_trip) {
+            return $this->data(new TripResource($client->active_trip));
+        }
+
         return $this->data(new TripOrderResource($client->tripOrder));
     }
 
