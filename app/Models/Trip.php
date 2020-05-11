@@ -70,6 +70,7 @@ class Trip extends Model
     public const OVERVIEW_POLYLINE = 'overview_polyline';
     public const PRICE = 'price';
     public const WAIT_DURATION = 'wait_duration';
+    public const WAIT_DURATION_ADJUSTED = 'wait_duration_adjusted';
     public const TRIP_DURATION = 'trip_duration';
     public const DISTANCE = 'distance';
     public const DRIVER_DISTANCE = 'driver_distance';
@@ -102,6 +103,7 @@ class Trip extends Model
         self::DESTINATION => 'array',
         self::WAYPOINTS => 'array',
         self::OVERVIEW_POLYLINE => 'array',
+        self::CO2 => 'float',
     ];
 
     public function client()
@@ -112,6 +114,13 @@ class Trip extends Model
     public function shift()
     {
         return $this->belongsTo(Shift::class);
+    }
+
+    public function getWaitDurationAdjustedAttribute()
+    {
+        $duration = $this->wait_duration - now()->diffInSeconds($this->created_at);
+
+        return $duration > 0 ? $duration : 0 ;
     }
 
     public function setCo2Attribute($meters)

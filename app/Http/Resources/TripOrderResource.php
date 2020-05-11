@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Logic\MetricConverter;
 use App\Models\TripOrder;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,6 +26,7 @@ class TripOrderResource extends JsonResource
             TripOrder::DESTINATION => $this->destination,
             TripOrder::WAYPOINTS => $this->waypoints,
             TripOrder::STATUS => $this->status,
+            TripOrder::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
         ];
     }
 }

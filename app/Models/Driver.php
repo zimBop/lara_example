@@ -61,6 +61,7 @@ class Driver extends Authenticatable
     public const PASSWORD = 'password';
     public const IS_ACTIVE = 'is_active';
     public const RATING = 'rating';
+    public const PHONE = 'phone';
 
     protected $fillable = [
         self::EMAIL,
@@ -68,6 +69,7 @@ class Driver extends Authenticatable
         self::FIRST_NAME,
         self::LAST_NAME,
         self::IS_ACTIVE,
+        self::PHONE,
     ];
 
     /**
