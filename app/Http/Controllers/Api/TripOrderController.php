@@ -86,7 +86,7 @@ class TripOrderController extends ApiController
 
         $trip = $tripService->createTrip($tripOrder, $driver);
 
-        $trip->client->notify(new TripOrderAccepted($trip->id));
+        $trip->client->notify(new TripOrderAccepted());
 
         $tripOrder->update([TripOrder::STATUS => TripStatuses::DRIVER_IS_ON_THE_WAY]);
 
