@@ -12,7 +12,6 @@ use App\Models\Driver;
 use App\Models\TripOrder;
 use App\Notifications\TripOrderAccepted;
 use App\Services\TripService;
-use Illuminate\Http\Request;
 
 class TripOrderController extends ApiController
 {
@@ -31,33 +30,27 @@ class TripOrderController extends ApiController
 
     /**
      * @param Client $client
-     * @param TripService $tripService
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Client $client, TripService $tripService)
+    public function show(Client $client)
     {
         if (!$client->tripOrder) {
             return $this->done('Trip Request not found.');
         }
-
-        $tripService->setOrder($client->tripOrder);
 
         return $this->data(new TripOrderResource($client->tripOrder));
     }
 
     /**
-     * @param Request $request
+     * @param ConfirmTripOrderRequest $request
      * @param Client $client
-     * @param TripService $tripService
      * @return \Illuminate\Http\JsonResponse
      */
-    public function confirm(ConfirmTripOrderRequest $request, Client $client, TripService $tripService)
+    public function confirm(ConfirmTripOrderRequest $request, Client $client)
     {
         if (!$client->tripOrder) {
             return $this->done('Trip Request not found.');
         }
-
-        $tripService->setOrder($client->tripOrder);
 
         $client->tripOrder->update(array_merge(
             [TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER],
@@ -67,6 +60,12 @@ class TripOrderController extends ApiController
         return $this->data(new TripOrderResource($client->tripOrder));
     }
 
+    /**
+     * @param Driver $driver
+     * @param TripOrder $tripOrder
+     * @param TripService $tripService
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function accept(Driver $driver, TripOrder $tripOrder, TripService $tripService)
     {
         if ((int)$tripOrder->status !== TripStatuses::LOOKING_FOR_DRIVER) {
