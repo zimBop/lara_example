@@ -8,7 +8,9 @@ use App\Models\Driver;
 use App\Models\Shift;
 use App\Models\Trip;
 use App\Models\TripOrder;
+use App\Notifications\DriverArrived;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Notification;
 
 class TripTest extends TestCase
 {
@@ -61,7 +63,33 @@ class TripTest extends TestCase
         $this->assertDatabaseHas('trips', ['id' => $models['trip']->id]);
     }
 
-    protected function prepareModels(Client $client, int $status): array
+    public function testDriverArrived()
+    {
+        $driver = $this->makeAuthDriver();
+        $client = factory(Client::class)->create();
+
+        $models = $this->prepareModels($client, TripStatuses::DRIVER_IS_ON_THE_WAY, $driver);
+
+        Notification::fake();
+
+        $response = $this->postJson(
+            route('trip.arrived', ['driver' => $driver->id])
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => true,
+                'message' => "'Driver Arrived' notify sent to the client.",
+            ]);
+
+        Notification::assertSentTo($client, DriverArrived::class);
+
+        $this->assertDatabaseHas('trip_orders', ['id' => $models['tripOrder']->id, 'status' => TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT]);
+        $this->assertDatabaseHas('trips', ['id' => $models['trip']->id, 'status' => TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT]);
+    }
+
+    protected function prepareModels(Client $client, int $status, Driver $driver = null): array
     {
         $tripOrder = factory(TripOrder::class)->create(
             [
@@ -70,7 +98,7 @@ class TripTest extends TestCase
             ]
         );
 
-        $driver = factory(Driver::class)->create();
+        $driver = $driver ?: factory(Driver::class)->create();
         $shift = factory(Shift::class)->create([
             Shift::DRIVER_ID => $driver->id
         ]);

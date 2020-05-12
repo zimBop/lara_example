@@ -57,6 +57,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Trip whereWaitDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Trip whereWaypoints($value)
  * @mixin \Eloquent
+ * @property-read mixed $wait_duration_adjusted
  */
 class Trip extends Model
 {
@@ -104,6 +105,7 @@ class Trip extends Model
         self::WAYPOINTS => 'array',
         self::OVERVIEW_POLYLINE => 'array',
         self::CO2 => 'float',
+        self::STATUS => 'integer',
     ];
 
     public function client()

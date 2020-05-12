@@ -49,6 +49,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @property-read mixed $active_shift
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Shift[] $shifts
  * @property-read int|null $shifts_count
+ * @property-read mixed $active_trip
  */
 class Driver extends Authenticatable
 {
@@ -104,5 +105,14 @@ class Driver extends Authenticatable
     public function getActiveShiftAttribute()
     {
         return $this->shifts()->active()->first();
+    }
+
+    public function getActiveTripAttribute()
+    {
+        if (!$this->active_shift) {
+            return null;
+        }
+
+        return $this->active_shift->trips()->active()->first();
     }
 }

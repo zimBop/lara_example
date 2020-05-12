@@ -73,14 +73,14 @@ class TripOrderController extends ApiController
     public function accept(Driver $driver, TripOrder $tripOrder, TripService $tripService)
     {
         if ((int)$tripOrder->status !== TripStatuses::LOOKING_FOR_DRIVER) {
-            return $this->error('Trip Request already accepted.');
+            return $this->error('Trip Request already accepted or not confirmed.');
         }
 
-        if (!$driver->activeShift) {
+        if (!$driver->active_shift) {
             return $this->error('Driver doesnt have active shift.');
         }
 
-        if ($tripService->isDriverHasActiveTrips($driver)) {
+        if ($driver->active_trip) {
             return $this->error('Driver already has active trips.');
         }
 
@@ -91,16 +91,5 @@ class TripOrderController extends ApiController
         $tripOrder->update([TripOrder::STATUS => TripStatuses::DRIVER_IS_ON_THE_WAY]);
 
         return $this->data(new TripResource($trip));
-    }
-
-    public function cancel(Client $client)
-    {
-        if ($client->tripOrder->status < TripStatuses::TRIP_IN_PROGRESS) {
-            $client->tripOrder->delete();
-
-            return $this->done('Trip Request canceled.');
-        }
-
-        return $this->done('Trip Request cannot be canceled. Trip in progress.');
     }
 }

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Constants\TripStatuses;
 use App\Models\Client;
+use App\Models\Driver;
 use App\Models\Trip;
+use App\Notifications\DriverArrived;
 use Illuminate\Http\Request;
 
 class TripController extends ApiController
@@ -81,5 +83,28 @@ class TripController extends ApiController
         }
 
         return $this->done('Trip cannot be canceled. Trip in progress.');
+    }
+
+    public function arrived(Driver $driver)
+    {
+        $trip = $driver->active_trip;
+
+        if (!$trip) {
+            return $this->error('Active trip not found.');
+        }
+
+        if ($trip->status !== TripStatuses::DRIVER_IS_ON_THE_WAY) {
+            return $this->error('Incorrect trip status.');
+        }
+
+        $data = [Trip::STATUS => TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT];
+
+        $trip->update($data);
+
+        $trip->client->tripOrder->update($data);
+
+        $trip->client->notify(new DriverArrived());
+
+        return $this->done("'Driver Arrived' notify sent to the client.");
     }
 }

@@ -31,11 +31,6 @@ class TripService
         return $this;
     }
 
-    public function isDriverHasActiveTrips(Driver $driver): bool
-    {
-        return Trip::active()->whereShiftId($driver->activeShift->id)->exists();
-    }
-
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
         $clientData = $this->getClientData($request);
