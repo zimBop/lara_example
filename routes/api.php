@@ -61,6 +61,9 @@ Route::middleware('multiauth:driver', 'scope:access-driver', 'can:access,driver'
     Route::post('/drivers/{driver}/trip/arrived', 'Api\TripController@arrived')
         ->name('trip.arrived');
 
+    Route::post('/drivers/{driver}/trip/start', 'Api\TripController@start')
+        ->name('trip.start');
+
     Route::post('/drivers/{driver}/shift/start', 'Api\ShiftController@start')->name('shift.start');
     Route::post('/drivers/{driver}/shift/finish', 'Api\ShiftController@finish')->name('shift.finish');
 });

@@ -7,6 +7,8 @@ use App\Models\Client;
 use App\Models\Driver;
 use App\Models\Trip;
 use App\Notifications\DriverArrived;
+use App\Services\StripeService;
+use App\Services\TripService;
 use Illuminate\Http\Request;
 
 class TripController extends ApiController
@@ -85,26 +87,29 @@ class TripController extends ApiController
         return $this->done('Trip cannot be canceled. Trip in progress.');
     }
 
-    public function arrived(Driver $driver)
+    public function arrived(Driver $driver, TripService $tripService)
     {
         $trip = $driver->active_trip;
 
-        if (!$trip) {
-            return $this->error('Active trip not found.');
-        }
+        $tripService->checkTrip($trip, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT);
 
-        if ($trip->status !== TripStatuses::DRIVER_IS_ON_THE_WAY) {
-            return $this->error('Incorrect trip status.');
-        }
+        $tripService->changeStatus($trip, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT);
 
-        $data = [Trip::STATUS => TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT];
+        return $this->done("'Trip status changed' notify sent to the client.");
+    }
 
-        $trip->update($data);
+    public function start(Driver $driver, TripService $tripService, StripeService $stripeService)
+    {
+        $trip = $driver->active_trip;
 
-        $trip->client->tripOrder->update($data);
+        $tripService->checkTrip($trip, TripStatuses::TRIP_IN_PROGRESS);
 
-        $trip->client->notify(new DriverArrived());
+        $stripeService->setClient($trip->client)
+            ->makePayment($trip, 'Trip Payment');
 
-        return $this->done("'Driver Arrived' notify sent to the client.");
+        $tripService->changeStatus($trip, TripStatuses::TRIP_IN_PROGRESS);
+        $trip->update([Trip::PICKED_UP_AT => now()]);
+
+        return $this->done("'Trip status changed' notify sent to the client.");
     }
 }

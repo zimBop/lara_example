@@ -8,7 +8,7 @@ use App\Models\Driver;
 use App\Models\Shift;
 use App\Models\Trip;
 use App\Models\TripOrder;
-use App\Notifications\DriverArrived;
+use App\Notifications\TripStatusChanged;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Notification;
 
@@ -80,10 +80,10 @@ class TripTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => "'Driver Arrived' notify sent to the client.",
+                'message' => "'Trip status changed' notify sent to the client.",
             ]);
 
-        Notification::assertSentTo($client, DriverArrived::class);
+        Notification::assertSentTo($client, TripStatusChanged::class);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $models['tripOrder']->id, 'status' => TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT]);
         $this->assertDatabaseHas('trips', ['id' => $models['trip']->id, 'status' => TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT]);

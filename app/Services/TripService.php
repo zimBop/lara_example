@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\Constants\TripStatuses;
 use App\Exceptions\Google\GoogleApiException;
+use App\Exceptions\Trip\TripException;
 use App\Http\Requests\TripOrder\StoreTripOrderRequest;
 use App\Models\Client;
 use App\Models\Driver;
 use App\Models\Trip;
 use App\Models\TripOrder;
 use App\Logic\TripPriceCalculator;
+use App\Notifications\TripStatusChanged;
 
 class TripService
 {
@@ -158,5 +160,27 @@ class TripService
         $tripData[Trip::STATUS] = TripStatuses::DRIVER_IS_ON_THE_WAY;
 
         return Trip::create($tripData);
+    }
+
+    public function checkTrip(?Trip $trip, int $newStatus)
+    {
+        if (!$trip) {
+            throw new TripException(200, 'Active trip not found.');
+        }
+
+        if ($trip->status !== ($newStatus - 1)) {
+            throw new TripException(200, 'Incorrect trip status.');
+        }
+    }
+
+    public function changeStatus(Trip $trip, int $newStatus)
+    {
+        $data = [Trip::STATUS => $newStatus];
+
+        $trip->update($data);
+
+        $trip->client->tripOrder->update($data);
+
+        $trip->client->notify(new TripStatusChanged($newStatus));
     }
 }
