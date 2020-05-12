@@ -226,6 +226,64 @@ class TripOrderTest extends TestCase
             ]);
     }
 
+    public function testIsTripOrderSuccessfullyCanceled(): void
+    {
+        $client = $this->makeAuthClient();
+
+        $tripOrder = factory(TripOrder::class)->create(
+            [
+                TripOrder::CLIENT_ID => $client->id,
+                TripOrder::STATUS => $this->faker->randomElement([
+                    TripStatuses::WAITING_FOR_CONFIRMATION,
+                    TripStatuses::LOOKING_FOR_DRIVER,
+                    TripStatuses::DRIVER_IS_ON_THE_WAY,
+                    TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT,
+                ]),
+            ]
+        );
+
+        $response = $this->postJson(
+            route('trip-order.cancel', ['client' => $client->id])
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => true,
+                'message' => 'Trip Request canceled.',
+            ]);
+
+        $this->assertDatabaseMissing('trip_orders', ['id' => $tripOrder->id]);
+    }
+
+    public function testIsTripOrderInProgressCannotBeCanceled(): void
+    {
+        $client = $this->makeAuthClient();
+
+        $tripOrder = factory(TripOrder::class)->create(
+            [
+                TripOrder::CLIENT_ID => $client->id,
+                TripOrder::STATUS => $this->faker->randomElement([
+                    TripStatuses::TRIP_IN_PROGRESS,
+                    TripStatuses::UNRATED,
+                ]),
+            ]
+        );
+
+        $response = $this->postJson(
+            route('trip-order.cancel', ['client' => $client->id])
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => true,
+                'message' => 'Trip Request cannot be canceled. Trip in progress.',
+            ]);
+
+        $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id]);
+    }
+
     public function testIsDriverDoesntHaveActiveShiftErrorShown(): void
     {
         $driver = $this->makeAuthDriver();

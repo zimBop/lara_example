@@ -92,4 +92,15 @@ class TripOrderController extends ApiController
 
         return $this->data(new TripResource($trip));
     }
+
+    public function cancel(Client $client)
+    {
+        if ($client->tripOrder->status < TripStatuses::TRIP_IN_PROGRESS) {
+            $client->tripOrder->delete();
+
+            return $this->done('Trip Request canceled.');
+        }
+
+        return $this->done('Trip Request cannot be canceled. Trip in progress.');
+    }
 }
