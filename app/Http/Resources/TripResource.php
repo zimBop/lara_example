@@ -19,8 +19,8 @@ class TripResource extends JsonResource
         return [
             Trip::ID => $this->id,
             Trip::PRICE => $this->price,
-            Trip::WAIT_DURATION => $this->wait_duration,
-            Trip::WAIT_DURATION_ADJUSTED => $this->wait_duration_adjusted,
+            // 'wait_duration_adjusted' used here as value instead of 'wait_duration'
+            Trip::WAIT_DURATION => $this->wait_duration_adjusted,
             Trip::TRIP_DURATION => $this->trip_duration,
             Trip::OVERVIEW_POLYLINE => $this->overview_polyline,
             Trip::ORIGIN => $this->origin,
