@@ -19,7 +19,8 @@ class DriverResource extends JsonResource
             'full_name' => $this->full_name,
             'image' => 'https://homepages.cae.wisc.edu/~ece533/images/frymire.png',
             Driver::RATING => 4.9,
-            Driver::PHONE => '+1 (815) 247-8181',
+            // Driver::PHONE return only digits
+            Driver::PHONE => '18152478181',
         ];
     }
 }
