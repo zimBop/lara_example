@@ -120,6 +120,10 @@ class Trip extends Model
 
     public function getWaitDurationAdjustedAttribute()
     {
+        if ($this->status >= TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT) {
+            return 0;
+        }
+
         $duration = $this->wait_duration - now()->diffInSeconds($this->created_at);
 
         return $duration > 0 ? $duration : 0 ;
