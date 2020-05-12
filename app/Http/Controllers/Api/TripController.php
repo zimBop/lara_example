@@ -6,7 +6,6 @@ use App\Constants\TripStatuses;
 use App\Models\Client;
 use App\Models\Trip;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class TripController extends ApiController
 {
@@ -67,9 +66,16 @@ class TripController extends ApiController
 
     public function cancel(Client $client)
     {
-        if ($client->active_trip->status < TripStatuses::TRIP_IN_PROGRESS) {
-            $client->active_trip->delete();
+        if (!$client->tripOrder) {
+            return $this->error('Trip Request not found.');
+        }
+
+        if ($client->tripOrder->status < TripStatuses::TRIP_IN_PROGRESS) {
             $client->tripOrder->delete();
+
+            if ($client->active_trip) {
+                $client->active_trip->delete();
+            }
 
             return $this->done('Trip canceled.');
         }

@@ -243,14 +243,14 @@ class TripOrderTest extends TestCase
         );
 
         $response = $this->postJson(
-            route('trip-order.cancel', ['client' => $client->id])
+            route('trip.cancel', ['client' => $client->id])
         );
 
         $response
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Trip Request canceled.',
+                'message' => 'Trip canceled.',
             ]);
 
         $this->assertDatabaseMissing('trip_orders', ['id' => $tripOrder->id]);
@@ -271,14 +271,14 @@ class TripOrderTest extends TestCase
         );
 
         $response = $this->postJson(
-            route('trip-order.cancel', ['client' => $client->id])
+            route('trip.cancel', ['client' => $client->id])
         );
 
         $response
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Trip Request cannot be canceled. Trip in progress.',
+                'message' => 'Trip cannot be canceled. Trip in progress.',
             ]);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id]);

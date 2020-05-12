@@ -41,7 +41,6 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
         Route::post('clients/{client}/trip-request', 'Api\TripOrderController@store')->name('trip-order.store');
         Route::get('clients/{client}/trip-request', 'Api\TripOrderController@show')->name('trip-order.show');
         Route::post('clients/{client}/trip-request/confirm', 'Api\TripOrderController@confirm')->name('trip-order.confirm');
-        Route::post('clients/{client}/trip-request/cancel', 'Api\TripOrderController@cancel')->name('trip-order.cancel');
 
         Route::post('clients/{client}/trip/cancel', 'Api\TripController@cancel')->name('trip.cancel');
     });
