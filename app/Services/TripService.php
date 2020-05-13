@@ -155,7 +155,10 @@ class TripService
 
     public function createTrip(TripOrder $tripOrder, Driver $driver): Trip
     {
-        $driverData = $this->getDriverData($tripOrder->origin['id']);
+        //TODO remove this
+        $client = $tripOrder->client;
+
+        $driverData = $this->getDriverData($tripOrder->origin['id'], $client);
 
         $tripData = $tripOrder->toArray();
         $tripData[Trip::DRIVER_DISTANCE] = $driverData[TripOrder::DRIVER_DISTANCE];
