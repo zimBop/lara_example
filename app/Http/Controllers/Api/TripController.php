@@ -107,8 +107,8 @@ class TripController extends ApiController
         $stripeService->setClient($trip->client)
             ->makePayment($trip, 'Trip Payment');
 
-        $tripService->changeStatus($trip, TripStatuses::TRIP_IN_PROGRESS);
         $trip->update([Trip::PICKED_UP_AT => now()]);
+        $tripService->changeStatus($trip, TripStatuses::TRIP_IN_PROGRESS);
 
         return $this->done("Trip progress started.");
     }
@@ -124,9 +124,9 @@ class TripController extends ApiController
         return $this->done("Trip finished.");
     }
 
-    public function archive(Driver $driver, TripService $tripService)
+    public function archive(Client $client, TripService $tripService)
     {
-        $trip = $driver->active_trip;
+        $trip = $client->active_trip;
 
         $tripService->checkTrip($trip, TripStatuses::TRIP_ARCHIVED);
 
