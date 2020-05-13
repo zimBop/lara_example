@@ -75,65 +75,69 @@ class StripeService
         return $intent->client_secret;
     }
 
-    public function makePayment(Trip $trip, string $type, string $currency = 'usd')
+    public function makePayment(Trip $trip, string $type, string $currency = 'usd'): string
     {
         $customerId = $this->getCustomerId();
+        $errorData = null;
 
         try {
-            // Create a PaymentIntent with the order amount, currency, and saved payment method ID
-            // If authentication is required or the card is declined, Stripe
-            // will throw an error
-            $payment_intent = PaymentIntent::create(
-                [
-                    'amount' => $trip->price,
-                    'currency' => $currency,
-                    'payment_method' => $trip->payment_method_id,
-                    'customer' => $customerId,
-                    'confirm' => true,
-                    'off_session' => true,
-                    'metadata' => [
-                        'trip_id' => $trip->id,
-                        'type' => $type,
-                    ],
-                ]
-            );
-
-            // Send public key and PaymentIntent details to client
-//            return $response->withJson(
-//                array('succeeded' => true, 'publicKey' => $pub_key, 'clientSecret' => $payment_intent->client_secret)
-//            );
-        } catch (\Stripe\Exception\CardException $err) {
-            $error_code = $err->getError()->code;
-
-            if ($error_code == 'authentication_required') {
-                // Bring the customer back on-session to authenticate the purchase
-                // You can do this by sending an email or app notification to let them know
-                // the off-session purchase failed
-                // Use the PM ID and client_secret to authenticate the purchase
-                // without asking your customers to re-enter their details
-                Log::info(
-                    json_encode(array(
-                        'error' => 'authentication_required',
-                        'amount' => calculateOrderAmount(),
-                        'card' => $err->getError()->payment_method->card,
-                        'paymentMethod' => $err->getError()->payment_method->id,
-                        'clientSecret' => $err->getError()->payment_intent->client_secret
-                    ))
-                );
-            } else {
-                if ($error_code && $err->getError()->payment_intent != null) {
-                    // The card was declined for other reasons (e.g. insufficient funds)
-                    // Bring the customer back on-session to ask them for a new payment method
-                    Log::info(
-                        json_encode(array(
-                            'error' => $error_code,
-                            'clientSecret' => $err->getError()->payment_intent->client_secret
-                        ))
-                    );
-                } else {
-                    Log::info('Stripe Service: Unknown error occurred');
-                }
-            }
+            PaymentIntent::create([
+                'amount' => $trip->price,
+                'currency' => $currency,
+                'payment_method' => $trip->payment_method_id,
+                'customer' => $customerId,
+                'confirm' => true,
+                'off_session' => true,
+                'metadata' => [
+                    'trip_id' => $trip->id,
+                    'type' => $type,
+                ],
+            ]);
+        } catch(\Stripe\Exception\CardException $e) {
+            $errorData = $this->prepareErrorData($trip, $type, $e);
+        } catch (\Stripe\Exception\RateLimitException $e) {
+            // Too many requests made to the API too quickly
+            $errorData = $this->prepareErrorData($trip, $type, $e);
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            // Invalid parameters were supplied to Stripe's API
+            $errorData = $this->prepareErrorData($trip, $type, $e);
+        } catch (\Stripe\Exception\AuthenticationException $e) {
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+            $errorData = $this->prepareErrorData($trip, $type, $e);
+        } catch (\Stripe\Exception\ApiConnectionException $e) {
+            // Network communication with Stripe failed
+            $errorData = $this->prepareErrorData($trip, $type, $e);
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            $errorData = $this->prepareErrorData($trip, $type, $e);
+        } catch (\Exception $e) {
+            $errorData = ['message' => $e->getMessage()];
         }
+
+        if ($errorData) {
+            $this->log(json_encode($errorData));
+
+            return $errorData['message'] ?? 'Stripe error';
+        }
+
+        return '';
+    }
+
+    protected function prepareErrorData(Trip $trip, string $type, $error): array
+    {
+        return [
+            'status' => $error->getHttpStatus(),
+            'type' => $error->getError()->type,
+            'code' => $error->getError()->code,
+            'param' => $error->getError()->param,
+            'message' => $error->getError()->message,
+            'trip_id' => $trip->id,
+            'payment_type' => $type,
+        ];
+    }
+
+    protected function log(string $message): void
+    {
+        Log::channel('stripe')->info($message);
     }
 }

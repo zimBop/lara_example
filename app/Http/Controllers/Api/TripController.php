@@ -104,8 +104,12 @@ class TripController extends ApiController
 
         $tripService->checkTrip($trip, TripStatuses::TRIP_IN_PROGRESS);
 
-        $stripeService->setClient($trip->client)
+        $stripeError = $stripeService->setClient($trip->client)
             ->makePayment($trip, 'Trip Payment');
+
+        if ($stripeError) {
+            return $this->error($stripeError);
+        }
 
         $trip->update([Trip::PICKED_UP_AT => now()]);
         $tripService->changeStatus($trip, TripStatuses::TRIP_IN_PROGRESS);
