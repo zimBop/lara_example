@@ -35,7 +35,7 @@ class TripTest extends TestCase
             ]);
 
         $this->assertDatabaseMissing('trip_orders', ['id' => $models['tripOrder']->id]);
-        $this->assertDatabaseMissing('trips', ['id' => $models['trip']->id]);
+        $this->assertSoftDeleted('trips', ['id' => $models['trip']->id]);
     }
 
     public function testIsTripInProgressCannotBeCanceled(): void
@@ -80,7 +80,7 @@ class TripTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => "'Trip status changed' notify sent to the client.",
+                'message' => 'Driver arrived.',
             ]);
 
         Notification::assertSentTo($client, TripStatusChanged::class);

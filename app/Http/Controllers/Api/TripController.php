@@ -95,7 +95,7 @@ class TripController extends ApiController
 
         $tripService->changeStatus($trip, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT);
 
-        return $this->done("'Trip status changed' notify sent to the client.");
+        return $this->done("Driver arrived.");
     }
 
     public function start(Driver $driver, TripService $tripService, StripeService $stripeService)
@@ -110,6 +110,28 @@ class TripController extends ApiController
         $tripService->changeStatus($trip, TripStatuses::TRIP_IN_PROGRESS);
         $trip->update([Trip::PICKED_UP_AT => now()]);
 
-        return $this->done("'Trip status changed' notify sent to the client.");
+        return $this->done("Trip progress started.");
+    }
+
+    public function finish(Driver $driver, TripService $tripService)
+    {
+        $trip = $driver->active_trip;
+
+        $tripService->checkTrip($trip, TripStatuses::UNRATED);
+
+        $tripService->changeStatus($trip, TripStatuses::UNRATED);
+
+        return $this->done("Trip finished.");
+    }
+
+    public function archive(Driver $driver, TripService $tripService)
+    {
+        $trip = $driver->active_trip;
+
+        $tripService->checkTrip($trip, TripStatuses::TRIP_ARCHIVED);
+
+        $tripService->changeStatus($trip, TripStatuses::TRIP_ARCHIVED);
+
+        return $this->done("Trip archived.");
     }
 }

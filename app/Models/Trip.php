@@ -6,6 +6,7 @@ use App\Constants\TripStatuses;
 use App\Logic\MetricConverter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Trip
@@ -61,6 +62,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Trip extends Model
 {
+    use SoftDeletes;
+
     public const ID = 'id';
     public const CLIENT_ID = 'client_id';
     public const SHIFT_ID = 'shift_id';

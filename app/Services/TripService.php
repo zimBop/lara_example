@@ -179,7 +179,11 @@ class TripService
 
         $trip->update($data);
 
-        $trip->client->tripOrder->update($data);
+        if ($newStatus !== TripStatuses::TRIP_ARCHIVED) {
+            $trip->client->tripOrder->update($data);
+        } else {
+            $trip->client->tripOrder->delete();
+        }
 
         $trip->client->notify(new TripStatusChanged($newStatus));
     }
