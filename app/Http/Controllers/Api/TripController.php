@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Models\Client;
 use App\Models\Driver;
 use App\Models\Trip;
-use App\Notifications\DriverArrived;
 use App\Services\StripeService;
 use App\Services\TripService;
 use Illuminate\Http\Request;
@@ -71,7 +71,7 @@ class TripController extends ApiController
     public function cancel(Client $client)
     {
         if (!$client->tripOrder) {
-            return $this->error('Trip Request not found.');
+            return $this->error(TripMessages::REQUEST_NOT_FOUND);
         }
 
         if ($client->tripOrder->status < TripStatuses::TRIP_IN_PROGRESS) {
@@ -81,10 +81,10 @@ class TripController extends ApiController
                 $client->active_trip->delete();
             }
 
-            return $this->done('Trip canceled.');
+            return $this->done(TripMessages::CANCELED);
         }
 
-        return $this->done('Trip cannot be canceled. Trip in progress.');
+        return $this->done(TripMessages::CANNOT_BE_CANCELED);
     }
 
     public function arrived(Driver $driver, TripService $tripService)
@@ -95,7 +95,7 @@ class TripController extends ApiController
 
         $tripService->changeStatus($trip, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT);
 
-        return $this->done("Driver arrived.");
+        return $this->done(TripMessages::DRIVER_ARRIVED);
     }
 
     public function start(Driver $driver, TripService $tripService, StripeService $stripeService)
@@ -114,7 +114,7 @@ class TripController extends ApiController
         $trip->update([Trip::PICKED_UP_AT => now()]);
         $tripService->changeStatus($trip, TripStatuses::TRIP_IN_PROGRESS);
 
-        return $this->done("Trip progress started.");
+        return $this->done(TripMessages::STARTED);
     }
 
     public function finish(Driver $driver, TripService $tripService)
@@ -125,7 +125,7 @@ class TripController extends ApiController
 
         $tripService->changeStatus($trip, TripStatuses::UNRATED);
 
-        return $this->done("Trip finished.");
+        return $this->done(TripMessages::FINISHED);
     }
 
     public function archive(Client $client, TripService $tripService)
@@ -136,6 +136,6 @@ class TripController extends ApiController
 
         $tripService->changeStatus($trip, TripStatuses::TRIP_ARCHIVED);
 
-        return $this->done("Trip archived.");
+        return $this->done(TripMessages::ARCHIVED);
     }
 }

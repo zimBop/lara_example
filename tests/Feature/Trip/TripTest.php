@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Trip;
 
+use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Models\Client;
 use App\Models\Driver;
@@ -31,7 +32,7 @@ class TripTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Trip canceled.',
+                'message' => TripMessages::CANCELED,
             ]);
 
         $this->assertDatabaseMissing('trip_orders', ['id' => $models['tripOrder']->id]);
@@ -56,7 +57,7 @@ class TripTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Trip cannot be canceled. Trip in progress.',
+                'message' => TripMessages::CANNOT_BE_CANCELED,
             ]);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $models['tripOrder']->id]);
@@ -80,7 +81,7 @@ class TripTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Driver arrived.',
+                'message' => TripMessages::DRIVER_ARRIVED,
             ]);
 
         Notification::assertSentTo($client, TripStatusChanged::class);

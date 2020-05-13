@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\TripOrder;
 
+use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Http\Resources\DriverResource;
 use App\Http\Resources\TripOrderResource;
@@ -170,7 +171,7 @@ class TripOrderTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Trip Request not found.'
+                'message' => TripMessages::REQUEST_NOT_FOUND
             ]);
     }
 
@@ -250,7 +251,7 @@ class TripOrderTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Trip canceled.',
+                'message' => TripMessages::CANCELED,
             ]);
 
         $this->assertDatabaseMissing('trip_orders', ['id' => $tripOrder->id]);
@@ -278,7 +279,7 @@ class TripOrderTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => true,
-                'message' => 'Trip cannot be canceled. Trip in progress.',
+                'message' => TripMessages::CANNOT_BE_CANCELED,
             ]);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id]);
@@ -334,7 +335,7 @@ class TripOrderTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'done' => false,
-                'message' => 'Driver already has active trips.'
+                'message' => TripMessages::DRIVER_ALREADY_HAS_ACTIVE_TRIP
             ]);
     }
 

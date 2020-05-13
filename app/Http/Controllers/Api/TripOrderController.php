@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Http\Requests\TripOrder\ConfirmTripOrderRequest;
 use App\Http\Requests\TripOrder\StoreTripOrderRequest;
@@ -35,7 +36,7 @@ class TripOrderController extends ApiController
     public function show(Client $client)
     {
         if (!$client->tripOrder) {
-            return $this->done('Trip Request not found.');
+            return $this->done(TripMessages::REQUEST_NOT_FOUND);
         }
 
         if ($client->active_trip) {
@@ -53,7 +54,7 @@ class TripOrderController extends ApiController
     public function confirm(ConfirmTripOrderRequest $request, Client $client)
     {
         if (!$client->tripOrder) {
-            return $this->done('Trip Request not found.');
+            return $this->done(TripMessages::REQUEST_NOT_FOUND);
         }
 
         $client->tripOrder->update(array_merge(
@@ -73,15 +74,15 @@ class TripOrderController extends ApiController
     public function accept(Driver $driver, TripOrder $tripOrder, TripService $tripService)
     {
         if ((int)$tripOrder->status !== TripStatuses::LOOKING_FOR_DRIVER) {
-            return $this->error('Trip Request already accepted or not confirmed.');
+            return $this->error(TripMessages::REQUEST_ALREADY_ACCEPTED);
         }
 
         if (!$driver->active_shift) {
-            return $this->error('Driver doesnt have active shift.');
+            return $this->error(TripMessages::DRIVER_HAS_NOT_SHIFT);
         }
 
         if ($driver->active_trip) {
-            return $this->error('Driver already has active trips.');
+            return $this->error(TripMessages::DRIVER_ALREADY_HAS_ACTIVE_TRIP);
         }
 
         $trip = $tripService->createTrip($tripOrder, $driver);
