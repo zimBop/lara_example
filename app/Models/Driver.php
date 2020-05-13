@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\TripStatuses;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -113,6 +114,10 @@ class Driver extends Authenticatable
             return null;
         }
 
-        return $this->active_shift->trips()->active()->first();
+        return $this->active_shift
+            ->trips()
+            ->active()
+            ->where(Trip::STATUS, '<', TripStatuses::UNRATED)
+            ->first();
     }
 }
