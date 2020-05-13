@@ -154,7 +154,7 @@ class TripService
 
         $tripData = $tripOrder->toArray();
         $tripData[Trip::DRIVER_DISTANCE] = $driverData[TripOrder::DRIVER_DISTANCE];
-        $tripData[Trip::CO2] = $driverData[TripOrder::DRIVER_DISTANCE];
+        $tripData[Trip::CO2] = $tripOrder->distance;
         $tripData[Trip::WAIT_DURATION] = (int)$driverData[TripOrder::WAIT_DURATION];
         $tripData[Trip::SHIFT_ID] = $driver->activeShift->id;
         $tripData[Trip::STATUS] = TripStatuses::DRIVER_IS_ON_THE_WAY;
