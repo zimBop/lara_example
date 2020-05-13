@@ -106,6 +106,7 @@ class Trip extends Model
         self::OVERVIEW_POLYLINE => 'array',
         self::CO2 => 'float',
         self::STATUS => 'integer',
+        self::PICKED_UP_AT => 'timestamp',
     ];
 
     public function client()
