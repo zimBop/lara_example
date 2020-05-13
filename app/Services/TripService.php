@@ -36,7 +36,7 @@ class TripService
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
         $clientData = $this->getClientData($request);
-        $driverData = $this->getDriverData($clientData[TripOrder::ORIGIN]['id']);
+        $driverData = $this->getDriverData($clientData[TripOrder::ORIGIN]['id'], $client);
 
         return TripOrder::updateOrCreate(
             [TripOrder::CLIENT_ID => $client->id],
@@ -105,12 +105,17 @@ class TripService
         $destination['coordinates'] = $routeLeg['end_location'];
     }
 
-    protected function getDriverData($clientOrigin): array
+    protected function getDriverData($clientOrigin, $client = null): array
     {
+        //TODO remove $client param
         //TODO find closest driver location
 //        $driver = $this->findClosestDriver($clientOrigin);
 
         $driverLocation = '41.767907,-72.682805';
+
+        if ($client && config('app.env') === 'dev' && $client->id === 96) {
+            $driverLocation = '47.935618,33.422442';
+        }
 
         $response = $this->requestDirectionsApi(
             [
