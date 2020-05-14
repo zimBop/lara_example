@@ -75,25 +75,31 @@ class StripeService
         return $intent->client_secret;
     }
 
-    public function makePayment(Trip $trip, string $type, string $currency = 'usd'): string
-    {
+    public function makePayment(
+        Trip $trip,
+        string $type,
+        int $amount = null,
+        string $payment_method = null
+    ): string {
         $customerId = $this->getCustomerId();
         $errorData = null;
 
         try {
-            PaymentIntent::create([
-                'amount' => $trip->price,
-                'currency' => $currency,
-                'payment_method' => $trip->payment_method_id,
-                'customer' => $customerId,
-                'confirm' => true,
-                'off_session' => true,
-                'metadata' => [
-                    'trip_id' => $trip->id,
-                    'type' => $type,
-                ],
-            ]);
-        } catch(\Stripe\Exception\CardException $e) {
+            PaymentIntent::create(
+                [
+                    'amount' => $amount ?: $trip->price,
+                    'currency' => 'usd',
+                    'payment_method' => $payment_method ?: $trip->payment_method_id,
+                    'customer' => $customerId,
+                    'confirm' => true,
+                    'off_session' => true,
+                    'metadata' => [
+                        'trip_id' => $trip->id,
+                        'type' => $type,
+                    ],
+                ]
+            );
+        } catch (\Stripe\Exception\CardException $e) {
             $errorData = $this->prepareErrorData($trip, $type, $e);
         } catch (\Stripe\Exception\RateLimitException $e) {
             // Too many requests made to the API too quickly

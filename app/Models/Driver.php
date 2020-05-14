@@ -54,7 +54,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  */
 class Driver extends Authenticatable
 {
-    use HasMultiAuthApiTokens, Notifiable, SoftDeletes, CanReceiveIosPush;
+    use HasMultiAuthApiTokens, Notifiable, SoftDeletes, CanReceiveIosPush, CanBeRated;
 
     public const ID = 'id';
     public const FIRST_NAME = 'first_name';
@@ -72,6 +72,11 @@ class Driver extends Authenticatable
         self::LAST_NAME,
         self::IS_ACTIVE,
         self::PHONE,
+        self::RATING,
+    ];
+
+    protected $casts = [
+        self::RATING => 'float',
     ];
 
     /**
@@ -81,6 +86,24 @@ class Driver extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return sprintf('%s %s', $this->first_name, $this->last_name);
+    }
+
+    public function getActiveShiftAttribute()
+    {
+        return $this->shifts()->active()->first();
+    }
+
+    public function getActiveTripAttribute()
+    {
+        if (!$this->active_shift) {
+            return null;
+        }
+
+        return $this->active_shift
+            ->trips()
+            ->active()
+            ->where(Trip::STATUS, '<', TripStatuses::UNRATED)
+            ->first();
     }
 
     public function setPasswordAttribute($value): void
@@ -103,21 +126,8 @@ class Driver extends Authenticatable
         return $this->hasMany(Shift::class);
     }
 
-    public function getActiveShiftAttribute()
+    public function tips()
     {
-        return $this->shifts()->active()->first();
-    }
-
-    public function getActiveTripAttribute()
-    {
-        if (!$this->active_shift) {
-            return null;
-        }
-
-        return $this->active_shift
-            ->trips()
-            ->active()
-            ->where(Trip::STATUS, '<', TripStatuses::UNRATED)
-            ->first();
+        return $this->hasMany(Tip::class);
     }
 }
