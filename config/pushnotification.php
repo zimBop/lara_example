@@ -25,6 +25,6 @@ return [
             . (env('APP_ENV') === 'production' ? 'apns.pem' : 'apns-dev.pem'),
         'passPhrase' => '1234', //Optional
 //        'passFile' => __DIR__ . '/iosCertificates/yourKey.pem', //Optional
-        'dry_run' => env('APP_ENV') !== 'production',
+        'dry_run' => env('IOS_PUSH_IS_SANDBOX', true),
     ],
 ];
