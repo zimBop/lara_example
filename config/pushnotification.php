@@ -22,7 +22,7 @@ return [
          *
          */
         'certificate' => __DIR__ . '/iosCertificates/'
-            . (env('APP_ENV') === 'production' ? 'apns.pem' : 'apns-dev.pem'),
+            . (env('IOS_PUSH_IS_SANDBOX', true) ? 'apns-dev.pem' : 'apns.pem'),
         'passPhrase' => '1234', //Optional
 //        'passFile' => __DIR__ . '/iosCertificates/yourKey.pem', //Optional
         'dry_run' => env('IOS_PUSH_IS_SANDBOX', true),
