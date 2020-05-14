@@ -11,7 +11,7 @@ use App\Http\Resources\VehicleResource;
 use App\Models\Shift;
 use App\Models\Trip;
 use App\Models\TripOrder;
-use App\Notifications\TripOrderAccepted;
+use App\Notifications\TripStatusChanged;
 use GoogleMaps\Directions;
 use SMartins\PassportMultiauth\PassportMultiauth;
 use Tests\TestCase;
@@ -195,7 +195,7 @@ class TripOrderTest extends TestCase
         );
 
         $client = $tripOrder->client;
-        Notification::assertSentTo($client, TripOrderAccepted::class);
+        Notification::assertSentTo($client, TripStatusChanged::class);
 
         $tripOrder->refresh();
         $this->assertEquals(TripStatuses::DRIVER_IS_ON_THE_WAY, $tripOrder->status);

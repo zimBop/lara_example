@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Constants\TripStatuses;
 use Edujugon\PushNotification\Channels\ApnChannel;
 use Edujugon\PushNotification\Messages\PushMessage;
 use Illuminate\Bus\Queueable;
@@ -13,10 +12,12 @@ class TripStatusChanged extends Notification
     use Queueable;
 
     public $status;
+    public $tripId;
 
-    public function __construct(int $status)
+    public function __construct(int $status, int $tripId)
     {
         $this->status = $status;
+        $this->tripId = $tripId;
     }
 
     /**
@@ -34,6 +35,7 @@ class TripStatusChanged extends Notification
     {
         return (new PushMessage())
             ->title('Trip status changed')
+            ->category($this->tripId)
             ->extra([
                 'status' => $this->status,
                 'type' => 'trip_status',

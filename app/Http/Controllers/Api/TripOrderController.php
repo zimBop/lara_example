@@ -11,7 +11,7 @@ use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Driver;
 use App\Models\TripOrder;
-use App\Notifications\TripOrderAccepted;
+use App\Notifications\TripStatusChanged;
 use App\Services\TripService;
 
 class TripOrderController extends ApiController
@@ -87,7 +87,7 @@ class TripOrderController extends ApiController
 
         $trip = $tripService->createTrip($tripOrder, $driver);
 
-        $trip->client->notify(new TripOrderAccepted());
+        $trip->client->notify(new TripStatusChanged(TripStatuses::DRIVER_IS_ON_THE_WAY, $trip->id));
 
         $tripOrder->update([TripOrder::STATUS => TripStatuses::DRIVER_IS_ON_THE_WAY]);
 

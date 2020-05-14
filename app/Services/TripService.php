@@ -193,6 +193,6 @@ class TripService
             $trip->client->tripOrder->delete();
         }
 
-        $trip->client->notify(new TripStatusChanged($newStatus));
+        $trip->client->notify(new TripStatusChanged($newStatus, $trip->id));
     }
 }
