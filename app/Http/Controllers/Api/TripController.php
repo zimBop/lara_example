@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Http\Requests\Client\RateDriverRequest;
-use App\Http\Resources\TripCollection;
 use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Driver;
@@ -19,11 +18,11 @@ class TripController extends ApiController
 {
     /**
      * @param Client $client
-     * @return TripCollection
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Client $client)
     {
-        return new TripCollection($client->trips()->archived()->paginate(20));
+        return TripResource::collection($client->trips()->archived()->paginate(20));
     }
 
     /**
