@@ -5,69 +5,33 @@ namespace App\Http\Controllers\Api;
 use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Http\Requests\Client\RateDriverRequest;
+use App\Http\Resources\TripCollection;
+use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Driver;
 use App\Models\Tip;
 use App\Models\Trip;
 use App\Services\StripeService;
 use App\Services\TripService;
-use Illuminate\Http\Request;
 
 class TripController extends ApiController
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Client $client
+     * @return TripCollection
      */
-    public function index()
+    public function index(Client $client)
     {
-        //
+        return new TripCollection($client->trips()->archived()->paginate(20));
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Trip $trip
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function show(Client $client, Trip $trip)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return $this->data(new TripResource($trip));
     }
 
     public function cancel(Client $client)

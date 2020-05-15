@@ -150,4 +150,9 @@ class Trip extends Model
         return $query->where(self::STATUS, '!=', TripStatuses::TRIP_ARCHIVED)
             ->where(self::CREATED_AT, '>', now()->subDay());
     }
+
+    public function scopeArchived(Builder $query)
+    {
+        return $query->whereStatus(TripStatuses::TRIP_ARCHIVED);
+    }
 }

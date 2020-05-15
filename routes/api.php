@@ -45,6 +45,10 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
         Route::post('clients/{client}/trip/cancel', 'Api\TripController@cancel')->name('trip.cancel');
         Route::post('clients/{client}/trip/rate', 'Api\TripController@rate')->name('trip.rate');
         Route::post('clients/{client}/trip/archive', 'Api\TripController@archive')->name('trip.archive');
+
+        Route::get('clients/{client}/trips', 'Api\TripController@index')->name('clients.trips.index');
+        Route::get('clients/{client}/trips/{trip}', 'Api\TripController@show')->name('clients.trips.show')
+            ->middleware('can:view,trip');
     });
 
     Route::get('/places-autocomplete', 'Api\Google\PlacesAutocompleteController')->name('google.places-autocomplete');
