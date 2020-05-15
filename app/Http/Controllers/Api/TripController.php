@@ -13,6 +13,7 @@ use App\Models\Tip;
 use App\Models\Trip;
 use App\Services\StripeService;
 use App\Services\TripService;
+use Illuminate\Database\Eloquent\Model;
 
 class TripController extends ApiController
 {
@@ -55,13 +56,7 @@ class TripController extends ApiController
 
     public function arrived(Driver $driver, TripService $tripService)
     {
-        $trip = $driver->active_trip;
-
-        $tripService->checkTrip($trip, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT);
-
-        $tripService->changeStatus($trip, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT);
-
-        return $this->done(TripMessages::DRIVER_ARRIVED);
+        return $this->changeTripStatus($driver, $tripService, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT, TripMessages::DRIVER_ARRIVED);
     }
 
     public function start(Driver $driver, TripService $tripService, StripeService $stripeService)
@@ -85,13 +80,7 @@ class TripController extends ApiController
 
     public function finish(Driver $driver, TripService $tripService)
     {
-        $trip = $driver->active_trip;
-
-        $tripService->checkTrip($trip, TripStatuses::UNRATED);
-
-        $tripService->changeStatus($trip, TripStatuses::UNRATED);
-
-        return $this->done(TripMessages::FINISHED);
+        return $this->changeTripStatus($driver, $tripService, TripStatuses::UNRATED, TripMessages::FINISHED);
     }
 
     public function rate(RateDriverRequest $request, Client $client, TripService $tripService, StripeService $stripeService)
@@ -124,12 +113,17 @@ class TripController extends ApiController
 
     public function archive(Client $client, TripService $tripService)
     {
-        $trip = $client->active_trip;
+        return $this->changeTripStatus($client, $tripService, TripStatuses::TRIP_ARCHIVED, TripMessages::ARCHIVED);
+    }
 
-        $tripService->checkTrip($trip, TripStatuses::TRIP_ARCHIVED);
+    protected function changeTripStatus(Model $model, TripService $tripService, $status, $message)
+    {
+        $trip = $model->active_trip;
 
-        $tripService->changeStatus($trip, TripStatuses::TRIP_ARCHIVED);
+        $tripService->checkTrip($trip, $status);
 
-        return $this->done(TripMessages::ARCHIVED);
+        $tripService->changeStatus($trip, $status);
+
+        return $this->done($message);
     }
 }
