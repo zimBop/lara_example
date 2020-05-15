@@ -17,7 +17,7 @@ class DriverResource extends JsonResource
     {
         return [
             'full_name' => $this->full_name,
-            'image' => 'https://homepages.cae.wisc.edu/~ece533/images/frymire.png',
+            'image' => 'https://electra.ag.digital/storage/driver.svg',
             Driver::RATING => $this->rating,
             // Driver::PHONE return only digits
             Driver::PHONE => '18152478181',
