@@ -27,6 +27,7 @@ class TripOrderResource extends JsonResource
             TripOrder::WAYPOINTS => $this->waypoints,
             TripOrder::STATUS => $this->status,
             TripOrder::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
+            TripOrder::CREATED_AT_TIMESTAMP => $this->created_at->timestamp,
         ];
     }
 }

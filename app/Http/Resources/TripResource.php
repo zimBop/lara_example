@@ -30,6 +30,7 @@ class TripResource extends JsonResource
             Trip::CO2 => $this->co2,
             Trip::PICKED_UP_AT => $this->picked_up_at,
             Trip::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
+            Trip::CREATED_AT_TIMESTAMP => $this->created_at->timestamp,
             'driver' => new DriverResource($this->shift->driver),
             'vehicle' => new VehicleResource($this->shift->vehicle),
         ];

@@ -82,6 +82,7 @@ class Trip extends Model
     public const MESSAGE_FOR_DRIVER = 'message_for_driver';
     public const PAYMENT_METHOD_ID = 'payment_method_id';
     public const PICKED_UP_AT = 'picked_up_at';
+    public const CREATED_AT_TIMESTAMP = 'created_at_timestamp';
 
     protected $fillable = [
         self::CLIENT_ID,
@@ -131,6 +132,11 @@ class Trip extends Model
         $duration = $this->wait_duration - now()->diffInSeconds($this->created_at);
 
         return $duration > 0 ? $duration : 0 ;
+    }
+
+    public function getCreatedAtTimestampAttribute()
+    {
+        return $this->created_at->timestamp;
     }
 
     public function setCo2Attribute($meters)
