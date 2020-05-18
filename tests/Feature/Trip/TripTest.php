@@ -162,6 +162,9 @@ class TripTest extends TestCase
         $driver->refresh();
 
         $this->assertEquals($params['rating'], $driver->rating);
+
+        $client->refresh();
+        $this->assertEquals($client->trips()->archived()->get()->sum('co2'), $client->co2_sum);
     }
 
     protected function prepareModels(Client $client, int $status, Driver $driver = null): array
