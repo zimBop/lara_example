@@ -62,7 +62,6 @@ class TripOrder extends Model
     public const DRIVER_DISTANCE = 'driver_distance';
     public const MESSAGE_FOR_DRIVER = 'message_for_driver';
     public const PAYMENT_METHOD_ID = 'payment_method_id';
-    public const CREATED_AT_TIMESTAMP = 'created_at_timestamp';
 
     protected $fillable = [
         self::CLIENT_ID,
@@ -90,10 +89,5 @@ class TripOrder extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
-    }
-
-    public function getCreatedAtTimestampAttribute()
-    {
-        return $this->created_at->timestamp;
     }
 }
