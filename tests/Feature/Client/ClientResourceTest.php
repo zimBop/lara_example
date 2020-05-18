@@ -2,9 +2,13 @@
 
 namespace Tests\Feature\Client;
 
+use App\Constants\Disk;
 use App\Http\Resources\ClientResource;
+use App\Models\Avatar;
 use App\Models\Client;
 use Tests\TestCase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ClientResourceTest extends TestCase
 {
@@ -68,6 +72,7 @@ class ClientResourceTest extends TestCase
             Client::EMAIL => $this->faker->email,
             Client::BIRTHDAY => $this->faker->date('m/d/Y'),
             Client::PASSWORD => $this->faker->password(6),
+            Avatar::FILE_INPUT_NAME => UploadedFile::fake()->image('fake.jpg')
         ];
 
         $response = $this->patchJson(
@@ -77,6 +82,7 @@ class ClientResourceTest extends TestCase
 
         unset($data[Client::PASSWORD]);
         unset($data[Client::BIRTHDAY]);
+        unset($data[Avatar::FILE_INPUT_NAME]);
         $data[Client::ID] = $client->id;
         $data[Client::PHONE] = $client->phone;
 
@@ -87,9 +93,10 @@ class ClientResourceTest extends TestCase
                  'data' => $data,
              ]);
 
-        // Password not required in case $client->isRegistrationCompleted()
-        // So errors will differ and we must check them again
-        $this->checkPatchClientValidationErrors($client);
+        $this->assertDatabaseHas('avatars', ['model_id' => $client->id]);
+
+        $client->refresh();
+        Storage::disk(Disk::CLIENT_AVATARS)->assertExists($client->avatar->filename);
     }
 
     protected function checkPatchClientValidationErrors(Client $client)
@@ -104,11 +111,8 @@ class ClientResourceTest extends TestCase
         $errors = [
             Client::FIRST_NAME,
             Client::LAST_NAME,
+            Client::PASSWORD,
         ];
-
-        if (!$client->isRegistrationCompleted()) {
-            $errors[] = Client::PASSWORD;
-        }
 
         $response
             ->assertStatus(422)

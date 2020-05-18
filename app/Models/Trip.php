@@ -59,6 +59,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Trip whereWaypoints($value)
  * @mixin \Eloquent
  * @property-read mixed $wait_duration_adjusted
+ * @property-read mixed $created_at_timestamp
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Trip archived()
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Trip onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Trip withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Trip withoutTrashed()
  */
 class Trip extends Model
 {

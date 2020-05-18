@@ -56,6 +56,13 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @property-read mixed $active_trip
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Trip[] $trips
  * @property-read int|null $trips_count
+ * @property float|null $rating
+ * @property float|null $co2_sum Shows how much CO2 emission reduced in pounds for all time
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $avatar
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Review[] $reviews
+ * @property-read int|null $reviews_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereCo2Sum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereRating($value)
  */
 class Client extends Authenticatable
 {
@@ -175,5 +182,10 @@ class Client extends Authenticatable
     public function trips()
     {
         return $this->hasMany(Trip::class);
+    }
+
+    public function avatar()
+    {
+        return $this->morphOne(Avatar::class, 'model');
     }
 }

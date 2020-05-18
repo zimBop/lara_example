@@ -51,6 +51,12 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Shift[] $shifts
  * @property-read int|null $shifts_count
  * @property-read mixed $active_trip
+ * @property float|null $rating
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Review[] $reviews
+ * @property-read int|null $reviews_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tip[] $tips
+ * @property-read int|null $tips_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver whereRating($value)
  */
 class Driver extends Authenticatable
 {

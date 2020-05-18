@@ -6,7 +6,9 @@ use App\Http\Requests\Client\ResetPasswordRequest;
 use App\Http\Requests\Client\StoreRequest;
 use App\Http\Requests\Client\UpdateRequest;
 use App\Http\Resources\ClientResource;
+use App\Models\Avatar;
 use App\Models\Client;
+use App\Services\AvatarService;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\VerificationCodeService;
@@ -81,7 +83,12 @@ class ClientController extends ApiController
             unset($input[Client::PASSWORD]);
         }
 
+        if ($request->hasFile(Avatar::FILE_INPUT_NAME)) {
+            AvatarService::update($request->file(Avatar::FILE_INPUT_NAME), $client);
+        }
+
         $client->update($input);
+        $client->refresh();
 
         return $this->data(new ClientResource($client));
     }

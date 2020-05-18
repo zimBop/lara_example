@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Services\AvatarService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Client;
 
@@ -24,6 +25,7 @@ class ClientResource extends JsonResource
             Client::EMAIL => $this->email,
             Client::RATING => $this->rating,
             Client::CO2_SUM => $this->co2_sum,
+            'avatar' => $this->avatar ? AvatarService::getUrl($this->avatar) : null,
         ];
     }
 }
