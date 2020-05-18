@@ -97,6 +97,8 @@ class ClientResourceTest extends TestCase
 
         $client->refresh();
         Storage::disk(Disk::CLIENT_AVATARS)->assertExists($client->avatar->filename);
+
+        Storage::disk(Disk::CLIENT_AVATARS)->delete($client->avatar->filename);
     }
 
     protected function checkPatchClientValidationErrors(Client $client)

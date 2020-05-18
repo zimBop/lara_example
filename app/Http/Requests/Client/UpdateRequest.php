@@ -38,11 +38,10 @@ class UpdateRequest extends FormRequest
             Client::EMAIL => ['email', 'max:255', 'unique:clients' . $clientIdPart],
             Client::BIRTHDAY => ['date_format:m/d/Y'],
             Avatar::FILE_INPUT_NAME => ['image', 'max:10000'],
-            Client::PASSWORD => ['string', 'min:6', 'max:255'],
         ];
 
         if ($client && !$client->isRegistrationCompleted()) {
-            $rules[Client::PASSWORD][] = 'required';
+            $rules[Client::PASSWORD] = ['required', 'string', 'min:6', 'max:255'];
             $rules[Client::FIRST_NAME][] = 'required';
             $rules[Client::LAST_NAME][] = 'required';
         }
