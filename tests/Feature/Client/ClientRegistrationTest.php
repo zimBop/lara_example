@@ -4,6 +4,7 @@ namespace Tests\Feature\Client;
 
 use App\Http\Resources\ClientResource;
 use App\Models\Client;
+use App\Models\VerificationCode;
 use App\Services\ClientService;
 use App\Services\NexmoService;
 use App\Services\VerificationCodeService;
@@ -36,6 +37,9 @@ class ClientRegistrationTest extends TestCase
         ]);
 
         $client = Client::wherePhone($phone)->first();
+        $this->assertDatabaseHas('verification_codes', [
+            VerificationCode::CLIENT_ID => $client->id,
+        ]);
 
         $response
             ->assertStatus(200)

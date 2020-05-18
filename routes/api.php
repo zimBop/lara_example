@@ -28,6 +28,13 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
             'clients.reset-password'
         );
 
+        Route::post('/clients/send-code/{client}', 'Api\ClientController@sendCode')->name(
+            'clients.send-code'
+        );
+        Route::patch('/clients/change-phone/{client}', 'Api\ClientController@changePhone')->name(
+            'clients.change-phone'
+        );
+
         Route::get('/stripe/ephemeral-key/{client}', 'Api\StripeController@getEphemeralKey')->name(
             'stripe.ephemeral-key'
         );

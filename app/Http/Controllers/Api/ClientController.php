@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Client\ChangePhoneRequest;
 use App\Http\Requests\Client\ResetPasswordRequest;
 use App\Http\Requests\Client\StoreRequest;
 use App\Http\Requests\Client\UpdateRequest;
@@ -161,5 +162,40 @@ class ClientController extends ApiController
         $passwordService->setNewPassword($request->input());
 
         return $this->done('Password reset successfully.');
+    }
+
+    public function sendCode(Client $client, StoreRequest $request, NexmoService $nexmo, VerificationCodeService $codeService)
+    {
+        $phone = $request->input('phone');
+
+        $codeService->setClient($client);
+
+        if (!$codeService->canSend()) {
+            return $this->error(VerificationCodeService::getCannotSendMessage());
+        }
+
+        $verificationCode = $codeService->get();
+        $message = "Your verification code for new phone number: {$verificationCode->code}";
+        $nexmoResponse = $nexmo->sendSMS($phone, $message);
+
+        if (!$nexmoResponse['sent']) {
+            return $this->error($nexmoResponse['message']);
+        }
+
+        return $this->done('SMS with verification code has been sent to the new phone.');
+    }
+
+    public function changePhone(Client $client, ChangePhoneRequest $request)
+    {
+        $phone = $request->input('phone');
+        $code = $request->input('code');
+
+        if (!$client->validateForPassportPasswordGrant($code)) {
+            return $this->error('Invalid SMS code.');
+        }
+
+        $client->update([Client::PHONE => $phone]);
+
+        return $this->done('Phone number has been successfully changed.');
     }
 }
