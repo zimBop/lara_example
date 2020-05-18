@@ -191,8 +191,17 @@ class TripService
             $trip->client->tripOrder->update($data);
         } else {
             $trip->client->tripOrder->delete();
+
+            $this->updateClientsCo2Sum($trip->client);
         }
 
         $trip->client->notify(new TripStatusChanged($newStatus, $trip->id));
+    }
+
+    protected function updateClientsCo2Sum(Client $client)
+    {
+        $co2Sum = $client->trips()->archived()->get()->sum('co2');
+
+        $client->update([Client::CO2_SUM => $co2Sum]);
     }
 }

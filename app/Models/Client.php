@@ -59,7 +59,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  */
 class Client extends Authenticatable
 {
-    use HasMultiAuthApiTokens, Notifiable, CanReceiveIosPush;
+    use HasMultiAuthApiTokens, Notifiable, CanReceiveIosPush, CanBeRated;
 
     public const ID = 'id';
     public const PHONE = 'phone';
@@ -71,6 +71,8 @@ class Client extends Authenticatable
     public const PASSWORD = 'password';
     public const IS_ACTIVE = 'is_active';
     public const CUSTOMER_ID = 'customer_id';
+    public const RATING = 'rating';
+    public const CO2_SUM = 'co2_sum';
 
     protected $fillable = [
         self::BIRTHDAY,
@@ -81,6 +83,8 @@ class Client extends Authenticatable
         self::LAST_NAME,
         self::PHONE,
         self::IS_ACTIVE,
+        self::RATING,
+        self::CO2_SUM,
     ];
 
     protected $hidden = [
@@ -134,6 +138,11 @@ class Client extends Authenticatable
         return (new \DateTime())->diff(new \DateTime($this->birthday))->y;
     }
 
+    public function getActiveTripAttribute()
+    {
+        return $this->trips()->active()->first();
+    }
+
     public function setPasswordAttribute($value): void
     {
         $this->attributes[self::PASSWORD] = Hash::make($value);
@@ -166,10 +175,5 @@ class Client extends Authenticatable
     public function trips()
     {
         return $this->hasMany(Trip::class);
-    }
-
-    public function getActiveTripAttribute()
-    {
-        return $this->trips()->active()->first();
     }
 }
