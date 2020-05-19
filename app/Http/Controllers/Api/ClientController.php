@@ -45,12 +45,10 @@ class ClientController extends ApiController
             return $this->error($nexmoResponse['message']);
         }
 
-        return $this->data(
-            [
-                'client' => new ClientResource($client),
-                'is_registration_completed' => $client->isRegistrationCompleted()
-            ]
-        );
+        return $this->data([
+            'client' => new ClientResource($client),
+            'is_registration_completed' => $client->isRegistrationCompleted()
+        ]);
     }
 
     /**
@@ -88,11 +86,11 @@ class ClientController extends ApiController
             AvatarService::update($request->file(Avatar::FILE_INPUT_NAME), $client);
         }
 
-        if ($request->input('delete_avatar')) {
+        if ($request->has('delete_avatar')) {
             AvatarService::delete($client);
         }
 
-        if ($request->input('delete_email')) {
+        if ($request->has('delete_email')) {
             $input[Client::EMAIL] = null;
         }
 
