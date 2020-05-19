@@ -94,6 +94,18 @@ class ClientController extends ApiController
         return $this->data(new ClientResource($client));
     }
 
+    public function deleteAvatar(Client $client)
+    {
+        if ($client->avatar) {
+            $client->avatar()->delete();
+            AvatarService::delete($client->avatar->filename);
+
+            return $this->done('Avatar deleted.');
+        }
+
+        return $this->done('The client did not have an avatar.');
+    }
+
     /**
      * @param Client $client
      * @param RefreshTokenRepository $refreshTokenRepository
