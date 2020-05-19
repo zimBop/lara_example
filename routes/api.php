@@ -35,10 +35,6 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
             'clients.change-phone'
         );
 
-        Route::patch('/clients/delete-avatar/{client}', 'Api\ClientController@deleteAvatar')->name(
-            'clients.delete-avatar'
-        );
-
         Route::get('/stripe/ephemeral-key/{client}', 'Api\StripeController@getEphemeralKey')->name(
             'stripe.ephemeral-key'
         );

@@ -37,7 +37,7 @@ class AvatarService
      * @param string $disk
      * @return string
      */
-    public static function delete(?string $fileName, $disk = Disk::CLIENT_AVATARS): string
+    protected static function deleteFile(?string $fileName, $disk = Disk::CLIENT_AVATARS): string
     {
         if (!$fileName) {
             return '';
@@ -59,15 +59,20 @@ class AvatarService
 
     public static function update(?UploadedFile $file, Model $model, string $disk = Disk::CLIENT_AVATARS)
     {
-        if ($model->avatar) {
-            $model->avatar()->delete();
-            self::delete($model->avatar->filename, $disk);
-        }
+        self::delete($model);
 
         $avatar = self::add($file);
 
         if ($avatar) {
             $model->avatar()->save($avatar);
+        }
+    }
+
+    public static function delete(Model $model, string $disk = Disk::CLIENT_AVATARS)
+    {
+        if ($model->avatar) {
+            $model->avatar()->delete();
+            self::deleteFile($model->avatar->filename, $disk);
         }
     }
 }

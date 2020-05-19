@@ -88,22 +88,18 @@ class ClientController extends ApiController
             AvatarService::update($request->file(Avatar::FILE_INPUT_NAME), $client);
         }
 
+        if ($request->input('delete_avatar')) {
+            AvatarService::delete($client);
+        }
+
+        if ($request->input('delete_email')) {
+            $input[Client::EMAIL] = null;
+        }
+
         $client->update($input);
         $client->refresh();
 
         return $this->data(new ClientResource($client));
-    }
-
-    public function deleteAvatar(Client $client)
-    {
-        if ($client->avatar) {
-            $client->avatar()->delete();
-            AvatarService::delete($client->avatar->filename);
-
-            return $this->done('Avatar deleted.');
-        }
-
-        return $this->done('The client did not have an avatar.');
     }
 
     /**
