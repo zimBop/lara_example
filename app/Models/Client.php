@@ -103,6 +103,7 @@ class Client extends Authenticatable
     protected $casts = [
         self::IS_ACTIVE => 'boolean',
         self::BIRTHDAY => 'date',
+        self::CO2_SUM => 'float',
     ];
 
     /**
