@@ -282,15 +282,11 @@ services:
         - frontend
         - backend
 
-### PostgreSQL ###########################################
-    postgres:
-      build:
-        context: ./postgres
-        args:
-          - POSTGRES_VERSION=${POSTGRES_VERSION}
+### PostgreSQL PostGis ###################################
+    postgres-postgis:
+      build: ./postgres-postgis
       volumes:
         - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data
-        - ${POSTGRES_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
       ports:
         - "${POSTGRES_PORT}:5432"
       environment:

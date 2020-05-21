@@ -50,6 +50,7 @@
             "App\\": "app/"
         },
         "files": [
+            "bootstrap/functions.php",
             "routes/names.php"
         ],
         "classmap": [

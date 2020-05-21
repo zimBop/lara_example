@@ -139,6 +139,8 @@ return [
         'ios_link' => 'electra://reset_password',
     ],
 
+    'skip_route_bounds_validation' => env('SKIP_ROUTE_BOUNDS_VALIDATION', false),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

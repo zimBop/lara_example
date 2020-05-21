@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Exceptions\Google\GoogleApiException;
 use App\Exceptions\Trip\TripException;
@@ -12,6 +13,7 @@ use App\Models\Trip;
 use App\Models\TripOrder;
 use App\Logic\TripPriceCalculator;
 use App\Notifications\TripStatusChanged;
+use \Illuminate\Validation\ValidationException;
 
 class TripService
 {
@@ -71,6 +73,8 @@ class TripService
 
         $this->addCoordinates($route['legs'][0], $origin, $destination, $waypoints);
 
+        $this->checkRouteBounds($response['routes'][0]['bounds'], $origin);
+
         return [
             TripOrder::ORIGIN => $origin,
             TripOrder::DESTINATION => $destination,
@@ -79,6 +83,19 @@ class TripService
             TripOrder::TRIP_DURATION => $route['legs'][0]['duration']['value'],
             TripOrder::OVERVIEW_POLYLINE => $route['overview_polyline'],
         ];
+    }
+
+    protected function checkRouteBounds(array $bounds, array $origin)
+    {
+        if (app()->runningUnitTests() || config('app.skip_route_bounds_validation')) {
+            return true;
+        }
+
+        $cityId = PostgisService::findClosestCityId($origin['coordinates']['lng'], $origin['coordinates']['lat']);
+        $isRouteBoundsInCity = PostgisService::isCityPolygonContainsRouteBounds($cityId, $bounds);
+        if (!$isRouteBoundsInCity) {
+            throw ValidationException::withMessages(['route' => TripMessages::ROUTE_BOUNDS_VALIDATION_ERROR]);
+        }
     }
 
     protected function prepareWaypoints(array &$directionsApiParams, ?array $waypoints): void
