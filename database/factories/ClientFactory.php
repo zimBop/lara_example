@@ -15,6 +15,7 @@ $factory->define(Client::class, static function (Faker $faker) {
         Client::PASSWORD => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         Client::BIRTHDAY => $faker->date(),
         Client::IS_ACTIVE => $faker->boolean(),
+        Client::FREE_TRIPS => $faker->randomNumber(1),
         Client::CREATED_AT => $faker->dateTimeBetween('-11 days', '-7 days', 'America/New_York'),
         Client::UPDATED_AT => $faker->dateTimeBetween('-4 days', 'now', 'America/New_York'),
     ];

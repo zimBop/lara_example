@@ -17,7 +17,6 @@ Route::middleware('oauth.providers')->post('oauth/token', 'Api\TokenController@g
 Route::post('/clients', 'Api\ClientController@store')->name('clients.store');
 
 Route::middleware('multiauth:client', 'scope:access-client')->group(function () {
-
     Route::middleware('can:access,client')->group(function () {
         Route::post('/clients/logout/{client}', 'Api\ClientController@logout')->name('clients.logout');
 
@@ -33,6 +32,10 @@ Route::middleware('multiauth:client', 'scope:access-client')->group(function () 
         );
         Route::patch('/clients/change-phone/{client}', 'Api\ClientController@changePhone')->name(
             'clients.change-phone'
+        );
+
+        Route::post('/clients/invite-friend/{client}', 'Api\ClientController@inviteFriend')->name(
+            'clients.invite-friend'
         );
 
         Route::get('/stripe/ephemeral-key/{client}', 'Api\StripeController@getEphemeralKey')->name(

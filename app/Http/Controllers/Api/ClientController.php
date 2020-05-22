@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\ClientMessages;
 use App\Http\Requests\Client\ChangePhoneRequest;
 use App\Http\Requests\Client\ResetPasswordRequest;
 use App\Http\Requests\Client\StoreRequest;
@@ -9,7 +10,9 @@ use App\Http\Requests\Client\UpdateRequest;
 use App\Http\Resources\ClientResource;
 use App\Models\Avatar;
 use App\Models\Client;
+use App\Models\Invitation;
 use App\Services\AvatarService;
+use App\Services\ClientService;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\VerificationCodeService;
@@ -38,7 +41,7 @@ class ClientController extends ApiController
         }
 
         $verificationCode = $codeService->get();
-        $message = "Your Electra code {$verificationCode->code} some text";
+        $message = "Your Electra code {$verificationCode->code}";
         $nexmoResponse = $nexmo->sendSMS($phone, $message);
 
         if (!$nexmoResponse['sent']) {
@@ -68,18 +71,17 @@ class ClientController extends ApiController
     /**
      * @param UpdateRequest $request
      * @param Client $client
+     * @param ClientService $clientService
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateRequest $request, Client $client)
+    public function update(UpdateRequest $request, Client $client, ClientService $clientService)
     {
         $input = $request->all();
 
-        $password = $request->input(Client::PASSWORD);
-
-        if ($password && !$client->isRegistrationCompleted()) {
-            $input[Client::PASSWORD] = $password;
-        } else {
+        if ($client->isRegistrationCompleted()) {
             unset($input[Client::PASSWORD]);
+        } else {
+            $clientService->setClient($client)->processInvitation();
         }
 
         if ($request->hasFile(Avatar::FILE_INPUT_NAME)) {
@@ -203,5 +205,37 @@ class ClientController extends ApiController
         $client->update([Client::PHONE => $phone]);
 
         return $this->done('Phone number has been successfully changed.');
+    }
+
+    public function inviteFriend(Client $client, StoreRequest $request, NexmoService $nexmo)
+    {
+        $phone = $request->input('phone');
+
+        if (Client::wherePhone($phone)->exists()) {
+            return $this->error(ClientMessages::PHONE_ALREADY_REGISTERED);
+        }
+
+        if ($client->invitations_number === 0) {
+            return $this->error(ClientMessages::ALL_INVITES_ALREADY_USED);
+        }
+
+        if (Invitation::wherePhone($phone)->whereSmsSent(true)->exists()) {
+            return $this->error(ClientMessages::INVITE_ALREADY_SENT);
+        }
+
+        $invitation = $client->invitations()->firstOrCreate([Client::PHONE => $phone]);
+        if (!$invitation->sms_sent) {
+            $message = sprintf(ClientMessages::INVITE_TEXT, $client->full_name, config('app.invites.link'));
+            $nexmoResponse = $nexmo->sendSMS($phone, $message);
+
+            if (!$nexmoResponse['sent']) {
+                return $this->error($nexmoResponse['message']);
+            }
+
+            $invitation->sms_sent = true;
+            $invitation->save();
+        }
+
+        return $this->done(ClientMessages::INVITE_SENT);
     }
 }

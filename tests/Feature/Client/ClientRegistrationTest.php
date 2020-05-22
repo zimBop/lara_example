@@ -6,13 +6,14 @@ use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use App\Models\VerificationCode;
 use App\Services\ClientService;
-use App\Services\NexmoService;
 use App\Services\VerificationCodeService;
+use Tests\Feature\Traits\Nexmo;
 use Tests\TestCase;
-use Mockery;
 
 class ClientRegistrationTest extends TestCase
 {
+    use Nexmo;
+
     /**
      * A basic feature test example.
      *
@@ -25,8 +26,7 @@ class ClientRegistrationTest extends TestCase
 
         $this->checkResponseOnNexmoError($nexmoMock, $phone);
 
-        $message = 'SMS was successfully sent';
-        $nexmoMock->shouldReceive('sendSMS')->once()->andReturn(['sent' => true, 'message' => $message]);
+        $this->setupSuccessfulSmsSending($nexmoMock);
 
         $response = $this->postJson(route('clients.store'), [
             'phone' => $phone
@@ -57,8 +57,7 @@ class ClientRegistrationTest extends TestCase
     protected function checkResponseOnNexmoError($nexmoMock, $phone)
     {
         $error = 'error';
-        $nexmoMock->shouldReceive('sendSMS')
-            ->once()->andReturn(['sent' => false, 'message' => $error]);
+        $this->setupSmsSendingWithError($nexmoMock, $error);
 
         $response = $this->postJson(route('clients.store'), [
             'phone' => $phone
@@ -100,13 +99,5 @@ class ClientRegistrationTest extends TestCase
                     'phone'
                 ],
             ]);
-    }
-
-    protected function createNexmoMock()
-    {
-        $nexmoMock = Mockery::mock(NexmoService::class);
-        $this->app->instance(NexmoService::class, $nexmoMock);
-
-        return $nexmoMock;
     }
 }

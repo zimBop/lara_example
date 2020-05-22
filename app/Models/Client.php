@@ -63,6 +63,11 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @property-read int|null $reviews_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereCo2Sum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereRating($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Invitation[] $invitations
+ * @property-read int|null $invitations_number
+ * @property int $free_trips
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereFreeTrips($value)
+ * @property-read int|null $invitations_count
  */
 class Client extends Authenticatable
 {
@@ -80,6 +85,7 @@ class Client extends Authenticatable
     public const CUSTOMER_ID = 'customer_id';
     public const RATING = 'rating';
     public const CO2_SUM = 'co2_sum';
+    public const FREE_TRIPS = 'free_trips';
 
     protected $fillable = [
         self::BIRTHDAY,
@@ -104,6 +110,7 @@ class Client extends Authenticatable
         self::IS_ACTIVE => 'boolean',
         self::BIRTHDAY => 'date',
         self::CO2_SUM => 'float',
+        self::FREE_TRIPS => 'integer',
     ];
 
     /**
@@ -151,6 +158,13 @@ class Client extends Authenticatable
         return $this->trips()->active()->first();
     }
 
+    public function getInvitationsNumberAttribute()
+    {
+        $number = config('app.invites.number') - $this->invitations()->count();
+
+        return $number > 0 ? $number : 0;
+    }
+
     public function setPasswordAttribute($value): void
     {
         $this->attributes[self::PASSWORD] = Hash::make($value);
@@ -188,5 +202,10 @@ class Client extends Authenticatable
     public function avatar()
     {
         return $this->morphOne(Avatar::class, 'model');
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class);
     }
 }

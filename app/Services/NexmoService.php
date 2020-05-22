@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\NexmoMessages;
 use Illuminate\Support\Facades\Log;
 use Nexmo\Client as NexmoClient;
 use Nexmo\Client\Exception\Exception;
@@ -57,10 +58,10 @@ class NexmoService
             $messageSent = $response == 0;
 
             $statusMessage = $messageSent
-                ? "SMS was successfully sent"
-                : "SMS sending failed with status: " . $response;
+                ? NexmoMessages::SUCCESS
+                : sprintf(NexmoMessages::FAILED_WITH_STATUS, $response);
         } catch (Exception $e) {
-            $statusMessage = "SMS was not sent - " . $e->getMessage();
+            $statusMessage = sprintf(NexmoMessages::FAILED_WITH_ERROR, $e->getMessage());
             $messageSent = false;
         }
 

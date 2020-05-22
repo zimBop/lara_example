@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Client;
+use App\Models\Invitation;
 
 class ClientService
 {
@@ -44,4 +45,17 @@ class ClientService
         return rand(pow(10, $digitsNumber - 1) - 1, pow(10, $digitsNumber) - 1);
     }
 
+    public function processInvitation()
+    {
+        $invitation = Invitation::wherePhone($this->client->phone)
+            ->whereAccepted(false)->first();
+
+        if ($invitation) {
+            // Add free trip to sender and invited friend
+            $invitation->sender->increment(Client::FREE_TRIPS);
+            $this->client->increment(Client::FREE_TRIPS);
+
+            $invitation->update([Invitation::ACCEPTED => true]);
+        }
+    }
 }

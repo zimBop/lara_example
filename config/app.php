@@ -141,6 +141,12 @@ return [
 
     'skip_route_bounds_validation' => env('SKIP_ROUTE_BOUNDS_VALIDATION', false),
 
+    'invites' => [
+        // How many friends Client can invite
+        'number' => 3,
+        // Link to the app store
+        'link' => 'store:Electra',
+    ],
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

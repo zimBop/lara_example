@@ -25,7 +25,9 @@ class ClientResource extends JsonResource
             Client::EMAIL => $this->email,
             Client::RATING => $this->rating,
             Client::CO2_SUM => $this->co2_sum,
+            Client::FREE_TRIPS => $this->free_trips,
             'avatar' => $this->avatar ? AvatarService::getUrl($this->avatar) : null,
+            'invites_number' => $this->invitations_number,
         ];
     }
 }
