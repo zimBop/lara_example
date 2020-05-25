@@ -69,11 +69,15 @@ Route::post('/drivers/forgot-password', 'Api\DriverController@forgotPassword')->
 Route::patch('/drivers/reset-password', 'Api\DriverController@resetPassword')->name('drivers.reset-password');
 
 Route::middleware('multiauth:driver', 'scope:access-driver', 'can:access,driver')->group(function () {
+    Route::get('/drivers/{driver}', 'Api\DriverController@show')->name('drivers.show');
     Route::post('/drivers/logout/{driver}', 'Api\DriverController@logout')->name('drivers.logout');
 
+    Route::get('/drivers/{driver}/trip-request/{tripOrder}', 'Api\TripOrderController@showById')
+        ->name('trip-order.show-by-id');
     Route::post('/drivers/{driver}/trip-request/{tripOrder}/accept', 'Api\TripOrderController@accept')
         ->name('trip-order.accept');
 
+    Route::get('/drivers/{driver}/trip', 'Api\TripController@showActiveTripForDriver')->name('trip.show-for-driver');
     Route::post('/drivers/{driver}/trip/arrived', 'Api\TripController@arrived')->name('trip.arrived');
     Route::post('/drivers/{driver}/trip/start', 'Api\TripController@start')->name('trip.start');
     Route::post('/drivers/{driver}/trip/finish', 'Api\TripController@finish')->name('trip.finish');

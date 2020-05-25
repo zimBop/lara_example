@@ -34,6 +34,15 @@ class TripController extends ApiController
         return $this->data(new TripResource($trip));
     }
 
+    public function showActiveTripForDriver(Driver $driver)
+    {
+        if (!$driver->active_trip) {
+            return $this->done(TripMessages::TRIP_NOT_FOUND);
+        }
+
+        return $this->data(new TripResource($driver->active_trip));
+    }
+
     public function cancel(Client $client)
     {
         if (!$client->tripOrder) {

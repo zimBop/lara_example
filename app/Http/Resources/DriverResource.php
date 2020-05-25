@@ -21,6 +21,7 @@ class DriverResource extends JsonResource
             Driver::RATING => $this->rating,
             // Driver::PHONE return only digits
             Driver::PHONE => '18152478181',
+            'has_active_shift' => (boolean)$this->active_shift,
         ];
     }
 }

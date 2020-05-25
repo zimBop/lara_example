@@ -46,6 +46,11 @@ class TripOrderController extends ApiController
         return $this->data(new TripOrderResource($client->tripOrder));
     }
 
+    public function showById(Driver $driver, TripOrder $tripOrder)
+    {
+        return $this->data(new TripOrderResource($tripOrder));
+    }
+
     /**
      * @param ConfirmTripOrderRequest $request
      * @param Client $client

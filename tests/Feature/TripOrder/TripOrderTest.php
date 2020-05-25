@@ -4,10 +4,12 @@ namespace Tests\Feature\TripOrder;
 
 use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
+use App\Http\Resources\ClientResource;
 use App\Http\Resources\DriverResource;
 use App\Http\Resources\TripOrderResource;
 use App\Http\Resources\TripResource;
 use App\Http\Resources\VehicleResource;
+use App\Models\Client;
 use App\Models\Shift;
 use App\Models\Trip;
 use App\Models\TripOrder;
@@ -54,12 +56,7 @@ class TripOrderTest extends TestCase
 
         $tripOrder = $client->tripOrder;
 
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                'done' => true,
-                'data' => (new TripOrderResource($tripOrder))->toArray(null)
-            ]);
+        $this->checkResponse($response, $tripOrder, $client);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id]);
     }
@@ -119,12 +116,7 @@ class TripOrderTest extends TestCase
             route('trip-order.show', ['client' => $client->id])
         );
 
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                'done' => true,
-                'data' => (new TripOrderResource($tripOrder))->toArray(null)
-            ]);
+        $this->checkResponse($response, $tripOrder, $client);
     }
 
     public function testIsTripOrderSuccessfullyConfirmed(): void
@@ -148,12 +140,7 @@ class TripOrderTest extends TestCase
 
         $tripOrder->refresh();
 
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                'done' => true,
-                'data' => (new TripOrderResource($tripOrder))->toArray(null)
-            ]);
+        $this->checkResponse($response, $tripOrder, $client);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id, 'status' => TripStatuses::LOOKING_FOR_DRIVER]);
     }
@@ -203,6 +190,7 @@ class TripOrderTest extends TestCase
         $data = (new TripResource($client->activeTrip))->toArray(null);
         $data['driver'] = (new DriverResource($driver))->toArray(null);
         $data['vehicle'] = (new VehicleResource($driver->active_shift->vehicle))->toArray(null);
+        $data['client'] = (new ClientResource($client))->toArray(null);
 
         $response
             ->assertStatus(200)
@@ -364,5 +352,18 @@ class TripOrderTest extends TestCase
             ->andReturn($directionsMock);
 
         return $directionsMock;
+    }
+
+    protected function checkResponse($response, TripOrder $tripOrder, Client $client)
+    {
+        $data = (new TripOrderResource($tripOrder))->toArray(null);
+        $data['client'] = (new ClientResource($client))->toArray(null);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => true,
+                'data' => $data
+            ]);
     }
 }

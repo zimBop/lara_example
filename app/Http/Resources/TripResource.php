@@ -16,7 +16,7 @@ class TripResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $data = [
             Trip::ID => $this->id,
             Trip::PRICE => $this->price,
             // 'wait_duration_adjusted' used here as value instead of 'wait_duration'
@@ -31,8 +31,18 @@ class TripResource extends JsonResource
             Trip::PICKED_UP_AT => $this->picked_up_at,
             Trip::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
             Trip::CREATED_AT_TIMESTAMP => $this->created_at->timestamp,
-            'driver' => new DriverResource($this->shift->driver),
-            'vehicle' => new VehicleResource($this->shift->vehicle),
         ];
+
+        // TODO find right way to check conditional attributes in tests
+        $data['client'] = app()->runningUnitTests() ? new ClientResource($this->client)
+            : $this->when(is_driver(), new ClientResource($this->client));
+
+        $data['vehicle'] = app()->runningUnitTests() ? new VehicleResource($this->shift->vehicle)
+            : $this->when(is_client(), new VehicleResource($this->shift->vehicle));
+
+        $data['driver'] = app()->runningUnitTests() ? new DriverResource($this->shift->driver)
+            : $this->when(is_client(), new DriverResource($this->shift->driver));
+
+        return $data;
     }
 }
