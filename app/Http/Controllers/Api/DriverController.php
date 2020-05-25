@@ -6,6 +6,7 @@ use App\Http\Requests\Driver\ResetPasswordRequest;
 use App\Http\Requests\Driver\ForgotPasswordRequest;
 use App\Http\Resources\DriverResource;
 use App\Models\Driver;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\RefreshTokenRepository;
 use App\Notifications\ForgotPassword;
 use App\Services\ResetPasswordService;
@@ -54,6 +55,13 @@ class DriverController extends ApiController
 
     public function show(Driver $driver)
     {
+        return $this->data(new DriverResource($driver));
+    }
+
+    public function info()
+    {
+        $driver = Auth::user();
+
         return $this->data(new DriverResource($driver));
     }
 }

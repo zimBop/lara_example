@@ -16,6 +16,7 @@ class DriverResource extends JsonResource
     public function toArray($request)
     {
         return [
+            Driver::ID => $this->id,
             'full_name' => $this->full_name,
             'image' => 'https://electra.ag.digital/storage/driver.png',
             Driver::RATING => $this->rating,
