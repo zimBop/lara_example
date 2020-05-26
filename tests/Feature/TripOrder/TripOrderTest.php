@@ -56,7 +56,7 @@ class TripOrderTest extends TestCase
 
         $tripOrder = $client->tripOrder;
 
-        $this->checkResponse($response, $tripOrder, $client);
+        $this->checkResponse($response, $tripOrder);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id]);
     }
@@ -116,7 +116,7 @@ class TripOrderTest extends TestCase
             route('trip-order.show', ['client' => $client->id])
         );
 
-        $this->checkResponse($response, $tripOrder, $client);
+        $this->checkResponse($response, $tripOrder);
     }
 
     public function testIsTripOrderSuccessfullyConfirmed(): void
@@ -140,7 +140,7 @@ class TripOrderTest extends TestCase
 
         $tripOrder->refresh();
 
-        $this->checkResponse($response, $tripOrder, $client);
+        $this->checkResponse($response, $tripOrder);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $tripOrder->id, 'status' => TripStatuses::LOOKING_FOR_DRIVER]);
     }
@@ -187,10 +187,8 @@ class TripOrderTest extends TestCase
         $tripOrder->refresh();
         $this->assertEquals(TripStatuses::DRIVER_IS_ON_THE_WAY, $tripOrder->status);
 
-        $data = (new TripResource($client->activeTrip))->toArray(null);
-        $data['driver'] = (new DriverResource($driver))->toArray(null);
-        $data['vehicle'] = (new VehicleResource($driver->active_shift->vehicle))->toArray(null);
-        $data['client'] = (new ClientResource($client))->toArray(null);
+        $encodedResource = (new TripResource($client->activeTrip))->response()->getContent();
+        $data = json_decode($encodedResource, true);
 
         $response
             ->assertStatus(200)
@@ -354,10 +352,10 @@ class TripOrderTest extends TestCase
         return $directionsMock;
     }
 
-    protected function checkResponse($response, TripOrder $tripOrder, Client $client)
+    protected function checkResponse($response, TripOrder $tripOrder)
     {
-        $data = (new TripOrderResource($tripOrder))->toArray(null);
-        $data['client'] = (new ClientResource($client))->toArray(null);
+        $encodedResource = (new TripOrderResource($tripOrder))->response()->getContent();
+        $data = json_decode($encodedResource, true);
 
         $response
             ->assertStatus(200)

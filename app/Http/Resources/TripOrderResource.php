@@ -16,7 +16,7 @@ class TripOrderResource extends JsonResource
      */
     public function toArray($request)
     {
-        $data = [
+        return [
             TripOrder::ID => $this->id,
             TripOrder::PRICE => $this->price,
             TripOrder::WAIT_DURATION => $this->wait_duration,
@@ -28,12 +28,7 @@ class TripOrderResource extends JsonResource
             TripOrder::STATUS => $this->status,
             TripOrder::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
             TripOrder::MESSAGE_FOR_DRIVER => $this->message_for_driver,
+            'client' => $this->when(is_driver(), new ClientResource($this->client)),
         ];
-
-        // TODO find right way to check conditional attributes in tests
-        $data['client'] = app()->runningUnitTests() ? new ClientResource($this->client)
-            : $this->when(is_driver(), new ClientResource($this->client));
-
-        return $data;
     }
 }

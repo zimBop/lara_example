@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\TripOrderResource;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\ClientService;
@@ -45,6 +46,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        TripOrderResource::withoutWrapping();
     }
 }
