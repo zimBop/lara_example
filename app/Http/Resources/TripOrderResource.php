@@ -27,6 +27,7 @@ class TripOrderResource extends JsonResource
             TripOrder::WAYPOINTS => $this->waypoints,
             TripOrder::STATUS => $this->status,
             TripOrder::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
+            TripOrder::MESSAGE_FOR_DRIVER => $this->message_for_driver,
         ];
 
         // TODO find right way to check conditional attributes in tests

@@ -31,6 +31,7 @@ class TripResource extends JsonResource
             Trip::PICKED_UP_AT => $this->picked_up_at,
             Trip::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
             Trip::CREATED_AT_TIMESTAMP => $this->created_at->timestamp,
+            Trip::MESSAGE_FOR_DRIVER => $this->message_for_driver,
         ];
 
         // TODO find right way to check conditional attributes in tests
