@@ -92,7 +92,7 @@ class TripService
         }
 
         $cityId = PostgisService::findClosestCityId($origin['coordinates']['lng'], $origin['coordinates']['lat']);
-        $isRouteBoundsInCity = PostgisService::isCityPolygonContainsRouteBounds($cityId, $bounds);
+        $isRouteBoundsInCity = $cityId && PostgisService::isCityPolygonContainsRouteBounds($cityId, $bounds);
         if (!$isRouteBoundsInCity) {
             throw ValidationException::withMessages(['route' => TripMessages::ROUTE_BOUNDS_VALIDATION_ERROR]);
         }
