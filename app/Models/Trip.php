@@ -90,6 +90,7 @@ class Trip extends Model
     public const PAYMENT_METHOD_ID = 'payment_method_id';
     public const PICKED_UP_AT = 'picked_up_at';
     public const CREATED_AT_TIMESTAMP = 'created_at_timestamp';
+    public const UPDATED_AT_TIMESTAMP = 'updated_at_timestamp';
 
     protected $fillable = [
         self::CLIENT_ID,
