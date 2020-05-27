@@ -64,7 +64,7 @@ class TripController extends ApiController
 
     public function arrived(Driver $driver, TripService $tripService)
     {
-        return $this->changeTripStatus($driver, $tripService, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT, TripMessages::DRIVER_ARRIVED);
+        return $this->changeTripStatus($driver, $tripService, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT);
     }
 
     public function start(Driver $driver, TripService $tripService, StripeService $stripeService)
@@ -83,12 +83,12 @@ class TripController extends ApiController
         $trip->update([Trip::PICKED_UP_AT => now()]);
         $tripService->changeStatus($trip, TripStatuses::TRIP_IN_PROGRESS);
 
-        return $this->done(TripMessages::STARTED);
+        return $this->data(new TripResource($trip));
     }
 
     public function finish(Driver $driver, TripService $tripService)
     {
-        return $this->changeTripStatus($driver, $tripService, TripStatuses::UNRATED, TripMessages::FINISHED);
+        return $this->changeTripStatus($driver, $tripService, TripStatuses::UNRATED);
     }
 
     public function rate(RateDriverRequest $request, Client $client, TripService $tripService, StripeService $stripeService)
@@ -121,10 +121,10 @@ class TripController extends ApiController
 
     public function archive(Client $client, TripService $tripService)
     {
-        return $this->changeTripStatus($client, $tripService, TripStatuses::TRIP_ARCHIVED, TripMessages::ARCHIVED);
+        return $this->changeTripStatus($client, $tripService, TripStatuses::TRIP_ARCHIVED);
     }
 
-    protected function changeTripStatus(Model $model, TripService $tripService, $status, $message)
+    protected function changeTripStatus(Model $model, TripService $tripService, $status)
     {
         $trip = $model->active_trip;
 
@@ -132,6 +132,6 @@ class TripController extends ApiController
 
         $tripService->changeStatus($trip, $status);
 
-        return $this->done($message);
+        return $this->data(new TripResource($trip));
     }
 }

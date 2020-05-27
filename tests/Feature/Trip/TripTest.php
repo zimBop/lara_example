@@ -4,6 +4,7 @@ namespace Tests\Feature\Trip;
 
 use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
+use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Driver;
 use App\Models\Shift;
@@ -30,7 +31,7 @@ class TripTest extends TestCase
             route('trip.cancel', ['client' => $client->id])
         );
 
-        $this->checkResponse($response, TripMessages::CANCELED);
+        $this->checkResponseMessage($response, TripMessages::CANCELED);
 
         $this->assertDatabaseMissing('trip_orders', ['id' => $models['tripOrder']->id]);
         $this->assertSoftDeleted('trips', ['id' => $models['trip']->id]);
@@ -50,7 +51,7 @@ class TripTest extends TestCase
             route('trip.cancel', ['client' => $client->id])
         );
 
-        $this->checkResponse($response, TripMessages::CANNOT_BE_CANCELED);
+        $this->checkResponseMessage($response, TripMessages::CANNOT_BE_CANCELED);
 
         $this->assertDatabaseHas('trip_orders', ['id' => $models['tripOrder']->id]);
         $this->assertDatabaseHas('trips', ['id' => $models['trip']->id]);
@@ -61,19 +62,16 @@ class TripTest extends TestCase
     {
         $actions = [
             'arrived' => [
-                'message' => TripMessages::DRIVER_ARRIVED,
                 'status' => TripStatuses::DRIVER_IS_ON_THE_WAY,
                 'new_status' => TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT,
                 'model' => 'driver'
             ],
             'finish' => [
-                'message' => TripMessages::FINISHED,
                 'status' => TripStatuses::TRIP_IN_PROGRESS,
                 'new_status' => TripStatuses::UNRATED,
                 'model' => 'driver'
             ],
             'archive' => [
-                'message' => TripMessages::ARCHIVED,
                 'status' => TripStatuses::UNRATED,
                 'new_status' => TripStatuses::TRIP_ARCHIVED,
                 'model' => 'client'
@@ -90,7 +88,7 @@ class TripTest extends TestCase
                 route('trip.' . $action, [$data['model'] => $data['model'] === 'driver' ? $driver->id : $client->id])
             );
 
-            $this->checkResponse($response, $data['message']);
+            $this->checkResponse($response, $models['trip']->refresh());
 
             Notification::assertSentTo($client, TripStatusChanged::class);
 
@@ -114,7 +112,7 @@ class TripTest extends TestCase
             route('trip.start', ['driver' => $driver->id])
         );
 
-        $this->checkResponse($response, TripMessages::STARTED);
+        $this->checkResponse($response, $models['trip']->refresh());
 
         Notification::assertSentTo($client, TripStatusChanged::class);
 
@@ -147,7 +145,7 @@ class TripTest extends TestCase
             $params
         );
 
-        $this->checkResponse($response, TripMessages::DRIVER_RATED);
+        $this->checkResponseMessage($response, TripMessages::DRIVER_RATED);
 
         Notification::assertSentTo($client, TripStatusChanged::class);
 
@@ -198,7 +196,20 @@ class TripTest extends TestCase
         $this->assertDatabaseHas('trips', ['id' => $models['trip']->id, 'status' => $status]);
     }
 
-    protected function checkResponse($response, $message)
+    protected function checkResponse($response, $trip)
+    {
+        $encodedResource = (new TripResource($trip))->response()->getContent();
+        $data = json_decode($encodedResource, true);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'done' => true,
+                'data' => $data
+            ]);
+    }
+
+    protected function checkResponseMessage($response, $message)
     {
         $response
             ->assertStatus(200)
