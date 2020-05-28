@@ -207,6 +207,17 @@ class ClientController extends ApiController
         return $this->done('Phone number has been successfully changed.');
     }
 
+    /**
+     * Here we create invite for friend.
+     * This invite will be processed on friend registration - step when he saves his profile info -
+     * in $this->update(), ClientService->processInvitation().
+     *
+     * @param Client $client
+     * @param StoreRequest $request
+     * @param NexmoService $nexmo
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function inviteFriend(Client $client, StoreRequest $request, NexmoService $nexmo)
     {
         $phone = $request->input('phone');
