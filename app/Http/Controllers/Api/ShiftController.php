@@ -71,7 +71,7 @@ class ShiftController extends ApiController
         $lng = $request->input('longitude');
         $lat = $request->input('latitude');
 
-        $msg = "Driver ID: " . $driver->id . " || Coords: $lng, $lat" . " || DateTime: " . now();
+        $msg = "Driver ID: " . $driver->id . " || Coords: $lng, $lat";
 
         Log::channel('driver_locations')->info($msg);
 
