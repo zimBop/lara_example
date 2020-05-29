@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/driver_locations', function () {
     $path = storage_path("logs/driver_locations-" . now()->format('Y-m-d') . ".log");
-    return \Illuminate\Support\Facades\File::get($path);
+    return "<pre>" . \Illuminate\Support\Facades\File::get($path) . "</pre>";
 });
 
 Route::get('/reset-password-page', 'Web\DriverResetPasswordController')
