@@ -9,16 +9,19 @@ use App\Exceptions\Trip\TripException;
 use App\Http\Requests\TripOrder\StoreTripOrderRequest;
 use App\Models\Client;
 use App\Models\Driver;
+use App\Models\Shift;
 use App\Models\Trip;
 use App\Models\TripOrder;
 use App\Logic\TripPriceCalculator;
 use App\Notifications\TripStatusChanged;
+use Illuminate\Database\Eloquent\Collection;
 use \Illuminate\Validation\ValidationException;
 
 class TripService
 {
     protected $order;
     protected $trip;
+    protected $cityId;
 
     /**
      * @param mixed $trip
@@ -38,7 +41,7 @@ class TripService
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
         $clientData = $this->getClientData($request);
-        $driverData = $this->getDriverData($clientData[TripOrder::ORIGIN]['id'], $client);
+        $driverData = $this->getDriverData($clientData[TripOrder::ORIGIN], $client);
 
         return TripOrder::updateOrCreate(
             [TripOrder::CLIENT_ID => $client->id],
@@ -91,11 +94,16 @@ class TripService
             return true;
         }
 
-        $cityId = PostgisService::findClosestCityId($origin['coordinates']['lng'], $origin['coordinates']['lat']);
+        $cityId = $this->getCityId($origin['coordinates']['lng'], $origin['coordinates']['lat']);
         $isRouteBoundsInCity = $cityId && PostgisService::isCityPolygonContainsRouteBounds($cityId, $bounds);
         if (!$isRouteBoundsInCity) {
             throw ValidationException::withMessages(['route' => TripMessages::ROUTE_BOUNDS_VALIDATION_ERROR]);
         }
+    }
+
+    protected function getCityId(float $longitude, float $latitude)
+    {
+        return $this->cityId ?: PostgisService::findClosestCityId($longitude, $latitude);
     }
 
     protected function prepareWaypoints(array &$directionsApiParams, ?array $waypoints): void
@@ -124,35 +132,77 @@ class TripService
 
     protected function getDriverData($clientOrigin, $client = null): array
     {
+        $drivers = $this->findDrivers($clientOrigin['coordinates']['lng'], $clientOrigin['coordinates']['lat']);
+        $closestDriver = $drivers->first();
+
+        $currentTripDuration = 0;
+        if ($closestDriver->active_trip) {
+            $currentTripDuration = $closestDriver->active_trip->trip_duration_adjusted;
+            $driverOrigin = $closestDriver->active_trip->destination['id'];
+        } else {
+            $driverLocation = $closestDriver->active_shift->driver_location()->withCoordinates()->get();
+            $driverOrigin = "{$driverLocation->latitude},{$driverLocation->longitude}";
+        }
+
         //TODO remove $client param
-        //TODO find closest driver location
-//        $driver = $this->findClosestDriver($clientOrigin);
-
-        $driverLocation = '41.767907,-72.682805';
-
         if ($client && config('app.env') === 'dev' && $client->id === 96) {
-            $driverLocation = '47.935618,33.422442';
+            $driverOrigin = '47.935618,33.422442';
         }
 
         $response = $this->requestDirectionsApi(
             [
-                'origin' => $clientOrigin,
-                //Ensure that no space exists between the latitude and longitude values
-                'destination' => $driverLocation,
+                'origin' => $driverOrigin,
+                'destination' => $clientOrigin['id'],
             ]
         );
 
         return [
             TripOrder::DRIVER_DISTANCE => $response['routes'][0]['legs'][0]['distance']['value'],
-            TripOrder::WAIT_DURATION => $response['routes'][0]['legs'][0]['duration']['value'],
+            TripOrder::WAIT_DURATION => $currentTripDuration + $response['routes'][0]['legs'][0]['duration']['value'],
         ];
     }
 
     /**
+     * @param int $cityId
+     * @return bool
+     */
+    public function isClientsQueueFull(int $cityId): bool
+    {
+        $activeShiftsNumber = Shift::active()->where(Shift::CITY_ID, $cityId)->count();
+
+        $ordersCount = TripOrder::whereHas('shifts', function ($query) use ($cityId) {
+            $query->active()->where(Shift::CITY_ID, $cityId);
+        })->count();
+
+        return $ordersCount > $activeShiftsNumber;
+    }
+
+    public function findDrivers($longitude, $latitude): Collection
+    {
+        $cityId = $this->getCityId($longitude, $latitude);
+
+        $drivers = PostgisService::findClosestDrivers($longitude, $latitude, $cityId);
+
+        if ($drivers->isEmpty()) {
+            if ($this->isClientsQueueFull($cityId)) {
+                throw new TripException(200, TripMessages::CLIENTS_QUEUE_IS_FULL);
+            }
+
+            $driversAtWork = PostgisService::findClosestDrivers($longitude, $latitude, $cityId, false);
+
+            if ($driversAtWork->isEmpty()) {
+                throw new TripException(200,TripMessages::ALL_DRIVERS_OFFLINE);
+            }
+
+            $drivers = $driversAtWork;
+        }
+
+        return $drivers;
+    }
+
+    /**
      * @param array $params
-     * @param string $getParam
      * @return array
-     * @throws GoogleApiException
      * @throws \ErrorException
      */
     protected function requestDirectionsApi(array $params): array
@@ -172,10 +222,10 @@ class TripService
 
     public function createTrip(TripOrder $tripOrder, Driver $driver): Trip
     {
-        //TODO remove this
+        //TODO remove $client param
         $client = $tripOrder->client;
 
-        $driverData = $this->getDriverData($tripOrder->origin['id'], $client);
+        $driverData = $this->getDriverData($tripOrder->origin, $client);
 
         $tripData = $tripOrder->toArray();
         $tripData[Trip::DRIVER_DISTANCE] = $driverData[TripOrder::DRIVER_DISTANCE];

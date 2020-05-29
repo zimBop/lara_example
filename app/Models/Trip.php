@@ -133,13 +133,12 @@ class Trip extends Model
 
     public function getWaitDurationAdjustedAttribute()
     {
-        if ($this->status >= TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT) {
-            return 0;
-        }
+        return $this->calculateAdjustedDuration(TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT, 'wait_duration');
+    }
 
-        $duration = $this->wait_duration - now()->diffInSeconds($this->created_at);
-
-        return $duration > 0 ? $duration : 0 ;
+    public function getTripDurationAdjustedAttribute()
+    {
+        return $this->calculateAdjustedDuration(TripStatuses::UNRATED, 'trip_duration');
     }
 
     public function getCreatedAtTimestampAttribute()
@@ -168,5 +167,16 @@ class Trip extends Model
     public function scopeArchived(Builder $query)
     {
         return $query->whereStatus(TripStatuses::TRIP_ARCHIVED);
+    }
+
+    protected function calculateAdjustedDuration(int $status, $attribute)
+    {
+        if ($this->status >= $status) {
+            return 0;
+        }
+
+        $duration = $this->{$attribute} - now()->diffInSeconds($this->created_at);
+
+        return $duration > 0 ? $duration : 0 ;
     }
 }

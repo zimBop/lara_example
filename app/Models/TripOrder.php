@@ -45,6 +45,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TripOrder whereWaitDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TripOrder whereWaypoints($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Shift[] $shifts
+ * @property-read int|null $shifts_count
  */
 class TripOrder extends Model
 {
@@ -89,5 +91,10 @@ class TripOrder extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class);
     }
 }

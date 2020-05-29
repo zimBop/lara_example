@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\TripStatuses;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -31,21 +32,45 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift whereVehicleId($value)
  * @mixin \Eloquent
+ * @property-read mixed $active_trip
+ * @property-read \App\Models\DriverLocation $driver_location
+ * @property int|null $city_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift whereCityId($value)
  */
 class Shift extends Model
 {
     public const ID = 'id';
     public const DRIVER_ID = 'driver_id';
     public const VEHICLE_ID = 'vehicle_id';
+    public const CITY_ID = 'city_id';
     public const STARTED_AT = 'started_at';
     public const FINISHED_AT = 'finished_at';
 
     protected $fillable = [
         self::DRIVER_ID,
         self::VEHICLE_ID,
+        self::CITY_ID,
         self::STARTED_AT,
         self::FINISHED_AT,
     ];
+
+    public function getActiveTripAttribute()
+    {
+        return $this->trips()
+            ->active()
+            ->where(Trip::STATUS, '<', TripStatuses::UNRATED)
+            ->first();
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereNull(self::FINISHED_AT)
+            ->where(self::STARTED_AT, '>', now()->subDay());
+    }
 
     public function driver()
     {
@@ -57,18 +82,18 @@ class Shift extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function trip_orders()
+    {
+        return $this->belongsToMany(TripOrder::class);
+    }
+
     public function trips()
     {
         return $this->hasMany(Trip::class);
     }
 
-    /**
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeActive(Builder $query)
+    public function driver_location()
     {
-        return $query->whereNull(self::FINISHED_AT)
-            ->where(self::STARTED_AT, '>', now()->subDay());
+        return $this->hasOne(DriverLocation::class);
     }
 }

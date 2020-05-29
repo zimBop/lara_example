@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Constants\DriverMessages;
 use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Http\Requests\TripOrder\ConfirmTripOrderRequest;
@@ -11,6 +12,7 @@ use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Driver;
 use App\Models\TripOrder;
+use App\Notifications\NewTripOrder;
 use App\Notifications\TripStatusChanged;
 use App\Services\TripService;
 
@@ -51,23 +53,48 @@ class TripOrderController extends ApiController
         return $this->data(new TripOrderResource($tripOrder));
     }
 
+
+    public function showListForDriver(Driver $driver, TripOrder $tripOrder)
+    {
+        $activeShift = $driver->active_shift;
+
+        if (!$activeShift) {
+            return $this->done(DriverMessages::SHIFT_NOT_FOUND);
+        }
+
+        return $this->data(TripOrderResource::collection($activeShift->trip_orders));
+    }
+
     /**
      * @param ConfirmTripOrderRequest $request
      * @param Client $client
+     * @param TripService $tripService
      * @return \Illuminate\Http\JsonResponse
      */
-    public function confirm(ConfirmTripOrderRequest $request, Client $client)
+    public function confirm(ConfirmTripOrderRequest $request, Client $client, TripService $tripService)
     {
         if (!$client->tripOrder) {
             return $this->done(TripMessages::REQUEST_NOT_FOUND);
         }
 
-        $client->tripOrder->update(array_merge(
+        $tripOrder = $client->tripOrder;
+
+        $tripOrder->update(array_merge(
             [TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER],
             $request->only([TripOrder::MESSAGE_FOR_DRIVER, TripOrder::PAYMENT_METHOD_ID])
        ));
 
-        return $this->data(new TripOrderResource($client->tripOrder));
+        $longitude = $tripOrder->origin['coordinates']['lng'];
+        $latitude = $tripOrder->origin['coordinates']['lat'];
+
+        $drivers = $tripService->findDrivers($longitude, $latitude);
+
+        foreach ($drivers as $driver) {
+            $driver->notify(new NewTripOrder($tripOrder->id));
+            $tripOrder->shifts()->attach($driver->activeShift->id);
+        }
+
+        return $this->data(new TripOrderResource($tripOrder->refresh()));
     }
 
     /**
@@ -91,6 +118,8 @@ class TripOrderController extends ApiController
         }
 
         $trip = $tripService->createTrip($tripOrder, $driver);
+
+        $tripOrder->shifts()->detach();
 
         $trip->client->notify(new TripStatusChanged(TripStatuses::DRIVER_IS_ON_THE_WAY, $trip->id));
 

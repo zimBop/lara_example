@@ -57,6 +57,8 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tip[] $tips
  * @property-read int|null $tips_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver whereRating($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TripOrder[] $tripOrders
+ * @property-read int|null $trip_orders_count
  */
 class Driver extends Authenticatable
 {
@@ -105,11 +107,7 @@ class Driver extends Authenticatable
             return null;
         }
 
-        return $this->active_shift
-            ->trips()
-            ->active()
-            ->where(Trip::STATUS, '<', TripStatuses::UNRATED)
-            ->first();
+        return $this->active_shift->active_trip;
     }
 
     public function setPasswordAttribute($value): void
@@ -135,5 +133,10 @@ class Driver extends Authenticatable
     public function tips()
     {
         return $this->hasMany(Tip::class);
+    }
+
+    public function tripOrders()
+    {
+        return $this->belongsToMany(TripOrder::class);
     }
 }

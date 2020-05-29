@@ -75,6 +75,8 @@ Route::middleware('multiauth:driver', 'scope:access-driver')->group(function () 
         Route::get('/drivers/{driver}', 'Api\DriverController@show')->name('drivers.show');
         Route::post('/drivers/logout/{driver}', 'Api\DriverController@logout')->name('drivers.logout');
 
+        Route::get('/drivers/{driver}/trip-request/list', 'Api\TripOrderController@showListForDriver')
+            ->name('trip-order.driver-requests-list');
         Route::get('/drivers/{driver}/trip-request/{tripOrder}', 'Api\TripOrderController@showById')
             ->name('trip-order.show-by-id');
         Route::post('/drivers/{driver}/trip-request/{tripOrder}/accept', 'Api\TripOrderController@accept')
@@ -87,6 +89,7 @@ Route::middleware('multiauth:driver', 'scope:access-driver')->group(function () 
 
         Route::post('/drivers/{driver}/shift/start', 'Api\ShiftController@start')->name('shift.start');
         Route::post('/drivers/{driver}/shift/finish', 'Api\ShiftController@finish')->name('shift.finish');
+        Route::post('/drivers/{driver}/shift/location', 'Api\ShiftController@location')->name('shift.location');
     });
 });
 
