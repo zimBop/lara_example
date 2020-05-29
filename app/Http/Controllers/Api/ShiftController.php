@@ -17,7 +17,11 @@ class ShiftController extends ApiController
     {
         // TODO retrieve vehicle and city from schedule
         $vehicle = Vehicle::first() ?: factory(Vehicle::class)->create();
-        $city = City::first();
+        if (config('app.test_trip_flow')) {
+            $city = City::whereName('Krivoy Rog')->first();
+        } else {
+            $city = City::first();
+        }
 
         if (!$driver->activeShift) {
             $driver->shifts()->create([

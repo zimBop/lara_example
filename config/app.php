@@ -147,6 +147,8 @@ return [
         // Link to the app store
         'link' => 'store:Electra',
     ],
+
+    'test_trip_flow' => env('TEST_TRIP_FLOW', false),
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
