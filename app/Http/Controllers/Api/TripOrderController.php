@@ -48,13 +48,7 @@ class TripOrderController extends ApiController
         return $this->data(new TripOrderResource($client->tripOrder));
     }
 
-    public function showById(Driver $driver, TripOrder $tripOrder)
-    {
-        return $this->data(new TripOrderResource($tripOrder));
-    }
-
-
-    public function showListForDriver(Driver $driver, TripOrder $tripOrder)
+    public function showListForDriver(Driver $driver)
     {
         $activeShift = $driver->active_shift;
 

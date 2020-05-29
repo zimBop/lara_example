@@ -77,8 +77,6 @@ Route::middleware('multiauth:driver', 'scope:access-driver')->group(function () 
 
         Route::get('/drivers/{driver}/trip-request/list', 'Api\TripOrderController@showListForDriver')
             ->name('trip-order.driver-requests-list');
-        Route::get('/drivers/{driver}/trip-request/{tripOrder}', 'Api\TripOrderController@showById')
-            ->name('trip-order.show-by-id');
         Route::post('/drivers/{driver}/trip-request/{tripOrder}/accept', 'Api\TripOrderController@accept')
             ->name('trip-order.accept');
 
