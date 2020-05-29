@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/driver_locations', function () {
+    $path = storage_path("logs/driver_locations-" . now()->format('Y-m-d') . ".log");
+    return \Illuminate\Support\Facades\File::get($path);
+});
+
 Route::get('/reset-password-page', 'Web\DriverResetPasswordController')
     ->middleware('throttle:60,1')->name(R_DRIVER_RESET_PASSWORD);
 

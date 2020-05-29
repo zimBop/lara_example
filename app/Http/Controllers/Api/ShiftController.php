@@ -10,6 +10,7 @@ use App\Models\DriverLocation;
 use App\Models\Shift;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ShiftController extends ApiController
 {
@@ -69,6 +70,10 @@ class ShiftController extends ApiController
 
         $lng = $request->input('longitude');
         $lat = $request->input('latitude');
+
+        $msg = "Driver ID: " . $driver->id . " || Coords: $lng, $lat" . " || DateTime: " . now();
+
+        Log::channel('driver_locations')->info($msg);
 
         DriverLocation::updateOrCreate(
             [DriverLocation::SHIFT_ID => $driver->activeShift->id],
