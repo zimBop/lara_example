@@ -140,7 +140,7 @@ class TripService
             $currentTripDuration = $closestDriver->active_trip->trip_duration_adjusted;
             $driverOrigin = $closestDriver->active_trip->destination['id'];
         } else {
-            $driverLocation = $closestDriver->active_shift->driver_location()->withCoordinates()->get();
+            $driverLocation = $closestDriver->active_shift->driver_location()->withCoordinates()->first();
             $driverOrigin = "{$driverLocation->latitude},{$driverLocation->longitude}";
         }
 
