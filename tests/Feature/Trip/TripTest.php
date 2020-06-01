@@ -11,6 +11,7 @@ use App\Models\Shift;
 use App\Models\Tip;
 use App\Models\Trip;
 use App\Models\TripOrder;
+use App\Notifications\TripCanceled;
 use App\Notifications\TripStatusChanged;
 use App\Services\StripeService;
 use Tests\TestCase;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Notification;
 
 class TripTest extends TestCase
 {
-    public function testIsTripSuccessfullyCanceled(): void
+    public function testIsTripSuccessfullyCanceledByClient(): void
     {
         $client = $this->makeAuthClient();
         $status = $this->faker->randomElement([
@@ -28,8 +29,32 @@ class TripTest extends TestCase
         $models = $this->prepareModels($client, $status);
 
         $response = $this->postJson(
-            route('trip.cancel', ['client' => $client->id])
+            route('trip.client-cancel', ['client' => $client->id])
         );
+
+        $this->checkResponseMessage($response, TripMessages::CANCELED);
+
+        $this->assertDatabaseMissing('trip_orders', ['id' => $models['tripOrder']->id]);
+        $this->assertSoftDeleted('trips', ['id' => $models['trip']->id]);
+    }
+
+    public function testIsTripSuccessfullyCanceledByDriver(): void
+    {
+        $driver = $this->makeAuthDriver();
+        $client = factory(Client::class)->create();
+        $status = $this->faker->randomElement([
+            TripStatuses::DRIVER_IS_ON_THE_WAY,
+            TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT,
+        ]);
+        $models = $this->prepareModels($client, $status, $driver);
+
+        Notification::fake();
+
+        $response = $this->postJson(
+            route('trip.driver-cancel', ['driver' => $driver->id])
+        );
+
+        Notification::assertSentTo($client, TripCanceled::class);
 
         $this->checkResponseMessage($response, TripMessages::CANCELED);
 
@@ -48,7 +73,7 @@ class TripTest extends TestCase
         $models = $this->prepareModels($client, $status);
 
         $response = $this->postJson(
-            route('trip.cancel', ['client' => $client->id])
+            route('trip.client-cancel', ['client' => $client->id])
         );
 
         $this->checkResponseMessage($response, TripMessages::CANNOT_BE_CANCELED);

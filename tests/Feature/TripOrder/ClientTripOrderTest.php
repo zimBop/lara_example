@@ -204,7 +204,7 @@ class ClientTripOrderTest extends TestCase
         Notification::fake();
 
         $this->postJson(
-                route('trip.cancel', ['client' => $client->id])
+                route('trip.client-cancel', ['client' => $client->id])
             )
             ->assertStatus(200)
             ->assertJson([
@@ -234,7 +234,7 @@ class ClientTripOrderTest extends TestCase
         );
 
         $this->postJson(
-                route('trip.cancel', ['client' => $client->id])
+                route('trip.client-cancel', ['client' => $client->id])
             )->assertStatus(200)
             ->assertJson([
                 'done' => true,
