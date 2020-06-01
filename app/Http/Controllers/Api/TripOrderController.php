@@ -11,6 +11,7 @@ use App\Http\Resources\TripOrderResource;
 use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Driver;
+use App\Models\Shift;
 use App\Models\TripOrder;
 use App\Notifications\NewTripOrder;
 use App\Notifications\TripStatusChanged;
@@ -74,20 +75,16 @@ class TripOrderController extends ApiController
 
         $tripOrder = $client->tripOrder;
 
+        if ((int)$tripOrder->status !== TripStatuses::WAITING_FOR_CONFIRMATION) {
+            return $this->error(TripMessages::REQUEST_ALREADY_CONFIRMED);
+        }
+
         $tripOrder->update(array_merge(
             [TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER],
             $request->only([TripOrder::MESSAGE_FOR_DRIVER, TripOrder::PAYMENT_METHOD_ID])
        ));
 
-        $longitude = $tripOrder->origin['coordinates']['lng'];
-        $latitude = $tripOrder->origin['coordinates']['lat'];
-
-        $drivers = $tripService->findDrivers($longitude, $latitude);
-
-        foreach ($drivers as $driver) {
-            $driver->notify(new NewTripOrder($tripOrder->id));
-            $tripOrder->shifts()->attach($driver->activeShift->id);
-        }
+        $tripService->sendRequestsToDrivers($tripOrder);
 
         return $this->data(new TripOrderResource($tripOrder->refresh()));
     }

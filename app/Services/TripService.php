@@ -15,31 +15,22 @@ use App\Models\Shift;
 use App\Models\Trip;
 use App\Models\TripOrder;
 use App\Logic\TripPriceCalculator;
+use App\Notifications\NewTripOrder;
 use App\Notifications\TripStatusChanged;
 use Illuminate\Database\Eloquent\Collection;
 use \Illuminate\Validation\ValidationException;
 
 class TripService
 {
-    protected $order;
-    protected $trip;
     protected $cityId;
 
     /**
-     * @param mixed $trip
+     * @param StoreTripOrderRequest $request
+     * @param Client $client
+     * @return TripOrder|\Illuminate\Database\Eloquent\Model
+     * @throws ValidationException
+     * @throws \ErrorException
      */
-    public function setTrip(Trip $trip): void
-    {
-        $this->trip = $trip;
-    }
-
-    public function setOrder(?TripOrder $order): self
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
         $clientData = $this->getClientData($request);
@@ -58,6 +49,12 @@ class TripService
         );
     }
 
+    /**
+     * @param StoreTripOrderRequest $request
+     * @return array
+     * @throws ValidationException
+     * @throws \ErrorException
+     */
     protected function getClientData(StoreTripOrderRequest $request): array
     {
         $origin = $request->input('origin');
@@ -90,6 +87,12 @@ class TripService
         ];
     }
 
+    /**
+     * @param array $bounds
+     * @param array $origin
+     * @return bool
+     * @throws ValidationException
+     */
     protected function checkRouteBounds(array $bounds, array $origin)
     {
         if (config('app.skip_route_bounds_validation')) {
@@ -103,11 +106,20 @@ class TripService
         }
     }
 
-    protected function getCityId(float $longitude, float $latitude)
+    /**
+     * @param float $longitude
+     * @param float $latitude
+     * @return int
+     */
+    protected function getCityId(float $longitude, float $latitude): int
     {
         return $this->cityId ?: PostgisService::findClosestCityId($longitude, $latitude);
     }
 
+    /**
+     * @param array $directionsApiParams
+     * @param array|null $waypoints
+     */
     protected function prepareWaypoints(array &$directionsApiParams, ?array $waypoints): void
     {
         if ($waypoints) {
@@ -122,6 +134,12 @@ class TripService
         }
     }
 
+    /**
+     * @param array $routeLeg
+     * @param array $origin
+     * @param array $destination
+     * @param array $waypoints
+     */
     protected function addCoordinates(array $routeLeg, array &$origin, array &$destination, array &$waypoints): void
     {
         foreach ($routeLeg['via_waypoint'] as $key => $apiWaypoint) {
@@ -132,6 +150,11 @@ class TripService
         $destination['coordinates'] = $routeLeg['end_location'];
     }
 
+    /**
+     * @param $clientOrigin
+     * @return array
+     * @throws \ErrorException
+     */
     protected function getDriverData($clientOrigin): array
     {
         $drivers = $this->findDrivers($clientOrigin['coordinates']['lng'], $clientOrigin['coordinates']['lat']);
@@ -173,6 +196,11 @@ class TripService
         return $ordersCount >= $activeShiftsNumber;
     }
 
+    /**
+     * @param $longitude
+     * @param $latitude
+     * @return Collection
+     */
     public function findDrivers($longitude, $latitude): Collection
     {
         $cityId = $this->getCityId($longitude, $latitude);
@@ -217,6 +245,11 @@ class TripService
         return $response;
     }
 
+    /**
+     * @param TripOrder $tripOrder
+     * @param Driver $driver
+     * @return Trip
+     */
     public function createTrip(TripOrder $tripOrder, Driver $driver): Trip
     {
         $driverData = $this->getDriverData($tripOrder->origin);
@@ -231,7 +264,11 @@ class TripService
         return Trip::create($tripData);
     }
 
-    public function checkTrip(?Trip $trip, int $newStatus)
+    /**
+     * @param Trip|null $trip
+     * @param int $newStatus
+     */
+    public function checkTrip(?Trip $trip, int $newStatus): void
     {
         if (!$trip) {
             throw new TripException(200, 'Active trip not found.');
@@ -242,7 +279,12 @@ class TripService
         }
     }
 
-    public function changeStatus(Trip $trip, int $newStatus)
+    /**
+     * @param Trip $trip
+     * @param int $newStatus
+     * @throws \Exception
+     */
+    public function changeStatus(Trip $trip, int $newStatus): void
     {
         $data = [Trip::STATUS => $newStatus];
 
@@ -259,7 +301,33 @@ class TripService
         $trip->client->notify(new TripStatusChanged($newStatus, $trip->id));
     }
 
-    protected function updateClientsCo2Sum(Client $client)
+    /**
+     * @param TripOrder $tripOrder
+     */
+    public function sendRequestsToDrivers(TripOrder $tripOrder): void
+    {
+        $longitude = $tripOrder->origin['coordinates']['lng'];
+        $latitude = $tripOrder->origin['coordinates']['lat'];
+
+        $drivers = $this->findDrivers($longitude, $latitude);
+
+        foreach ($drivers as $driver) {
+            $driver->notify(new NewTripOrder($tripOrder->id));
+
+            $orderShiftRelationExists = $tripOrder->shifts()
+                ->where('shifts.id', $driver->activeShift->id)
+                ->exists();
+
+            if (!$orderShiftRelationExists) {
+                $tripOrder->shifts()->attach($driver->activeShift->id);
+            }
+        }
+    }
+
+    /**
+     * @param Client $client
+     */
+    protected function updateClientsCo2Sum(Client $client): void
     {
         $co2Sum = $client->trips()->archived()->get()->sum('co2');
 
