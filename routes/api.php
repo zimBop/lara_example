@@ -88,6 +88,7 @@ Route::middleware('multiauth:driver', 'scope:access-driver')->group(function () 
         Route::post('/drivers/{driver}/shift/start', 'Api\ShiftController@start')->name('shift.start');
         Route::post('/drivers/{driver}/shift/finish', 'Api\ShiftController@finish')->name('shift.finish');
         Route::post('/drivers/{driver}/shift/location', 'Api\ShiftController@location')->name('shift.location');
+        Route::post('/drivers/{driver}/shift/wash', 'Api\ShiftController@washVehicle')->name('shift.wash-vehicle');
     });
 });
 

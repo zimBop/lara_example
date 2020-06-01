@@ -8,6 +8,7 @@ use App\Http\Requests\Client\RateDriverRequest;
 use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Driver;
+use App\Models\Shift;
 use App\Models\Tip;
 use App\Models\Trip;
 use App\Services\StripeService;
@@ -88,6 +89,10 @@ class TripController extends ApiController
 
     public function finish(Driver $driver, TripService $tripService)
     {
+        $driver->active_shift->update([
+            Shift::WASHED_AT => null
+        ]);
+
         return $this->changeTripStatus($driver, $tripService, TripStatuses::UNRATED);
     }
 

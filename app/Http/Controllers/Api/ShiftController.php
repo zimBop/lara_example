@@ -83,4 +83,13 @@ class ShiftController extends ApiController
 
         return $this->done(DriverMessages::LOCATION_UPDATED);
     }
+
+    public function washVehicle(Driver $driver)
+    {
+        $driver->active_shift->update([
+            Shift::WASHED_AT => now()
+        ]);
+
+        return $this->done(DriverMessages::VEHICLE_WASHED);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Driver;
+use App\Models\Shift;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DriverResource extends JsonResource
@@ -23,6 +24,9 @@ class DriverResource extends JsonResource
             // Driver::PHONE return only digits
             Driver::PHONE => '18152478181',
             'has_active_shift' => (boolean)$this->active_shift,
+            Shift::WASHED_AT => $this->when($this->active_shift, function () {
+                return $this->active_shift->washed_at;
+            }),
         ];
     }
 }

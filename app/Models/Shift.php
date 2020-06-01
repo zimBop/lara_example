@@ -45,6 +45,7 @@ class Shift extends Model
     public const CITY_ID = 'city_id';
     public const STARTED_AT = 'started_at';
     public const FINISHED_AT = 'finished_at';
+    public const WASHED_AT = 'washed_at';
 
     protected $fillable = [
         self::DRIVER_ID,
@@ -52,6 +53,11 @@ class Shift extends Model
         self::CITY_ID,
         self::STARTED_AT,
         self::FINISHED_AT,
+        self::WASHED_AT,
+    ];
+
+    protected $casts = [
+        self::WASHED_AT => 'timestamp',
     ];
 
     public function getActiveTripAttribute()
