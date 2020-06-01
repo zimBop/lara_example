@@ -32,7 +32,7 @@ class TripOrderCanceled extends Notification
     public function toApn($notifiable)
     {
         return (new PushMessage())
-            ->title('Trip canceled')
+            ->title('Trip Request canceled')
             ->extra([
                 'type' => 'cancel_request',
             ]);
