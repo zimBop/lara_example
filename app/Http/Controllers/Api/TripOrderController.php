@@ -84,7 +84,7 @@ class TripOrderController extends ApiController
             $request->only([TripOrder::MESSAGE_FOR_DRIVER, TripOrder::PAYMENT_METHOD_ID])
        ));
 
-        $tripService->sendRequestsToDrivers($tripOrder);
+        $tripService->informDriversAboutOrder($tripOrder);
 
         return $this->data(new TripOrderResource($tripOrder->refresh()));
     }

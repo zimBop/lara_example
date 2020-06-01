@@ -304,7 +304,7 @@ class TripService
     /**
      * @param TripOrder $tripOrder
      */
-    public function sendRequestsToDrivers(TripOrder $tripOrder): void
+    public function informDriversAboutOrder(TripOrder $tripOrder): void
     {
         $longitude = $tripOrder->origin['coordinates']['lng'];
         $latitude = $tripOrder->origin['coordinates']['lat'];
