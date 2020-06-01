@@ -34,7 +34,7 @@ class TripOrderCanceled extends Notification
         return (new PushMessage())
             ->title('Trip Request canceled')
             ->extra([
-                'type' => 'cancel_request',
+                'type' => 'cancel_trip_request',
             ]);
     }
 
