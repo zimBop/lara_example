@@ -4,10 +4,10 @@ namespace Tests;
 
 use App\Models\Client;
 use App\Models\Driver;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use SMartins\PassportMultiauth\PassportMultiauth;
 
 abstract class TestCase extends BaseTestCase
@@ -19,6 +19,17 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         Artisan::call('migrate');
+
+        Artisan::call('db:seed');
+
+        DB::beginTransaction();
+    }
+
+    public function tearDown(): void
+    {
+        DB::rollBack();
+
+        parent::tearDown();
     }
 
     protected function makeAuthUser(string $type = null, array $data = [])
