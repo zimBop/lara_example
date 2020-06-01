@@ -54,6 +54,7 @@ class ShiftController extends ApiController
         }
 
         $driver->activeShift->driver_location->delete();
+        $driver->activeShift->trip_orders()->detach();
 
         $driver->activeShift->update([
             Shift::FINISHED_AT => now()
