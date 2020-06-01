@@ -11,6 +11,7 @@ use App\Models\Driver;
 use App\Models\Shift;
 use App\Models\Tip;
 use App\Models\Trip;
+use App\Notifications\TripOrderCanceled;
 use App\Services\StripeService;
 use App\Services\TripService;
 use Illuminate\Database\Eloquent\Model;
@@ -46,12 +47,19 @@ class TripController extends ApiController
 
     public function cancel(Client $client)
     {
-        if (!$client->tripOrder) {
+        $tripOrder = $client->tripOrder;
+
+        if (!$tripOrder) {
             return $this->error(TripMessages::REQUEST_NOT_FOUND);
         }
 
-        if ($client->tripOrder->status < TripStatuses::TRIP_IN_PROGRESS) {
-            $client->tripOrder->delete();
+        if ($tripOrder->status < TripStatuses::TRIP_IN_PROGRESS) {
+
+            foreach ($tripOrder->shifts as $shift) {
+                $shift->driver->notify(new TripOrderCanceled($tripOrder->id));
+            }
+
+            $tripOrder->delete();
 
             if ($client->active_trip) {
                 $client->active_trip->delete();

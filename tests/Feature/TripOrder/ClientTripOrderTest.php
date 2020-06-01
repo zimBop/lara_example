@@ -5,7 +5,11 @@ namespace Tests\Feature\TripOrder;
 use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
 use App\Http\Resources\TripOrderResource;
+use App\Models\Driver;
+use App\Models\Shift;
 use App\Models\TripOrder;
+use App\Notifications\TripOrderCanceled;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use Tests\Feature\Traits\TripTrait;
 
@@ -175,6 +179,7 @@ class ClientTripOrderTest extends TestCase
     public function testIsTripOrderSuccessfullyCanceled(): void
     {
         $client = $this->makeAuthClient();
+        $this->createDriversAtWork();
 
         $tripOrder = factory(TripOrder::class)->create(
             [
@@ -188,6 +193,16 @@ class ClientTripOrderTest extends TestCase
             ]
         );
 
+        $shifts = Shift::all();
+
+        $tripOrder->shifts()->sync(
+            $shifts->pluck(Shift::ID)->toArray()
+        );
+
+        $drivers = Driver::whereIn(Driver::ID, $shifts->pluck(Shift::DRIVER_ID)->toArray());
+
+        Notification::fake();
+
         $this->postJson(
                 route('trip.cancel', ['client' => $client->id])
             )
@@ -196,6 +211,10 @@ class ClientTripOrderTest extends TestCase
                 'done' => true,
                 'message' => TripMessages::CANCELED,
             ]);
+
+        foreach ($drivers as $driver) {
+            Notification::assertSentTo($driver, TripOrderCanceled::class);
+        }
 
         $this->assertDatabaseMissing('trip_orders', ['id' => $tripOrder->id]);
     }
