@@ -16,6 +16,7 @@ use App\Notifications\NewTripOrder;
 use App\Notifications\TripStatusChanged;
 use App\Services\TripService;
 
+//TODO split into two ClientTripOrderController and DriverTripOrderController
 class TripOrderController extends ApiController
 {
     /**
@@ -110,7 +111,6 @@ class TripOrderController extends ApiController
         if ($driver->active_trip) {
             return $this->error(TripMessages::DRIVER_ALREADY_HAS_ACTIVE_TRIP);
         }
-
         $trip = $tripService->createTrip($tripOrder, $driver);
 
         $tripOrder->shifts()->detach();
