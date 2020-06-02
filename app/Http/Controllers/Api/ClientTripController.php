@@ -24,7 +24,7 @@ class ClientTripController extends ApiController
      */
     public function index(Client $client)
     {
-        return TripResource::collection($client->trips()->archived()->paginate(20));
+        return TripResource::collection($client->trips()->archived()->latest()->paginate(20));
     }
 
     /**
