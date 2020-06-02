@@ -35,7 +35,7 @@ class TripService
     public function updateOrCreateTripOrder(StoreTripOrderRequest $request, Client $client)
     {
         $clientData = $this->getClientData($request);
-        $driverData = $this->getDriverData($clientData[TripOrder::ORIGIN], $client);
+        $driverData = $this->getDriverData($clientData[TripOrder::ORIGIN]);
 
         return TripOrder::updateOrCreate(
             [TripOrder::CLIENT_ID => $client->id],
@@ -92,10 +92,8 @@ class TripService
 
     protected function setOriginLabel(array &$origin)
     {
-        if (!$origin['label']) {
-            $coords = $origin['coordinates'];
-            $latlng = $coords['lat'] . ',' . $coords['lng'];
-            $origin['label'] = $this->requestReverseGeocodingApi($latlng);
+        if (!$origin['label'] && strpos($origin['id'], 'place_id') === false) {
+            $origin['label'] = $this->requestReverseGeocodingApi($origin['id']);
         }
     }
 
