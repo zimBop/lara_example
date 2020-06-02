@@ -28,9 +28,13 @@ class TripTest extends TestCase
         ]);
         $models = $this->prepareModels($client, $status);
 
+        Notification::fake();
+
         $response = $this->postJson(
             route('trip.client-cancel', ['client' => $client->id])
         );
+
+        Notification::assertSentTo($models['driver'], TripCanceled::class);
 
         $this->checkResponseMessage($response, TripMessages::CANCELED);
 
@@ -236,7 +240,7 @@ class TripTest extends TestCase
 
         $trip = factory(Trip::class)->create($tripData);
 
-        return ['trip' => $trip, 'tripOrder' => $tripOrder];
+        return ['trip' => $trip, 'tripOrder' => $tripOrder, 'driver' => $driver];
     }
 
     protected function checkStatus($models, $status): void

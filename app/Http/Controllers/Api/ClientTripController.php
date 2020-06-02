@@ -9,6 +9,7 @@ use App\Http\Resources\TripResource;
 use App\Models\Client;
 use App\Models\Tip;
 use App\Models\Trip;
+use App\Notifications\TripCanceled;
 use App\Notifications\TripOrderCanceled;
 use App\Services\StripeService;
 use App\Services\TripService;
@@ -51,8 +52,11 @@ class ClientTripController extends ApiController
 
             $tripOrder->delete();
 
-            if ($client->active_trip) {
-                $client->active_trip->delete();
+            $trip = $client->active_trip;
+
+            if ($trip) {
+                $trip->shift->driver->notify(new TripCanceled($trip->id));
+                $trip->delete();
             }
 
             return $this->done(TripMessages::CANCELED);
