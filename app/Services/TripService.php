@@ -78,6 +78,8 @@ class TripService
 
         $this->checkRouteBounds($response['routes'][0]['bounds'], $origin);
 
+        $this->setOriginLabel($origin);
+
         return [
             TripOrder::ORIGIN => $origin,
             TripOrder::DESTINATION => $destination,
@@ -86,6 +88,15 @@ class TripService
             TripOrder::TRIP_DURATION => $route['legs'][0]['duration']['value'],
             TripOrder::OVERVIEW_POLYLINE => $route['overview_polyline'],
         ];
+    }
+
+    protected function setOriginLabel(array &$origin)
+    {
+        if (!$origin['label']) {
+            $coords = $origin['coordinates'];
+            $latlng = $coords['lat'] . ',' . $coords['lng'];
+            $origin['label'] = $this->requestReverseGeocodingApi($latlng);
+        }
     }
 
     /**
@@ -244,6 +255,27 @@ class TripService
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $latlng
+     * @return string
+     * @throws \ErrorException
+     */
+    protected function requestReverseGeocodingApi(string $latlng): string
+    {
+        $response = \GoogleMaps::load('geocoding')
+            ->setParamByKey('latlng', $latlng)
+            ->setParamByKey('result_type', 'street_address')
+            ->get();
+
+        $response = json_decode($response, true);
+
+        if (!in_array($response['status'],  ['OK', 'ZERO_RESULTS'])) {
+            return '';
+        }
+
+        return $response['results'][0]['formatted_address'];
     }
 
     /**
