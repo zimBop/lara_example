@@ -82,6 +82,7 @@ class PostgisService
             ->join('shifts', 'shifts.driver_id', 'drivers.id')
             ->join('driver_locations', 'driver_locations.shift_id', 'shifts.id')
             ->where('shifts.city_id', $cityId)
+            ->whereNull('shifts.finished_at')
             ->orderBy(DB::raw("driver_locations.location <-> ST_GeomFromText('POINT($longitude $latitude)', 4326)"))
             ->limit(self::CLOSEST_DRIVERS_NUMBER)
             ->get();
