@@ -9,6 +9,7 @@ use App\Models\Driver;
 use App\Models\DriverLocation;
 use App\Models\Shift;
 use App\Models\Vehicle;
+use App\Services\PostgisService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -18,9 +19,15 @@ class ShiftController extends ApiController
     {
         // TODO retrieve vehicle and city from schedule
         $vehicle = Vehicle::first() ?: factory(Vehicle::class)->create();
-        if (config('app.test_trip_flow')) {
-            $city = City::whereName('Krivoy Rog')->first();
-        } else {
+
+        $lng = $request->input('longitude');
+        $lat = $request->input('latitude');
+
+        $cityId  = PostgisService::findClosestCityId($lng, $lat);
+
+        $city = City::whereId($cityId)->first();
+
+        if (!$city) {
             $city = City::first();
         }
 
@@ -31,9 +38,6 @@ class ShiftController extends ApiController
                 Shift::CITY_ID => $city->id,
             ]);
         }
-
-        $lng = $request->input('longitude');
-        $lat = $request->input('latitude');
 
         DriverLocation::updateOrCreate(
             [DriverLocation::SHIFT_ID => $driver->activeShift->id],
