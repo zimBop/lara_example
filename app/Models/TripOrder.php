@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\TripStatuses;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -64,6 +65,7 @@ class TripOrder extends Model
     public const DRIVER_DISTANCE = 'driver_distance';
     public const MESSAGE_FOR_DRIVER = 'message_for_driver';
     public const PAYMENT_METHOD_ID = 'payment_method_id';
+    public const IS_FREE_TRIP = 'is_free_trip';
 
     protected $fillable = [
         self::CLIENT_ID,
@@ -96,5 +98,14 @@ class TripOrder extends Model
     public function shifts()
     {
         return $this->belongsToMany(Shift::class);
+    }
+
+    public function getIsFreeTripAttribute()
+    {
+        if ($this->status === TripStatuses::WAITING_FOR_CONFIRMATION) {
+            return null;
+        }
+
+        return (bool) !$this->payment_method_id;
     }
 }

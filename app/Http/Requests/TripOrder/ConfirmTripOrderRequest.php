@@ -23,9 +23,15 @@ class ConfirmTripOrderRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'payment_method_id' => ['required', 'string'],
+        $data = [
+            'payment_method_id' => ['string'],
             'message_for_driver' => ['string'],
         ];
+
+        if (!$this->input('is_free_trip')) {
+            $data['payment_method_id'][] = 'required';
+        }
+
+        return $data;
     }
 }

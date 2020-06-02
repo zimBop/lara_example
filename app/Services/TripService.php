@@ -18,6 +18,7 @@ use App\Logic\TripPriceCalculator;
 use App\Notifications\NewTripOrder;
 use App\Notifications\TripStatusChanged;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use \Illuminate\Validation\ValidationException;
 
 class TripService
@@ -332,5 +333,23 @@ class TripService
         $co2Sum = $client->trips()->archived()->get()->sum('co2');
 
         $client->update([Client::CO2_SUM => $co2Sum]);
+    }
+
+    public function checkFreeTrips(Client $client)
+    {
+        if (!$client->free_trips) {
+            throw new TripException(200, TripMessages::NO_FREE_TRIPS);
+        }
+    }
+
+    public function processFreeTrip(Trip $trip)
+    {
+        $client = $trip->client;
+
+        $this->checkFreeTrips($client);
+
+        $client->decrement(Client::FREE_TRIPS);
+
+        Log::channel('free_trips')->info($client->id);
     }
 }

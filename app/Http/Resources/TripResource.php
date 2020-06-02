@@ -36,6 +36,7 @@ class TripResource extends JsonResource
             'client' => $this->when(is_driver(), new ClientResource($this->client)),
             'vehicle' => $this->when(is_client(), new VehicleResource($this->shift->vehicle)),
             'driver' => $this->when(is_client(), new DriverResource($this->shift->driver)),
+            Trip::IS_FREE_TRIP => $this->is_free_trip,
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Constants\TripStatuses;
 use App\Logic\MetricConverter;
 use App\Models\TripOrder;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,7 @@ class TripOrderResource extends JsonResource
             TripOrder::DISTANCE => round(MetricConverter::metersToMiles($this->distance), 4),
             TripOrder::MESSAGE_FOR_DRIVER => $this->message_for_driver,
             'client' => $this->when(is_driver(), new ClientResource($this->client)),
+            TripOrder::IS_FREE_TRIP => $this->is_free_trip,
         ];
     }
 }

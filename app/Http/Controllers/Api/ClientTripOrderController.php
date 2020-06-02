@@ -62,9 +62,16 @@ class ClientTripOrderController extends ApiController
             return $this->error(TripMessages::REQUEST_ALREADY_CONFIRMED);
         }
 
+        $input = [TripOrder::MESSAGE_FOR_DRIVER];
+        if ($request->input('is_free_trip')) {
+            $tripService->checkFreeTrips($client);
+        } else {
+            $input[] = TripOrder::PAYMENT_METHOD_ID;
+        }
+
         $tripOrder->update(array_merge(
             [TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER],
-            $request->only([TripOrder::MESSAGE_FOR_DRIVER, TripOrder::PAYMENT_METHOD_ID])
+            $request->only($input)
        ));
 
         $tripService->informDriversAboutOrder($tripOrder);

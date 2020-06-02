@@ -59,11 +59,15 @@ class DriverTripController extends ApiController
 
         $tripService->checkTrip($trip, TripStatuses::TRIP_IN_PROGRESS);
 
-        $stripeError = $stripeService->setClient($trip->client)
-            ->makePayment($trip, 'Trip Payment');
+        if ($trip->is_free_trip) {
+            $tripService->processFreeTrip($trip);
+        } else {
+            $stripeError = $stripeService->setClient($trip->client)
+                ->makePayment($trip, 'Trip Payment');
 
-        if ($stripeError) {
-            return $this->error($stripeError);
+            if ($stripeError) {
+                return $this->error($stripeError);
+            }
         }
 
         $trip->update([Trip::PICKED_UP_AT => now()]);

@@ -91,6 +91,7 @@ class Trip extends Model
     public const PICKED_UP_AT = 'picked_up_at';
     public const CREATED_AT_TIMESTAMP = 'created_at_timestamp';
     public const UPDATED_AT_TIMESTAMP = 'updated_at_timestamp';
+    public const IS_FREE_TRIP = 'is_free_trip';
 
     protected $fillable = [
         self::CLIENT_ID,
@@ -167,6 +168,11 @@ class Trip extends Model
     public function scopeArchived(Builder $query)
     {
         return $query->whereStatus(TripStatuses::TRIP_ARCHIVED);
+    }
+
+    public function getIsFreeTripAttribute()
+    {
+        return (bool) !$this->payment_method_id;
     }
 
     protected function calculateAdjustedDuration(int $status, $attribute)

@@ -147,6 +147,26 @@ class TripTest extends TestCase
         $this->assertNotEquals(null, $models['trip']->picked_up_at);
     }
 
+    // TripController->start()
+    public function testIsFreeTripApplied(): void
+    {
+        $driver = $this->makeAuthDriver();
+
+        $freeTripsNumber = $this->faker->numberBetween(1, 3);
+        $client = factory(Client::class)->create([
+            Client::FREE_TRIPS => $freeTripsNumber
+        ]);
+
+        $this->prepareModels($client, TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT, $driver, true);
+
+        $this->postJson(
+            route('trip.start', ['driver' => $driver->id])
+        );
+
+        $client->refresh();
+        $this->assertEquals($freeTripsNumber - 1, $client->free_trips);
+    }
+
     public function testIsDriverRated()
     {
         $client = $this->makeAuthClient();
@@ -190,7 +210,7 @@ class TripTest extends TestCase
         $this->assertEquals($client->trips()->archived()->get()->sum('co2'), $client->co2_sum);
     }
 
-    protected function prepareModels(Client $client, int $status, Driver $driver = null): array
+    protected function prepareModels(Client $client, int $status, Driver $driver = null, $freeTrip = false): array
     {
         $tripOrder = factory(TripOrder::class)->create(
             [
@@ -204,11 +224,17 @@ class TripTest extends TestCase
             Shift::DRIVER_ID => $driver->id
         ]);
 
-        $trip = factory(Trip::class)->create([
+        $tripData = [
             Trip::SHIFT_ID => $shift->id,
             Trip::CLIENT_ID => $client->id,
             Trip::STATUS => $status
-        ]);
+        ];
+
+        if ($freeTrip) {
+            $tripData[Trip::PAYMENT_METHOD_ID] = null;
+        }
+
+        $trip = factory(Trip::class)->create($tripData);
 
         return ['trip' => $trip, 'tripOrder' => $tripOrder];
     }

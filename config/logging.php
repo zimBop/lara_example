@@ -47,6 +47,12 @@ return [
             'level' => 'debug',
         ],
 
+        'free_trips' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/free_trips.log'),
+            'level' => 'debug',
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
@@ -70,6 +76,8 @@ return [
         'driver_locations' => [
             'driver' => 'daily',
             'path' => storage_path('logs/driver_locations.log'),
+            // TODO change to below
+//            'path' => storage_path('logs/driver/locations.log'),
             'level' => 'debug',
             'days' => 30,
         ],
