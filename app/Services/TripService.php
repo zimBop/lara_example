@@ -269,7 +269,7 @@ class TripService
 
         $response = json_decode($response, true);
 
-        if (!in_array($response['status'],  ['OK', 'ZERO_RESULTS'])) {
+        if ($response['status'] !== 'OK') {
             return '';
         }
 
