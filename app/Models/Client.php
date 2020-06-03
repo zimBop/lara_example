@@ -111,6 +111,7 @@ class Client extends Authenticatable
         self::BIRTHDAY => 'date',
         self::CO2_SUM => 'float',
         self::FREE_TRIPS => 'integer',
+        self::RATING => 'float',
     ];
 
     /**

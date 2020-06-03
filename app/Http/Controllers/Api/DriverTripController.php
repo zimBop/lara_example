@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Constants\TripMessages;
 use App\Constants\TripStatuses;
+use App\Http\Requests\Driver\RateClientRequest;
 use App\Http\Resources\TripResource;
 use App\Models\Driver;
+use App\Models\Review;
 use App\Models\Shift;
 use App\Models\Trip;
 use App\Notifications\TripCanceled;
@@ -82,5 +84,24 @@ class DriverTripController extends ApiController
         ]);
 
         return $this->changeTripStatus($driver, $tripService, TripStatuses::UNRATED);
+    }
+
+    public function rate(RateClientRequest $request, Driver $driver)
+    {
+        $trip = Trip::findOrFail($request->input('trip_id'));
+
+        if ($trip->status < TripStatuses::UNRATED) {
+            return $this->error(TripMessages::INCORRECT_STATUS);
+        }
+
+        $client = $trip->client;
+
+        $client->reviews()->updateOrCreate(
+            [Review::TRIP_ID => $trip->id],
+            $request->input()
+        );
+        $client->updateRating();
+
+        return $this->done(TripMessages::CLIENT_RATED);
     }
 }

@@ -7,6 +7,7 @@ use App\Constants\TripStatuses;
 use App\Http\Requests\Client\RateDriverRequest;
 use App\Http\Resources\TripResource;
 use App\Models\Client;
+use App\Models\Review;
 use App\Models\Tip;
 use App\Models\Trip;
 use App\Notifications\TripCanceled;
@@ -72,7 +73,10 @@ class ClientTripController extends ApiController
 
         $driver = $trip->shift->driver;
 
-        $driver->reviews()->create($request->input());
+        $driver->reviews()->updateOrCreate(
+            [Review::TRIP_ID => $trip->id],
+            $request->input()
+        );
         $driver->updateRating();
 
         $tipAmount = $request->input(Tip::AMOUNT);

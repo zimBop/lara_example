@@ -85,6 +85,7 @@ Route::middleware('multiauth:driver', 'scope:access-driver')->group(function () 
         Route::post('/drivers/{driver}/trip/start', 'Api\DriverTripController@start')->name('trip.start');
         Route::post('/drivers/{driver}/trip/cancel', 'Api\DriverTripController@cancel')->name('trip.driver-cancel');
         Route::post('/drivers/{driver}/trip/finish', 'Api\DriverTripController@finish')->name('trip.finish');
+        Route::post('/drivers/{driver}/trip/rate', 'Api\DriverTripController@rate')->name('trip.driver-rate');
 
         Route::post('/drivers/{driver}/shift/start', 'Api\ShiftController@start')->name('shift.start');
         Route::post('/drivers/{driver}/shift/finish', 'Api\ShiftController@finish')->name('shift.finish');

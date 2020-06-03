@@ -300,11 +300,11 @@ class TripService
     public function checkTrip(?Trip $trip, int $newStatus): void
     {
         if (!$trip) {
-            throw new TripException(200, 'Active trip not found.');
+            throw new TripException(200, TripMessages::ACTIVE_TRIP_NOT_FOUND);
         }
 
         if ($trip->status !== ($newStatus - 1)) {
-            throw new TripException(200, 'Incorrect trip status.');
+            throw new TripException(200, TripMessages::INCORRECT_STATUS);
         }
     }
 
