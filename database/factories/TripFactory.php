@@ -55,5 +55,6 @@ $factory->define(Trip::class, function (Faker $faker) {
         Trip::DISTANCE => $distance,
         Trip::CO2 => $distance,
         Trip::DRIVER_DISTANCE => $faker->randomNumber(4),
+        Trip::PAYMENT_METHOD_ID => $faker->word,
     ];
 });

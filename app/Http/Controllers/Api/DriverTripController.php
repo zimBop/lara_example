@@ -33,19 +33,18 @@ class DriverTripController extends ApiController
             return $this->error(TripMessages::REQUEST_NOT_FOUND);
         }
 
-        if ($trip->status < TripStatuses::TRIP_IN_PROGRESS) {
-
-            $client = $trip->client;
-
-            $client->notify(new TripCanceled($trip->id));
-
-            $client->tripOrder->delete();
-            $trip->delete();
-
-            return $this->done(TripMessages::CANCELED);
+        if ($trip->status >= TripStatuses::TRIP_IN_PROGRESS) {
+            return $this->done(TripMessages::CANNOT_BE_CANCELED);
         }
 
-        return $this->done(TripMessages::CANNOT_BE_CANCELED);
+        $client = $trip->client;
+
+        $client->notify(new TripCanceled($trip->id));
+
+        $client->tripOrder->delete();
+        $trip->delete();
+
+        return $this->done(TripMessages::CANCELED);
     }
 
     public function arrived(Driver $driver, TripService $tripService)

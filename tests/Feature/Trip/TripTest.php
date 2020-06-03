@@ -86,7 +86,8 @@ class TripTest extends TestCase
         $this->assertDatabaseHas('trips', ['id' => $models['trip']->id]);
     }
 
-    // TripController->arrived(), ->finish(), ->archive()
+    // DriverTripController->arrived(), ->finish()
+    // ClientTripController->archive()
     public function testIsTripStatusChanged()
     {
         $actions = [
@@ -126,7 +127,7 @@ class TripTest extends TestCase
 
     }
 
-    // TripController->start()
+    // DriverTripController->start()
     public function testIsClientPickedUp()
     {
         $driver = $this->makeAuthDriver();
@@ -151,7 +152,7 @@ class TripTest extends TestCase
         $this->assertNotEquals(null, $models['trip']->picked_up_at);
     }
 
-    // TripController->start()
+    // DriverTripController->start()
     public function testIsFreeTripApplied(): void
     {
         $driver = $this->makeAuthDriver();

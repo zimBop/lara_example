@@ -44,25 +44,24 @@ class ClientTripController extends ApiController
             return $this->error(TripMessages::REQUEST_NOT_FOUND);
         }
 
-        if ($tripOrder->status < TripStatuses::TRIP_IN_PROGRESS) {
-
-            foreach ($tripOrder->shifts as $shift) {
-                $shift->driver->notify(new TripOrderCanceled($tripOrder->id));
-            }
-
-            $tripOrder->delete();
-
-            $trip = $client->active_trip;
-
-            if ($trip) {
-                $trip->shift->driver->notify(new TripCanceled($trip->id));
-                $trip->delete();
-            }
-
-            return $this->done(TripMessages::CANCELED);
+        if ($tripOrder->status >= TripStatuses::TRIP_IN_PROGRESS) {
+            return $this->done(TripMessages::CANNOT_BE_CANCELED);
         }
 
-        return $this->done(TripMessages::CANNOT_BE_CANCELED);
+        foreach ($tripOrder->shifts as $shift) {
+            $shift->driver->notify(new TripOrderCanceled($tripOrder->id));
+        }
+
+        $tripOrder->delete();
+
+        $trip = $client->active_trip;
+
+        if ($trip) {
+            $trip->shift->driver->notify(new TripCanceled($trip->id));
+            $trip->delete();
+        }
+
+        return $this->done(TripMessages::CANCELED);
     }
 
     public function rate(RateDriverRequest $request, Client $client, TripService $tripService, StripeService $stripeService)

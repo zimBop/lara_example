@@ -70,13 +70,11 @@ class TripService
 
         $this->prepareWaypoints($directionsApiParams, $waypoints);
 
-        $response = $this->requestDirectionsApi($directionsApiParams);
-
-        $route = $response['routes'][0];
+        $route = $this->requestDirectionsApi($directionsApiParams);
 
         $this->addCoordinates($route['legs'][0], $origin, $destination, $waypoints);
 
-        $this->checkRouteBounds($response['routes'][0]['bounds'], $origin);
+        $this->checkRouteBounds($route['bounds'], $origin);
 
         $this->setOriginLabel($origin);
 
@@ -179,7 +177,7 @@ class TripService
             $driverOrigin = "{$driverLocation->latitude},{$driverLocation->longitude}";
         }
 
-        $response = $this->requestDirectionsApi(
+        $route = $this->requestDirectionsApi(
             [
                 'origin' => $driverOrigin,
                 'destination' => $clientOrigin['id'],
@@ -187,8 +185,8 @@ class TripService
         );
 
         return [
-            TripOrder::DRIVER_DISTANCE => $response['routes'][0]['legs'][0]['distance']['value'],
-            TripOrder::WAIT_DURATION => $currentTripDuration + $response['routes'][0]['legs'][0]['duration']['value'],
+            TripOrder::DRIVER_DISTANCE => $route['legs'][0]['distance']['value'],
+            TripOrder::WAIT_DURATION => $currentTripDuration + $route['legs'][0]['duration']['value'],
         ];
     }
 
@@ -252,7 +250,7 @@ class TripService
             throw new GoogleApiException($response);
         }
 
-        return $response;
+        return $response['routes'][0];
     }
 
     /**
@@ -380,6 +378,6 @@ class TripService
 
         $client->decrement(Client::FREE_TRIPS);
 
-        Log::channel('free_trips')->info($client->id);
+        Log::channel('free_trips')->info("Client ID: " . $client->id);
     }
 }
