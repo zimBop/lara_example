@@ -16,5 +16,6 @@ mix
     //.sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/admin/custom.scss', 'public/css/admin/custom.min.css')
     .sass('resources/sass/admin/login.scss', 'public/css/admin/login.min.css')
+    .sass('resources/sass/admin/driver.scss', 'public/css/admin/driver.min.css')
     .copyDirectory('resources/images/admin', 'public/images/admin')
     .version();

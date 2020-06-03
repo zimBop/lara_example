@@ -59,9 +59,9 @@ class AvatarService
 
     public static function update(?UploadedFile $file, Model $model, string $disk = Disk::CLIENT_AVATARS)
     {
-        self::delete($model);
+        self::delete($model, $disk);
 
-        $avatar = self::add($file);
+        $avatar = self::add($file, $disk);
 
         if ($avatar) {
             $model->avatar()->save($avatar);

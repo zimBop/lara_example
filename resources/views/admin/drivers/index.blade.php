@@ -39,6 +39,7 @@
                         <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
                         <th scope="col">Created at</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -49,6 +50,7 @@
                             <td>{{ $driver->id }}</td>
                             <td>{{ optional($driver)->full_name }}</td>
                             <td>{{ optional($driver)->email }}</td>
+                            <td>{{ optional($driver)->phone }}</td>
                             <td>{{ $driver->created_at->format('M d, Y H:i') }}</td>
                             <td>
                                 <a href="{{ route(R_ADMIN_DRIVERS_EDIT, $driver) }}" title="Edit" data-toggle="tooltip">

@@ -2,6 +2,17 @@
 
 @section('title', 'Drivers - ' . config('app.name'))
 
+@push('css')
+    <link type="text/css" rel="stylesheet" href="{{ mix('css/admin/driver.min.css') }}">
+@endpush
+
+@push('scripts')
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+    <script>
+        bsCustomFileInput.init();
+    </script>
+@endpush
+
 @section('content')
     <div class="row mb-3">
         <div class="col d-flex justify-content-start">
@@ -60,6 +71,42 @@
                             @enderror
                         </div>
                         <!-- /Email -->
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label for="phone">Phone<sup>*</sup></label>
+                            <input type="text" name="phone" id="phone" value="{{ old('phone', $driver->phone ?? '') }}"
+                                   placeholder="+1 (XXX) XXX-XXXX"
+                                   pattern="^(\+\s?)?(1\s?)?((\([0-9]{3}\))|[0-9]{3})[\s\-]?[\0-9]{3}[\s\-]?[0-9]{4}$"
+                                   class="form-control @error('phone') is-invalid @enderror">
+                            @error('phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <!-- /Phone -->
+
+                        <!-- Avatar -->
+                        <div class="form-group row">
+                            @isset($driver->avatar)
+                                <div class="col-12 col-md-2">
+                                    <img src="{{ $driver->avatar_url }}" class="img-fluid" title="Avatar" alt="Avatar"/>
+                                </div>
+                            @endisset
+                            <div class="col col-md-4">
+                                <div class="custom-file">
+                                    <label for="avatar" class="custom-file-label">Avatar</label>
+                                    <input type="file" class="form-control-file custom-file-input" id="avatar" name="avatar">
+                                </div>
+                            </div>
+                            @isset($driver->avatar)
+                            <div class="col col-md-4">
+                                <label for="delete_avatar" class="checkbox-label">
+                                    <input type="checkbox" name="delete_avatar" id="delete_avatar" style="vert-align: middle;">
+                                    &nbsp;Delete Avatar
+                                </label>
+                            </div>
+                            @endisset
+                        </div>
 
                         @if(request()->routeIs(R_ADMIN_DRIVERS_CREATE))
                         <!-- Password -->

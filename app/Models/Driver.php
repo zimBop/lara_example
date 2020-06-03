@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Constants\TripStatuses;
+use App\Constants\Disk;
+use App\Services\AvatarService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -62,7 +63,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  */
 class Driver extends Authenticatable
 {
-    use HasMultiAuthApiTokens, Notifiable, SoftDeletes, CanReceiveIosPush, CanBeRated;
+    use HasMultiAuthApiTokens, Notifiable, SoftDeletes, CanReceiveIosPush, CanBeRated, HasAvatar;
 
     public const ID = 'id';
     public const FIRST_NAME = 'first_name';
@@ -108,6 +109,11 @@ class Driver extends Authenticatable
         }
 
         return $this->active_shift->active_trip;
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->avatar ? AvatarService::getUrl($this->avatar, Disk::DRIVER_AVATARS) : null;
     }
 
     public function setPasswordAttribute($value): void

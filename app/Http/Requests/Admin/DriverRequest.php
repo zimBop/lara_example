@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Avatar;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Driver;
@@ -29,6 +30,7 @@ class DriverRequest extends FormRequest
         return [
             Driver::FIRST_NAME => ['required', 'string', 'max:100'],
             Driver::LAST_NAME => ['required', 'string', 'max:100'],
+            Driver::PHONE => ['required', 'string', 'regex:/^(\+\s?)?(1\s?)?((\([0-9]{3}\))|[0-9]{3})[\s\-]?[\0-9]{3}[\s\-]?[0-9]{4}$/'],
             Driver::EMAIL => [
                 'required',
                 'email',
@@ -38,6 +40,7 @@ class DriverRequest extends FormRequest
                 'string',
                 Rule::requiredIf($driver === null), // password required only if we create driver
             ],
+            Avatar::FILE_INPUT_NAME => ['image', 'max:10000'],
             //Driver::IS_ACTIVE => ['required', 'boolean'], // saved for future
         ];
     }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\Disk;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\DriverRequest;
+use App\Models\Avatar;
+use App\Services\AvatarService;
 use Illuminate\Http\Request;
 use App\Models\Driver;
 
@@ -29,6 +32,15 @@ class DriverController extends Controller
     public function store(DriverRequest $request, Driver $driver)
     {
         $data = $request->validated();
+
+        if ($request->hasFile(Avatar::FILE_INPUT_NAME)) {
+            AvatarService::update($request->file(Avatar::FILE_INPUT_NAME), $driver, Disk::DRIVER_AVATARS);
+        }
+
+        if ($request->has('delete_avatar')) {
+            AvatarService::delete($driver, Disk::DRIVER_AVATARS);
+        }
+
         $driver->fill($data)->save();
 
         return redirect()
