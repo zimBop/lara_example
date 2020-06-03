@@ -19,7 +19,7 @@ class DriverResource extends JsonResource
         return [
             Driver::ID => $this->id,
             'full_name' => $this->full_name,
-            'image' => 'https://electra.ag.digital/storage/driver.png',
+            'image' => $this->avatar ? $this->avatar_url : 'https://electra.ag.digital/storage/driver.png',
             Driver::RATING => $this->rating,
             // Driver::PHONE return only digits
             Driver::PHONE => '18152478181',
