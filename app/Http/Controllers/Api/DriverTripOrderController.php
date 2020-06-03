@@ -44,6 +44,11 @@ class DriverTripOrderController extends ApiController
         if ($driver->active_trip) {
             return $this->error(TripMessages::DRIVER_ALREADY_HAS_ACTIVE_TRIP);
         }
+
+        if (!$driver->active_shift->washed_at) {
+            return $this->error(TripMessages::WASH_CAR);
+        }
+
         $trip = $tripService->createTrip($tripOrder, $driver);
 
         $tripOrder->shifts()->detach();

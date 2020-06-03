@@ -14,5 +14,6 @@ $factory->define(Shift::class, function (Faker $faker) {
         Shift::VEHICLE_ID => $vehicle->id,
         Shift::STARTED_AT => now(),
         Shift::FINISHED_AT => null,
+        Shift::WASHED_AT => now(),
     ];
 });

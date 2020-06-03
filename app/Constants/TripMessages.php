@@ -22,4 +22,5 @@ class TripMessages
     public const CLIENTS_QUEUE_IS_FULL = 'Clients queue is full.';
     public const ALL_DRIVERS_OFFLINE = 'All drivers are offline.';
     public const NO_FREE_TRIPS = 'You have no free trips left.';
+    public const WASH_CAR = 'Please wash the car.';
 }
