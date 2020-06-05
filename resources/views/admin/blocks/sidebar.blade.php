@@ -21,6 +21,11 @@
                 <i class="fas fa-car"></i> Garage
             </a>
         </li>
+        <li class="{{ request()->routeIs(R_ADMIN_SCHEDULE) ? 'active' : '' }}">
+            <a href="{{ route(R_ADMIN_SCHEDULE) }}">
+                <i class="fas fa-calendar-alt"></i> Schedule
+            </a>
+        </li>
     </ul>
 
 </nav>

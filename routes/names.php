@@ -22,6 +22,8 @@ define('R_ADMIN_VEHICLES_EDIT', 'admin.vehicles.edit');
 define('R_ADMIN_VEHICLES_STORE', 'admin.vehicles.store');
 define('R_ADMIN_VEHICLES_DELETE', 'admin.vehicles.delete');
 
+define('R_ADMIN_SCHEDULE', 'admin.schedule');
+
 define('R_DRIVER_RESET_PASSWORD', 'driver.reset_password');
 
 
