@@ -49,12 +49,12 @@ class ShiftController extends ApiController
 
     public function finish(Driver $driver)
     {
-        if ($driver->activeShift->active_trip) {
-            return $this->error(DriverMessages::CANNOT_STOP_ACTIVE_TRIP);
-        }
-
         if (!$driver->activeShift) {
             return $this->done(DriverMessages::SHIFT_NOT_FOUND);
+        }
+
+        if ($driver->activeShift->active_trip) {
+            return $this->error(DriverMessages::CANNOT_STOP_ACTIVE_TRIP);
         }
 
         $driver->activeShift->driver_location->delete();
