@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use App\Models\ScheduleWeek;
 use Illuminate\Http\Request;
 
 class ScheduleWeekFilter extends QueryFilter
@@ -13,12 +14,7 @@ class ScheduleWeekFilter extends QueryFilter
 
     public function year(int $year)
     {
-        return $this->builder->whereYear($year);
-    }
-
-    public function month(int $month)
-    {
-        return $this->builder->whereMonth($month);
+        return $this->builder->where(ScheduleWeek::YEAR, $year);
     }
 
     public function number(int $number)

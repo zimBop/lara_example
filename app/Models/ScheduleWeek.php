@@ -12,7 +12,6 @@ use App\Filters\Filterable;
  *
  * @property int $id
  * @property int $year
- * @property int $month
  * @property int $number
  * @property bool $is_template
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -27,7 +26,6 @@ use App\Filters\Filterable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereIsTemplate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereYear($value)
@@ -38,13 +36,11 @@ class ScheduleWeek extends Model
     use Filterable;
 
     public const YEAR = 'year';
-    public const MONTH = 'month';
     public const NUMBER = 'number';
     public const IS_TEMPLATE = 'is_template';
 
     protected $fillable = [
         self::YEAR,
-        self::MONTH,
         self::NUMBER,
         self::IS_TEMPLATE,
     ];
@@ -74,6 +70,18 @@ class ScheduleWeek extends Model
 
     public function gaps()
     {
-        return $this->hasMany(ScheduleGap::class, ScheduleGap::WEEK_ID);
+        return $this->hasMany(ScheduleGap::class, ScheduleGap::WEEK_ID)
+            ->orderBy(ScheduleGap::WEEK_DAY)
+            ->orderBy(ScheduleGap::START);
+    }
+
+    public function shifts()
+    {
+        return $this->hasManyThrough(
+            ScheduleShift::class,
+            ScheduleGap::class,
+            ScheduleGap::WEEK_ID,
+            ScheduleShift::GAP_ID
+        );
     }
 }

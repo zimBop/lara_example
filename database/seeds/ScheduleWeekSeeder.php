@@ -95,7 +95,6 @@ class ScheduleWeekSeeder extends Seeder
             ->fill([
                 ScheduleWeek::NUMBER => $weekNumber,
                 ScheduleWeek::YEAR => now()->year,
-                ScheduleWeek::MONTH => now()->month,
                 ScheduleWeek::IS_TEMPLATE => false,
             ]);
 

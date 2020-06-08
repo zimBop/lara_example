@@ -16,8 +16,7 @@ class CreateScheduleWeeksTable extends Migration
         Schema::create('schedule_weeks', function (Blueprint $table) {
             $table->id();
             $table->unsignedSmallInteger('year');
-            $table->unsignedSmallInteger('month');
-            $table->unsignedSmallInteger('number');
+            $table->unsignedSmallInteger('number')->comment('Week of year.');
             $table->boolean('is_template')->default(false);
             $table->timestamps();
         });
