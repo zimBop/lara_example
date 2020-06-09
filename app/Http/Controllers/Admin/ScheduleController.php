@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\ScheduleMessages;
 use App\Filters\ScheduleWeekFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GetScheduleRequest;
@@ -62,7 +63,7 @@ class ScheduleController extends Controller
 
         return redirect()
             ->route(R_ADMIN_SCHEDULE, ['year' => now()->year, 'number' => $generatedWeek])
-            ->with('success', 'New schedule week successfully generated.');
+            ->with('success', ScheduleMessages::NEW_WEEK_GENERATED);
     }
 
     public function update(UpdateScheduleRequest $request, ScheduleService $scheduleService)
@@ -75,11 +76,11 @@ class ScheduleController extends Controller
         if ($week->is_template) {
             return redirect()
                 ->route(R_ADMIN_SCHEDULE_TEMPLATE)
-                ->with('success', 'Schedule template successfully updated.');
+                ->with('success', ScheduleMessages::WEEK_TEMPLATE_UPDATED);
         }
 
         return redirect()
             ->route(R_ADMIN_SCHEDULE, ['year' => $week->year, 'number' => $week->number])
-            ->with('success', 'Schedule week successfully updated.');
+            ->with('success', ScheduleMessages::WEEK_UPDATED);
     }
 }
