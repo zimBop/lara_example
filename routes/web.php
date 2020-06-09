@@ -56,5 +56,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
                     Route::get('/delete/{vehicle}', 'VehicleController@delete')->name(R_ADMIN_VEHICLES_DELETE);
                 });
 
+            Route::prefix('schedule')->group(static function(){
+                Route::get('/', 'ScheduleController@index')->name(R_ADMIN_SCHEDULE);
+                Route::get('/generate', 'ScheduleController@generate')->name(R_ADMIN_SCHEDULE_GENERATE);
+                Route::post('/update/{week}', 'ScheduleController@update')->name(R_ADMIN_SCHEDULE_UPDATE);
+            });
+
         });
 });

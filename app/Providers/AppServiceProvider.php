@@ -6,6 +6,7 @@ use App\Http\Resources\TripOrderResource;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\ClientService;
+use App\Services\ScheduleService;
 use App\Services\StripeService;
 use App\Services\TripService;
 use App\Services\VerificationCodeService;
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         StripeService::class => StripeService::class,
         ClientService::class => ClientService::class,
         TripService::class => TripService::class,
+        ScheduleService::class => ScheduleService::class,
     ];
 
     /**

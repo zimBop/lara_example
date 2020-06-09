@@ -13,9 +13,11 @@ const mix = require('laravel-mix');
 mix
     //.js('resources/js/app.js', 'public/js')
     .js('resources/js/admin/custom.js', 'public/js/admin/custom.min.js')
+    .js('resources/js/admin/schedule.js', 'public/js/admin/schedule.min.js')
     //.sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/admin/custom.scss', 'public/css/admin/custom.min.css')
     .sass('resources/sass/admin/login.scss', 'public/css/admin/login.min.css')
     .sass('resources/sass/admin/driver.scss', 'public/css/admin/driver.min.css')
+    .sass('resources/sass/admin/schedule.scss', 'public/css/admin/schedule.min.css')
     .copyDirectory('resources/images/admin', 'public/images/admin')
     .version();
