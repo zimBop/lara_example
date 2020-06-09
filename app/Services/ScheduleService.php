@@ -63,7 +63,8 @@ class ScheduleService
         $drivers = $request->input('drivers');
         $cities = $request->input('cities');
         $week->shifts->each(function($shift) use ($drivers, $cities) {
-            if (isset($drivers[$shift->id]) && $shift->driver_id !== $drivers[$shift->id]) {
+            if (isset($drivers[$shift->id]) && $drivers[$shift->id]
+                    && $shift->driver_id !== $drivers[$shift->id]) {
                 $shift->update([
                     ScheduleShift::DRIVER_ID => $drivers[$shift->id],
                 ]);

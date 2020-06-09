@@ -30,7 +30,7 @@ class UpdateScheduleRequest extends FormRequest
             ScheduleGap::END => ['required', 'array'],
             ScheduleGap::END . '.*' => ['date_format:H:i:s'],
             'drivers' => ['array'],
-            'drivers.*' => ['integer'],
+            'drivers.*' => ['nullable', 'integer'],
             'cities' => ['array'],
             'cities.*' => ['integer'],
         ];
