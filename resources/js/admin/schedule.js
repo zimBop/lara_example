@@ -1,5 +1,7 @@
 $(function () {
-    initDatepicker();
+    if (!isTemplate) {
+        initDatepicker();
+    }
 
     $('.driver-select').on('change', driverSelectOnChange);
 

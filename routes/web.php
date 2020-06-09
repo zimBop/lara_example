@@ -58,8 +58,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
 
             Route::prefix('schedule')->group(static function(){
                 Route::get('/', 'ScheduleController@index')->name(R_ADMIN_SCHEDULE);
+                Route::get('/template', 'ScheduleController@template')->name(R_ADMIN_SCHEDULE_TEMPLATE);
                 Route::get('/generate', 'ScheduleController@generate')->name(R_ADMIN_SCHEDULE_GENERATE);
-                Route::post('/update/{week}', 'ScheduleController@update')->name(R_ADMIN_SCHEDULE_UPDATE);
+                Route::post('/update', 'ScheduleController@update')->name(R_ADMIN_SCHEDULE_UPDATE);
             });
 
         });

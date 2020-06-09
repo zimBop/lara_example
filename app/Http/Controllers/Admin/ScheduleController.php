@@ -10,6 +10,7 @@ use App\Models\City;
 use App\Models\Driver;
 use App\Models\ScheduleWeek;
 use App\Models\Vehicle;
+use App\Scopes\IsNotTemplate;
 use App\Services\ScheduleService;
 use Illuminate\Support\Facades\Artisan;
 
@@ -41,6 +42,19 @@ class ScheduleController extends Controller
         return view('admin.schedule.index', get_defined_vars());
     }
 
+    public function template(ScheduleService $scheduleService)
+    {
+        $week = ScheduleWeek::template()->with('gaps', 'gaps.shifts')->first();
+
+        $vehicles = Vehicle::all();
+        $drivers = Driver::all();
+        $cities = City::all();
+
+        $timeSelectOptions = $scheduleService->getTimeSelectOptions();
+
+        return view('admin.schedule.index', get_defined_vars());
+    }
+
     public function generate()
     {
         Artisan::call('db:seed', ['--class' => \ScheduleWeekSeeder::class]);
@@ -51,10 +65,18 @@ class ScheduleController extends Controller
             ->with('success', 'New schedule week successfully generated.');
     }
 
-    public function update(UpdateScheduleRequest $request, ScheduleWeek $week, ScheduleService $scheduleService)
+    public function update(UpdateScheduleRequest $request, ScheduleService $scheduleService)
     {
+        $week = ScheduleWeek::withoutGlobalScope(IsNotTemplate::class)
+            ->find($request->input('week'));
         $scheduleService->updateWeekGaps($request, $week);
         $scheduleService->updateWeekShifts($request, $week);
+
+        if ($week->is_template) {
+            return redirect()
+                ->route(R_ADMIN_SCHEDULE_TEMPLATE)
+                ->with('success', 'Schedule template successfully updated.');
+        }
 
         return redirect()
             ->route(R_ADMIN_SCHEDULE, ['year' => $week->year, 'number' => $week->number])

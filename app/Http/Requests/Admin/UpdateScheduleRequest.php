@@ -25,6 +25,7 @@ class UpdateScheduleRequest extends FormRequest
     public function rules()
     {
         return [
+            'week' => ['required', 'integer'],
             ScheduleGap::START => ['required', 'array'],
             ScheduleGap::START . '.*' => ['date_format:H:i:s'],
             ScheduleGap::END => ['required', 'array'],

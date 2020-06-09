@@ -6,11 +6,16 @@
     {{-- Moment.js is not necessary for datepicker but used in schedule.js and here --}}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
-        // dates for datepicker setup
-        var startDate = moment().year({{ optional($firstWeek)->year ?? $selectedYear }})
-            .week({{ optional($firstWeek)->number ?? $selectedWeek }}).day('monday').format('MM/DD/YYYY');
-        var selectedDate = moment().year({{ $selectedYear }})
-            .week({{ $selectedWeek }}).day('monday').format('MM/DD/YYYY');
+        @if ($week && !$week->is_template)
+            // dates for datepicker setup
+            var startDate = moment().year({{ optional($firstWeek)->year ?? $selectedYear }})
+                .week({{ optional($firstWeek)->number ?? $selectedWeek }}).day('monday').format('MM/DD/YYYY');
+            var selectedDate = moment().year({{ $selectedYear }})
+                .week({{ $selectedWeek }}).day('monday').format('MM/DD/YYYY');
+            var isTemplate = false;
+        @else
+            var isTemplate = true;
+        @endif
     </script>
 @endpush
 
@@ -23,6 +28,7 @@
 
 @section('content')
     <div class="row mb-3">
+        @if ($week && !$week->is_template)
         <div class="col-12 col-md-6">
             <form method="get" id="week-form">
                 @csrf
@@ -43,6 +49,7 @@
                 </a>
             @endif
         </div>
+        @endif
     </div>
     <div class="card">
         <div class="card-header">
@@ -54,8 +61,9 @@
         </div>
         <div class="card-body">
             @isset($week)
-            <form action="{{ route(R_ADMIN_SCHEDULE_UPDATE, compact('week')) }}" method="POST" enctype="application/x-www-form-urlencoded">
+            <form action="{{ route(R_ADMIN_SCHEDULE_UPDATE) }}" method="POST" enctype="application/x-www-form-urlencoded">
                 @csrf
+                <input type="hidden" name="week" value="{{ $week->id }}">
                 <div class="table-responsive-sm">
                     <table class="table table-bordered">
                         <thead class="thead-dark">
