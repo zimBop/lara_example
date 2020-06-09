@@ -84,7 +84,7 @@
                                     <td>
                                         {{-- TODO refactor and move Shift query into the controller. It won't be a big problem :) --}}
                                         @include('admin.schedule.blocks.driver_select', [
-                                            'shift' => $gap->shifts()->whereVehicleId($vehicle->id)->first()
+                                            'shift' => $gap->shifts->where('vehicle_id', $vehicle->id)->first()
                                         ])
                                     </td>
                                 @endforeach
@@ -93,7 +93,7 @@
                                 @foreach($week->gaps as $gap)
                                     <td>
                                         @include('admin.schedule.blocks.city_select', [
-                                            'shift' => $gap->shifts()->whereVehicleId($vehicle->id)->first()
+                                            'shift' => $gap->shifts->where('vehicle_id', $vehicle->id)->first()
                                         ])
                                     </td>
                                 @endforeach

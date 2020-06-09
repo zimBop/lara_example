@@ -27,9 +27,9 @@ class ScheduleController extends Controller
         $selectedWeek = $request->input('number', $currentWeek);
 
         if ($request->has('year') && $request->has('number')) {
-            $week = ScheduleWeek::filter($filter)->first();
+            $week = ScheduleWeek::filter($filter)->with('gaps', 'gaps.shifts')->first();
         } else {
-            $week = ScheduleWeek::current()->first();
+            $week = ScheduleWeek::current()->with('gaps', 'gaps.shifts')->first();
         }
         $vehicles = Vehicle::all();
         $drivers = Driver::all();
