@@ -1,3 +1,14 @@
 .datepicker-days tr:hover {
     background-color: rgba(0,0,0,.03);
 }
+
+.datepicker table tr {
+    td.day.focused,
+    td.day:hover,
+    td.active,
+    td.active:hover.active,
+    td.active.active,
+    td.active:hover {
+        background: none;
+    }
+}
