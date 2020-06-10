@@ -1,5 +1,5 @@
-.datepicker-days tr:hover {
-    background-color: rgba(0,0,0,.03);
+.datepicker-days tbody tr:hover {
+    background-color: #eee;
 }
 
 .datepicker table tr {
@@ -10,5 +10,12 @@
     td.active.active,
     td.active:hover {
         background: none;
+    }
+
+    td.active,
+    td.active:hover.active,
+    td.active.active,
+    td.active:hover {
+        color: rgb(33, 37, 41);
     }
 }
