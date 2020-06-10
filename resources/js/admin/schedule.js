@@ -3,7 +3,9 @@ $(function () {
         initDatepicker();
     }
 
-    $('.driver-select').on('change', driverSelectOnChange);
+    $('.driver-select')
+        .on('change', driverSelectOnChange)
+        .trigger('change');
 
     function driverSelectOnChange(event) {
         let $this = $(this);
