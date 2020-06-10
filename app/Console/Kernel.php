@@ -24,7 +24,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        if (config('app.env') !== 'local') {
+            $schedule->command(
+                'db:seed',
+                ['--class' => \ScheduleWeekSeeder::class]
+            )->weeklyOn(4, '12:00');
+        }
     }
 
     /**
