@@ -21,10 +21,16 @@
                 <i class="fas fa-car"></i> Garage
             </a>
         </li>
-        <li class="{{ request()->routeIs(R_ADMIN_SCHEDULE) ? 'active' : '' }}">
-            <a href="{{ route(R_ADMIN_SCHEDULE) }}">
-                <i class="fas fa-calendar-alt"></i> Schedule
-            </a>
+        <li class="{{ request()->routeIs(R_ADMIN_SCHEDULE, R_ADMIN_SCHEDULE_TEMPLATE) ? 'active' : '' }}">
+            <a href="#pageSchedule" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-calendar-alt"></i>Schedule</a>
+            <ul class="collapse list-unstyled" id="pageSchedule">
+                <li class="{{ request()->routeIs(R_ADMIN_SCHEDULE) ? 'active' : '' }}">
+                    <a href="{{ route(R_ADMIN_SCHEDULE) }}" class="nav-link pt-2"><i class="fas fa-calendar-alt"></i>Weeks</a>
+                </li>
+                <li class="{{ request()->routeIs(R_ADMIN_SCHEDULE_TEMPLATE) ? 'active' : '' }}">
+                    <a href="{{ route(R_ADMIN_SCHEDULE_TEMPLATE) }}" class="nav-link pt-2"><i class="fas fa-calendar-alt"></i>Template</a>
+                </li>
+            </ul>
         </li>
     </ul>
 
