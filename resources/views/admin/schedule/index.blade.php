@@ -9,9 +9,9 @@
         @if ($week && !$week->is_template)
             // dates for datepicker setup
             var startDate = moment().year({{ optional($firstWeek)->year ?? $selectedYear }})
-                .week({{ optional($firstWeek)->number ?? $selectedWeek }}).day('monday').format('MM/DD/YYYY');
+                .isoWeek({{ optional($firstWeek)->number ?? $selectedWeek }}).startOf('isoWeek').format('MM/DD/YYYY');
             var selectedDate = moment().year({{ $selectedYear }})
-                .week({{ $selectedWeek }}).day('monday').format('MM/DD/YYYY');
+                .isoWeek({{ $selectedWeek }}).startOf('isoWeek').format('MM/DD/YYYY');
             var isTemplate = false;
         @else
             var isTemplate = true;

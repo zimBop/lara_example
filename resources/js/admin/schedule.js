@@ -39,7 +39,7 @@ $(function () {
             calendarWeeks: true,
             autoclose: true,
             startDate: startDate,
-            endDate: moment().add(1, 'weeks').endOf('week').format('MM/DD/YYYY'),
+            endDate: moment().add(1, 'weeks').endOf('isoWeek').format('MM/DD/YYYY'),
             todayHighlight: false,
         });
 
