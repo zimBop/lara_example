@@ -77,4 +77,15 @@ class ScheduleService
             }
         });
     }
+
+    public function getShift(int $driverId): ?ScheduleShift
+    {
+        $week = ScheduleWeek::current()->first();
+        $gap = ScheduleGap::whereWeekId($week->id)
+            ->whereWeekDay(now()->dayOfWeekIso)->first();
+
+        return ScheduleShift::whereDriverId($driverId)
+            ->whereGapId($gap->id)
+            ->first();
+    }
 }

@@ -4,38 +4,34 @@ namespace App\Http\Controllers\Api;
 
 use App\Constants\DriverMessages;
 use App\Http\Requests\Driver\UpdateLocationRequest;
-use App\Models\City;
 use App\Models\Driver;
 use App\Models\DriverLocation;
 use App\Models\Shift;
-use App\Models\Vehicle;
-use App\Services\PostgisService;
+use App\Services\ScheduleService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ShiftController extends ApiController
 {
-    public function start(UpdateLocationRequest $request, Driver $driver)
+    public function start(UpdateLocationRequest $request, Driver $driver, ScheduleService $scheduleService)
     {
-        // TODO retrieve vehicle and city from schedule
-        $vehicle = Vehicle::first() ?: factory(Vehicle::class)->create();
+        $scheduleShift = $scheduleService->getShift($driver->id);
+        if (!$scheduleShift) {
+            return $this->error(DriverMessages::SCHEDULE_NOT_FOUND);
+        }
+
+        if (!$scheduleShift->city_id) {
+            return $this->error(DriverMessages::SCHEDULE_CITY_IS_NOT_SET);
+        }
 
         $lng = $request->input('longitude');
         $lat = $request->input('latitude');
 
-        $cityId  = PostgisService::findClosestCityId($lng, $lat);
-
-        $city = City::whereId($cityId)->first();
-
-        if (!$city) {
-            $city = City::first();
-        }
-
         if (!$driver->activeShift) {
             $driver->shifts()->create([
                 Shift::STARTED_AT => now(),
-                Shift::VEHICLE_ID => $vehicle->id,
-                Shift::CITY_ID => $city->id,
+                Shift::VEHICLE_ID => $scheduleShift->vehicle_id,
+                Shift::CITY_ID => $scheduleShift->city_id,
             ]);
         }
 
