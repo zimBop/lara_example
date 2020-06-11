@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleGap whereWeekDay($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleGap whereWeekId($value)
  * @mixin \Eloquent
+ * @property-read mixed $end_formatted
+ * @property-read mixed $start_formatted
  */
 class ScheduleGap extends Model
 {

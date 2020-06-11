@@ -60,6 +60,10 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver whereRating($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TripOrder[] $tripOrders
  * @property-read int|null $trip_orders_count
+ * @property string|null $phone
+ * @property-read \App\Models\Avatar $avatar
+ * @property-read mixed $avatar_url
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Driver wherePhone($value)
  */
 class Driver extends Authenticatable
 {

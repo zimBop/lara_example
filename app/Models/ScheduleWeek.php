@@ -30,6 +30,9 @@ use App\Filters\Filterable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek whereYear($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ScheduleShift[] $shifts
+ * @property-read int|null $shifts_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleWeek filter(\App\Filters\QueryFilter $filters)
  */
 class ScheduleWeek extends Model
 {

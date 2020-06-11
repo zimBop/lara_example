@@ -66,6 +66,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Trip withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Trip withoutTrashed()
+ * @property-read mixed $is_free_trip
+ * @property-read mixed $trip_duration_adjusted
  */
 class Trip extends Model
 {

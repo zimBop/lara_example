@@ -68,6 +68,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @property int $free_trips
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereFreeTrips($value)
  * @property-read int|null $invitations_count
+ * @property-read mixed $avatar_url
  */
 class Client extends Authenticatable
 {

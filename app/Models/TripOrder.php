@@ -48,6 +48,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Shift[] $shifts
  * @property-read int|null $shifts_count
+ * @property-read mixed $is_free_trip
  */
 class TripOrder extends Model
 {
