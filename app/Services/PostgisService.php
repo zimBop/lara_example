@@ -79,11 +79,12 @@ class PostgisService
                     });
             })
             ->select('drivers.*')
-            ->join('shifts', 'shifts.driver_id', 'drivers.id')
-            ->join('driver_locations', 'driver_locations.shift_id', 'shifts.id')
+            ->join('shifts', 'shifts.driver_id', '=', 'drivers.id')
+            ->join('driver_locations', 'driver_locations.shift_id', '=', 'shifts.id')
             ->where('shifts.city_id', $cityId)
             ->whereNull('shifts.finished_at')
-            ->orderBy(DB::raw("driver_locations.location <-> ST_GeomFromText('POINT($longitude $latitude)', 4326)"))
+            ->whereRaw("shifts.started_at > (NOW() - INTERVAL '1 DAY')")
+            ->orderByRaw("driver_locations.location <-> ST_GeomFromText('POINT($longitude $latitude)', 4326)")
             ->limit(self::CLOSEST_DRIVERS_NUMBER)
             ->get();
     }
