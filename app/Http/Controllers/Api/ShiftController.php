@@ -8,13 +8,18 @@ use App\Models\Driver;
 use App\Models\DriverLocation;
 use App\Models\Shift;
 use App\Services\ScheduleService;
+use App\Services\ShiftService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ShiftController extends ApiController
 {
-    public function start(UpdateLocationRequest $request, Driver $driver, ScheduleService $scheduleService)
-    {
+    public function start(
+        UpdateLocationRequest $request,
+        Driver $driver,
+        ScheduleService $scheduleService,
+        ShiftService $shiftService
+    ) {
         $scheduleShift = $scheduleService->getShift($driver->id);
         if (!$scheduleShift) {
             return $this->error(DriverMessages::SCHEDULE_NOT_FOUND);
@@ -23,6 +28,8 @@ class ShiftController extends ApiController
         if (!$scheduleShift->city_id) {
             return $this->error(DriverMessages::SCHEDULE_CITY_IS_NOT_SET);
         }
+
+        $shiftService->finishPending($driver);
 
         $lng = $request->input('longitude');
         $lat = $request->input('latitude');
@@ -43,7 +50,7 @@ class ShiftController extends ApiController
         return $this->data([Shift::ID => $driver->activeShift->id]);
     }
 
-    public function finish(Driver $driver)
+    public function finish(Driver $driver, ShiftService $shiftService)
     {
         if (!$driver->activeShift) {
             return $this->done(DriverMessages::SHIFT_NOT_FOUND);
@@ -53,12 +60,7 @@ class ShiftController extends ApiController
             return $this->error(DriverMessages::CANNOT_STOP_ACTIVE_TRIP);
         }
 
-        $driver->activeShift->driver_location->delete();
-        $driver->activeShift->trip_orders()->detach();
-
-        $driver->activeShift->update([
-            Shift::FINISHED_AT => now()
-        ]);
+        $shiftService->finishAll($driver);
 
         return $this->done(DriverMessages::SHIFT_FINISHED);
     }

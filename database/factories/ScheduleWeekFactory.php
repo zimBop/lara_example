@@ -10,7 +10,7 @@ $factory->define(ScheduleWeek::class, function (Faker $faker) {
 
     return [
         ScheduleWeek::YEAR => $now->year,
-        ScheduleWeek::NUMBER => $now->weekNumberInMonth,
+        ScheduleWeek::NUMBER => $now->weekOfYear,
         ScheduleWeek::IS_TEMPLATE => false,
     ];
 });

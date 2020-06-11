@@ -36,6 +36,11 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\Models\DriverLocation $driver_location
  * @property int|null $city_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift whereCityId($value)
+ * @property int|null $washed_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\TripOrder[] $trip_orders
+ * @property-read int|null $trip_orders_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift pending()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift whereWashedAt($value)
  */
 class Shift extends Model
 {
@@ -75,7 +80,22 @@ class Shift extends Model
     public function scopeActive(Builder $query)
     {
         return $query->whereNull(self::FINISHED_AT)
-            ->where(self::STARTED_AT, '>', now()->subDay());
+            ->where(self::STARTED_AT, '>', now()->subDay())
+            ->orderByDesc(self::STARTED_AT);
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePending(Builder $query)
+    {
+        $activeShift = $this->active()->first();
+
+        return $query->whereNull(self::FINISHED_AT)
+            ->when($activeShift, static function (Builder $query, $activeShift) {
+                return $query->whereNotIn(self::ID, [$activeShift->id]);
+            });
     }
 
     public function driver()
