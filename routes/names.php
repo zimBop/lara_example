@@ -16,6 +16,9 @@ define('R_ADMIN_DRIVERS_EDIT', 'admin.drivers.edit');
 define('R_ADMIN_DRIVERS_STORE', 'admin.drivers.store');
 define('R_ADMIN_DRIVERS_DELETE', 'admin.drivers.delete');
 
+define('R_ADMIN_SHIFTS', 'admin.shifts');
+define('R_ADMIN_SHIFTS_FINISH', 'admin.shifts.finish');
+
 define('R_ADMIN_VEHICLES_LIST', 'admin.vehicles.list');
 define('R_ADMIN_VEHICLES_CREATE', 'admin.vehicles.create');
 define('R_ADMIN_VEHICLES_EDIT', 'admin.vehicles.edit');

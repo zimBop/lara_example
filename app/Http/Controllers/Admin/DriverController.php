@@ -6,6 +6,7 @@ use App\Constants\Disk;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\DriverRequest;
 use App\Models\Avatar;
+use App\Models\Shift;
 use App\Services\AvatarService;
 use Illuminate\Http\Request;
 use App\Models\Driver;
@@ -55,5 +56,12 @@ class DriverController extends Controller
         return redirect()
             ->route(R_ADMIN_DRIVERS_LIST)
             ->with('success', 'Driver successfully removed');
+    }
+
+    public function shifts()
+    {
+        $shifts = Shift::active()->paginate(25);
+
+        return view('admin.drivers.shifts', get_defined_vars());
     }
 }

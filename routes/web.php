@@ -47,6 +47,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
                 Route::get('/delete/{driver}', 'DriverController@delete')->name(R_ADMIN_DRIVERS_DELETE);
             });
 
+            Route::prefix('shifts')->group(static function(){
+                Route::get('/', 'ShiftController@shifts')->name(R_ADMIN_SHIFTS);
+                Route::get('/finish/{shift}', 'ShiftController@finish')->name(R_ADMIN_SHIFTS_FINISH);
+            });
+
             Route::prefix('vehicles')
                 ->group(static function(){
                     Route::get('/', 'VehicleController@index')->name(R_ADMIN_VEHICLES_LIST);

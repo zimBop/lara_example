@@ -65,6 +65,7 @@ class Shift extends Model
 
     protected $casts = [
         self::WASHED_AT => 'timestamp',
+        self::STARTED_AT => 'datetime',
     ];
 
     public function getActiveTripAttribute()
@@ -114,6 +115,11 @@ class Shift extends Model
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function trip_orders()

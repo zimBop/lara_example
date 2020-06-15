@@ -11,10 +11,16 @@
                 <i class="fas fa-users"></i> Clients
             </a>
         </li>
-        <li class="{{ request()->routeIs(R_ADMIN_DRIVERS_LIST, R_ADMIN_DRIVERS_CREATE, R_ADMIN_DRIVERS_EDIT) ? 'active' : '' }}">
-            <a href="{{ route(R_ADMIN_DRIVERS_LIST) }}">
-                <i class="fas fa-id-card"></i> Drivers
-            </a>
+        <li class="{{ request()->routeIs(R_ADMIN_DRIVERS_LIST, R_ADMIN_DRIVERS_CREATE, R_ADMIN_DRIVERS_EDIT, R_ADMIN_SHIFTS) ? 'active' : '' }}">
+            <a href="#pageDrivers" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-id-card"></i> Drivers</a>
+            <ul class="collapse list-unstyled" id="pageDrivers">
+                <li class="{{ request()->routeIs(R_ADMIN_DRIVERS_LIST) ? 'active' : '' }}">
+                    <a href="{{ route(R_ADMIN_DRIVERS_LIST) }}" class="nav-link pt-2"><i class="fas fa-id-card"></i>List</a>
+                </li>
+                <li class="{{ request()->routeIs(R_ADMIN_SHIFTS) ? 'active' : '' }}">
+                    <a href="{{ route(R_ADMIN_SHIFTS) }}" class="nav-link pt-2"><i class="fas fa-car-side"></i>Active Shifts</a>
+                </li>
+            </ul>
         </li>
         <li class="{{ request()->routeIs(R_ADMIN_VEHICLES_LIST, R_ADMIN_VEHICLES_CREATE, R_ADMIN_VEHICLES_EDIT) ? 'active' : '' }}">
             <a href="{{ route(R_ADMIN_VEHICLES_LIST) }}">

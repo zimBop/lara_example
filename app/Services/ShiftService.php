@@ -9,6 +9,7 @@ class ShiftService
 {
     /**
      * @param Driver $driver
+     * @throws \Exception
      */
     public function finishPending(Driver $driver): void
     {
@@ -21,6 +22,7 @@ class ShiftService
 
     /**
      * @param Driver $driver
+     * @throws \Exception
      */
     public function finishAll(Driver $driver): void
     {
