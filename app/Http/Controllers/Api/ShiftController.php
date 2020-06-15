@@ -39,6 +39,7 @@ class ShiftController extends ApiController
                 Shift::STARTED_AT => now(),
                 Shift::VEHICLE_ID => $scheduleShift->vehicle_id,
                 Shift::CITY_ID => $scheduleShift->city_id,
+                Shift::SCHEDULE_SHIFT_ID => $scheduleShift->id,
             ]);
         }
 

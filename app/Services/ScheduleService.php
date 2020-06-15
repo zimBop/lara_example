@@ -2,20 +2,26 @@
 
 namespace App\Services;
 
+use App\Filters\ScheduleWeekFilter;
+use App\Http\Requests\Admin\GetScheduleRequest;
 use App\Http\Requests\Admin\UpdateScheduleRequest;
 use App\Models\ScheduleGap;
 use App\Models\ScheduleShift;
 use App\Models\ScheduleWeek;
+use Illuminate\Support\Carbon;
 
 class ScheduleService
 {
     /**
-     * @return ScheduleWeek|null
+     * @param bool $first
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
      */
-    public function getFirstWeek(): ?ScheduleWeek
+    protected function getBoundaryWeek(bool $first = true)
     {
-        return ScheduleWeek::orderBy(ScheduleWeek::YEAR)
-            ->orderBy(ScheduleWeek::NUMBER)
+        $direction = $first ? 'asc' : 'desc';
+
+        return ScheduleWeek::orderBy(ScheduleWeek::YEAR, $direction)
+            ->orderBy(ScheduleWeek::NUMBER, $direction)
             ->first();
     }
 
@@ -87,5 +93,96 @@ class ScheduleService
         return ScheduleShift::whereDriverId($driverId)
             ->whereGapId($gap->id)
             ->first();
+    }
+
+    /**
+     * @param GetScheduleRequest $request
+     * @param ScheduleWeekFilter $filter
+     * @return ScheduleWeek|null
+     */
+    public function getWeek(GetScheduleRequest $request, ScheduleWeekFilter $filter): ?ScheduleWeek
+    {
+        if ($request->has('year') && $request->has('number')) {
+            $week = ScheduleWeek::filter($filter)->with('gaps', 'gaps.shifts')->first();
+        } else {
+            $week = ScheduleWeek::current()->with('gaps', 'gaps.shifts')->first();
+        }
+
+        return $week;
+    }
+
+    /**
+     * @param GetScheduleRequest $request
+     * @return array
+     */
+    public function getDatesForWeekPicker(GetScheduleRequest $request): array
+    {
+        $firstWeek = $this->getBoundaryWeek();
+        $lastWeek = $this->getBoundaryWeek(false);
+
+        $currentYear = now()->year;
+        $selectedYear = $request->input('year', $currentYear);
+
+        $currentWeek = now()->weekOfYear;
+        $selectedWeek = $request->input('number', $currentWeek);
+
+        return [
+            'startDate' => $this->getFormattedWeekStart(
+                $firstWeek->year ?? $selectedYear,
+                $firstWeek->number ?? $selectedWeek
+            ),
+            'endDate' => $this->getFormattedWeekEnd(
+                $lastWeek->year ?? $selectedYear,
+                $lastWeek->number ?? $selectedWeek
+            ),
+            'selectedDate' => $this->getFormattedWeekStart($selectedYear, $selectedWeek)
+        ];
+    }
+
+    /**
+     * @param int $year
+     * @param int $weekNumber
+     * @param string $format
+     * @return string
+     */
+    protected function getFormattedWeekStart(int $year, int $weekNumber, string $format = 'm/d/Y'): string
+    {
+        return now()->setISODate($year, $weekNumber)
+            ->startOfWeek()
+            ->format($format);
+    }
+
+    /**
+     * @param int $year
+     * @param int $weekNumber
+     * @param string $format
+     * @return string
+     */
+    protected function getFormattedWeekEnd(int $year, int $weekNumber, string $format = 'm/d/Y'): string
+    {
+        return now()->setISODate($year, $weekNumber)
+            ->endOfWeek()
+            ->format($format);
+    }
+
+    public function getReportFileName(ScheduleWeek $week)
+    {
+        return 'report_' . $this->getFormattedWeekStart($week->year, $week->number, 'm-d-Y') . '_'
+            . $this->getFormattedWeekEnd($week->year, $week->number, 'm-d-Y') . '.csv';
+    }
+
+    public function getWorkHours($scheduleShifts): int
+    {
+        return $scheduleShifts
+            ->reduce(static function (int $hours,  ScheduleShift $shift) {
+                $start = Carbon::createFromFormat('H:i:s', $shift->gap->start);
+                $end = Carbon::createFromFormat('H:i:s', $shift->gap->end);
+
+                if ($start->gt($end)) {
+                    $end->addDay();
+                }
+
+                return $hours + $end->diffInHours($start);
+            }, 0);
     }
 }

@@ -134,6 +134,11 @@ class Trip extends Model
         return $this->belongsTo(Shift::class);
     }
 
+    public function tips()
+    {
+        return $this->hasOne(Tip::class);
+    }
+
     public function getWaitDurationAdjustedAttribute()
     {
         return $this->calculateAdjustedDuration(TripStatuses::DRIVER_IS_WAITING_FOR_CLIENT, 'wait_duration');

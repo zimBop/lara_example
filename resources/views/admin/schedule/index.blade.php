@@ -3,15 +3,14 @@
 @push('scripts')
     <script type="text/javascript" src="{{ mix('js/admin/schedule.min.js') }}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    {{-- Moment.js is not necessary for datepicker but used in schedule.js and here --}}
+    {{-- Moment.js used in WeekPicker.js --}}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
         @if ($week && !$week->is_template)
             // dates for datepicker setup
-            var startDate = moment().year({{ optional($firstWeek)->year ?? $selectedYear }})
-                .isoWeek({{ optional($firstWeek)->number ?? $selectedWeek }}).startOf('isoWeek').format('MM/DD/YYYY');
-            var selectedDate = moment().year({{ $selectedYear }})
-                .isoWeek({{ $selectedWeek }}).startOf('isoWeek').format('MM/DD/YYYY');
+            var startDate = '{{ $startDate }}';
+            var endDate = '{{ $endDate }}';
+            var selectedDate = '{{ $selectedDate }}';
             var isTemplate = false;
         @else
             var isTemplate = true;
@@ -30,7 +29,7 @@
     <div class="row mb-3">
         @if ($week && !$week->is_template)
         <div class="col-12 col-md-6">
-            <form method="get" id="week-form">
+            <form method="get" id="week-form" data-submit-on-week-change="true">
                 @csrf
                 <div class="row">
                     <label for="year" class="col-6 col-md-2 col-form-label">Select week</label>

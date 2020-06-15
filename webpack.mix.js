@@ -13,7 +13,14 @@ const mix = require('laravel-mix');
 mix
     //.js('resources/js/app.js', 'public/js')
     .js('resources/js/admin/custom.js', 'public/js/admin/custom.min.js')
-    .js('resources/js/admin/schedule.js', 'public/js/admin/schedule.min.js')
+    .scripts([
+        'resources/js/admin/schedule.js',
+        'resources/js/admin/WeekPicker.js',
+    ], 'public/js/admin/schedule.min.js')
+    .scripts([
+        'resources/js/admin/reports.js',
+        'resources/js/admin/WeekPicker.js',
+    ], 'public/js/admin/reports.min.js')
     //.sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/admin/custom.scss', 'public/css/admin/custom.min.css')
     .sass('resources/sass/admin/login.scss', 'public/css/admin/login.min.css')

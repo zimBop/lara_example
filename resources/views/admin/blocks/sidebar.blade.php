@@ -32,6 +32,11 @@
                 </li>
             </ul>
         </li>
+        <li class="{{ request()->routeIs(R_ADMIN_WEEKLY_REPORT) ? 'active' : '' }}">
+            <a href="{{ route(R_ADMIN_WEEKLY_REPORT) }}">
+                <i class="fas fa-file-alt"></i> Weekly Report
+            </a>
+        </li>
     </ul>
 
 </nav>

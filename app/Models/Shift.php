@@ -48,6 +48,7 @@ class Shift extends Model
     public const DRIVER_ID = 'driver_id';
     public const VEHICLE_ID = 'vehicle_id';
     public const CITY_ID = 'city_id';
+    public const SCHEDULE_SHIFT_ID = 'schedule_shift_id';
     public const STARTED_AT = 'started_at';
     public const FINISHED_AT = 'finished_at';
     public const WASHED_AT = 'washed_at';
@@ -56,6 +57,7 @@ class Shift extends Model
         self::DRIVER_ID,
         self::VEHICLE_ID,
         self::CITY_ID,
+        self::SCHEDULE_SHIFT_ID,
         self::STARTED_AT,
         self::FINISHED_AT,
         self::WASHED_AT,
@@ -98,6 +100,12 @@ class Shift extends Model
             });
     }
 
+    public function schedule_shift()
+    {
+        return $this->belongsTo(ScheduleShift::class);
+    }
+
+    // TODO remove 'driver' and 'vehicle' relations to ScheduleShift
     public function driver()
     {
         return $this->belongsTo(Driver::class);

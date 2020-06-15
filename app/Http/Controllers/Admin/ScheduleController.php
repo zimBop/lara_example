@@ -19,20 +19,7 @@ class ScheduleController extends Controller
 {
     public function index(GetScheduleRequest $request, ScheduleWeekFilter $filter, ScheduleService $scheduleService)
     {
-        $firstWeek = $scheduleService->getFirstWeek();
-
-        $currentYear = now()->year;
-        $years = $firstWeek ? range($firstWeek->year, $currentYear) : [$currentYear];
-        $selectedYear = $request->input('year', $currentYear);
-
-        $currentWeek = now()->weekOfYear;
-        $selectedWeek = $request->input('number', $currentWeek);
-
-        if ($request->has('year') && $request->has('number')) {
-            $week = ScheduleWeek::filter($filter)->with('gaps', 'gaps.shifts')->first();
-        } else {
-            $week = ScheduleWeek::current()->with('gaps', 'gaps.shifts')->first();
-        }
+        $week = $scheduleService->getWeek($request, $filter);
         $vehicles = Vehicle::all();
         $drivers = Driver::all();
         $cities = City::all();
@@ -40,7 +27,20 @@ class ScheduleController extends Controller
         $nextWeekExists = $scheduleService->isNextWeekExists();
         $timeSelectOptions = $scheduleService->getTimeSelectOptions();
 
-        return view('admin.schedule.index', get_defined_vars());
+        return view(
+            'admin.schedule.index',
+            array_merge(
+                compact(
+                    'week',
+                    'vehicles',
+                    'drivers',
+                    'cities',
+                    'nextWeekExists',
+                    'timeSelectOptions'
+                ),
+                $scheduleService->getDatesForWeekPicker($request)
+            )
+        );
     }
 
     public function template(ScheduleService $scheduleService)

@@ -39,4 +39,14 @@ class ScheduleShift extends Model
         self::VEHICLE_ID,
         self::CITY_ID,
     ];
+
+    public function gap()
+    {
+        return $this->belongsTo(ScheduleGap::class, self::GAP_ID);
+    }
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
 }

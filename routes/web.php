@@ -63,5 +63,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], static function () {
                 Route::post('/update', 'ScheduleController@update')->name(R_ADMIN_SCHEDULE_UPDATE);
             });
 
+            Route::get('/weekly_report', 'ReportController@index')->name(R_ADMIN_WEEKLY_REPORT);
+            Route::post('/weekly_report', 'ReportController@download')->name(R_ADMIN_WEEKLY_REPORT_DOWNLOAD);
+
         });
 });
