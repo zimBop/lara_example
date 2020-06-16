@@ -89,8 +89,8 @@
                             <td>{{ $trip->destination['label'] }}</td>
                             <td>{{ $trip->updated_at->format('M d, Y H:i') }}</td>
                             <td>{{ $trip->co2 }}</td>
-                            <td>{{ number_format(($trip->price/100), 2, '.', ' ') }}</td>
-                            <td>{{ $trip->tips ? number_format(($trip->tips->amount/100), 2, '.', ' ') : 0 }}</td>
+                            <td>{{ centsToDollars($trip->price) }}</td>
+                            <td>{{ centsToDollars($trip->tips ? $trip->tips->amount : 0) }}</td>
                         </tr>
                     @empty
                         <tr>

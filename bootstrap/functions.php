@@ -17,3 +17,8 @@ function is_driver(): bool
 {
     return Auth::guard('driver')->check();
 }
+
+function centsToDollars($cents)
+{
+    return number_format(($cents/100), 2, '.', ' ');
+}
