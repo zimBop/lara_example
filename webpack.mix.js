@@ -13,6 +13,7 @@ const mix = require('laravel-mix');
 mix
     //.js('resources/js/app.js', 'public/js')
     .js('resources/js/admin/custom.js', 'public/js/admin/custom.min.js')
+    .js('resources/js/admin/trips.js', 'public/js/admin/trips.min.js')
     .scripts([
         'resources/js/admin/schedule.js',
         'resources/js/admin/WeekPicker.js',

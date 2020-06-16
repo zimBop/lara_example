@@ -22,11 +22,6 @@
                 </li>
             </ul>
         </li>
-        <li class="{{ request()->routeIs(R_ADMIN_VEHICLES_LIST, R_ADMIN_VEHICLES_CREATE, R_ADMIN_VEHICLES_EDIT) ? 'active' : '' }}">
-            <a href="{{ route(R_ADMIN_VEHICLES_LIST) }}">
-                <i class="fas fa-car"></i> Garage
-            </a>
-        </li>
         <li class="{{ request()->routeIs(R_ADMIN_SCHEDULE, R_ADMIN_SCHEDULE_TEMPLATE) ? 'active' : '' }}">
             <a href="#pageSchedule" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-calendar-alt"></i>Schedule</a>
             <ul class="collapse list-unstyled" id="pageSchedule">
@@ -37,6 +32,16 @@
                     <a href="{{ route(R_ADMIN_SCHEDULE_TEMPLATE) }}" class="nav-link pt-2"><i class="fas fa-calendar-alt"></i>Template</a>
                 </li>
             </ul>
+        </li>
+        <li class="{{ request()->routeIs(R_ADMIN_VEHICLES_LIST, R_ADMIN_VEHICLES_CREATE, R_ADMIN_VEHICLES_EDIT) ? 'active' : '' }}">
+            <a href="{{ route(R_ADMIN_VEHICLES_LIST) }}">
+                <i class="fas fa-car"></i> Garage
+            </a>
+        </li>
+        <li class="{{ request()->routeIs(R_ADMIN_TRIPS) ? 'active' : '' }}">
+            <a href="{{ route(R_ADMIN_TRIPS) }}">
+                <i class="fas fa-car-side"></i> Finished trips
+            </a>
         </li>
         <li class="{{ request()->routeIs(R_ADMIN_WEEKLY_REPORT) ? 'active' : '' }}">
             <a href="{{ route(R_ADMIN_WEEKLY_REPORT) }}">

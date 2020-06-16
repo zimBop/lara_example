@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\TripStatuses;
+use App\Filters\Filterable;
 use App\Logic\MetricConverter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -71,7 +72,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Trip extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Filterable;
 
     public const ID = 'id';
     public const CLIENT_ID = 'client_id';

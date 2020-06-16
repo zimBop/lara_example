@@ -33,6 +33,8 @@ define('R_ADMIN_SCHEDULE_UPDATE', 'admin.schedule.update');
 define('R_ADMIN_WEEKLY_REPORT', 'admin.reports.weekly');
 define('R_ADMIN_WEEKLY_REPORT_DOWNLOAD', 'admin.reports.weekly.download');
 
+define('R_ADMIN_TRIPS', 'admin.trips');
+
 define('R_DRIVER_RESET_PASSWORD', 'driver.reset_password');
 
 
