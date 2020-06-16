@@ -19,7 +19,7 @@ class PostgisService
     protected const CLOSEST_DRIVERS_NUMBER = 5;
 
     /**
-     * Check that city polygon contains bounds of the client route
+     * Check that city polygon contains bounds of the client's route
      *
      * @param int $cityId
      * @param array $bounds
@@ -70,10 +70,10 @@ class PostgisService
 
     public static function findClosestDrivers(float $longitude, float $latitude, int $cityId, bool $withoutActiveTrips = true): Collection
     {
-        return Driver::whereHas('shifts', function ($query) use ($withoutActiveTrips) {
+        return Driver::whereHas('shifts', static function ($query) use ($withoutActiveTrips) {
                 $query->active()
-                    ->when($withoutActiveTrips, function ($query) {
-                        return $query->whereDoesntHave('trips', function ($query) {
+                    ->when($withoutActiveTrips, static function ($query) {
+                        return $query->whereDoesntHave('trips', static function ($query) {
                             $query->active()->where('status', '<', TripStatuses::UNRATED);
                         });
                     });
@@ -81,6 +81,10 @@ class PostgisService
             ->select('drivers.*')
             ->join('shifts', 'shifts.driver_id', '=', 'drivers.id')
             ->join('driver_locations', 'driver_locations.shift_id', '=', 'shifts.id')
+            ->whereRaw(
+                '(select count(*) from shift_trip_order where shift_trip_order.shift_id = shifts.id) <= '
+                . config('app.max_trip_orders_per_driver')
+            )
             ->where('shifts.city_id', $cityId)
             ->whereNull('shifts.finished_at')
             ->whereRaw("shifts.started_at > (NOW() - INTERVAL '1 DAY')")

@@ -148,6 +148,8 @@ return [
         'link' => 'store:Electra',
     ],
 
+    'max_trip_orders_per_driver' => 3,
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
