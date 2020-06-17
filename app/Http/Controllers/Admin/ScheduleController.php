@@ -59,10 +59,9 @@ class ScheduleController extends Controller
     public function generate()
     {
         Artisan::call('db:seed', ['--class' => \ScheduleWeekSeeder::class]);
-        $generatedWeek = now()->addWeek()->weekOfYear;
 
         return redirect()
-            ->route(R_ADMIN_SCHEDULE, ['year' => now()->year, 'number' => $generatedWeek])
+            ->route(R_ADMIN_SCHEDULE, ['year' => now()->year, 'number' => now()->addWeek()->weekOfYear])
             ->with('success', ScheduleMessages::NEW_WEEK_GENERATED);
     }
 

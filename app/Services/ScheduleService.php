@@ -135,7 +135,9 @@ class ScheduleService
                 $lastWeek->year ?? $selectedYear,
                 $lastWeek->number ?? $selectedWeek
             ),
-            'selectedDate' => $this->getFormattedWeekStart($selectedYear, $selectedWeek)
+            'selectedDate' => $this->getFormattedWeekStart($selectedYear, $selectedWeek),
+            'selectedYear' => $selectedYear,
+            'selectedWeek' => $selectedWeek,
         ];
     }
 
