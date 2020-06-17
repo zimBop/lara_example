@@ -90,7 +90,7 @@
                             <td>{{ $trip->updated_at->format('M d, Y H:i') }}</td>
                             <td>{{ $trip->co2 }}</td>
                             <td>{{ centsToDollars($trip->price) }}</td>
-                            <td>{{ centsToDollars($trip->tips ? $trip->tips->amount : 0) }}</td>
+                            <td>{{ centsToDollars($trip->tips_amount) }}</td>
                         </tr>
                     @empty
                         <tr>

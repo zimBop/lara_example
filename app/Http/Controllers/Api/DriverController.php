@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Driver\GetStatisticsRequest;
 use App\Http\Requests\Driver\ResetPasswordRequest;
 use App\Http\Requests\Driver\ForgotPasswordRequest;
 use App\Http\Resources\DriverResource;
 use App\Models\Driver;
+use App\Models\ScheduleWeek;
+use App\Services\StatsService;
+use App\Services\ScheduleService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\RefreshTokenRepository;
 use App\Notifications\ForgotPassword;
@@ -63,5 +68,39 @@ class DriverController extends ApiController
         $driver = Auth::user();
 
         return $this->data(new DriverResource($driver));
+    }
+
+    public function stats(
+        GetStatisticsRequest $request,
+        Driver $driver,
+        StatsService $driverService,
+        ScheduleService $scheduleService
+    ) {
+        $allWeeks = ScheduleWeek::whereHas(
+                'gaps.shifts',
+                static function (Builder $query) use ($driver) {
+                    $query->whereDriverId($driver->id);
+                }
+            )
+            ->where(ScheduleWeek::NUMBER, '<=', now()->weekOfYear)
+            ->where(ScheduleWeek::YEAR, '<=', now()->year)
+            ->with('gaps', 'gaps.shifts')
+            ->orderBy(ScheduleWeek::YEAR, 'desc')
+            ->orderBy(ScheduleWeek::NUMBER, 'desc')
+            ->get();
+
+        $page = $request->input('page', 1);
+        $perPage = 2;
+        $weeks = $allWeeks->forPage($page, $perPage);
+
+        return $this->data(
+            array_merge(
+                [
+                    'page' => (int) $page,
+                    'pages_count' => ceil($allWeeks->count() / $perPage),
+                ],
+                $driverService->getDriverStats($driver, $weeks, $scheduleService)
+            )
+        );
     }
 }

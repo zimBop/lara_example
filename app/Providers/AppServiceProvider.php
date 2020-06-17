@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Resources\TripOrderResource;
-use App\Services\DriverService;
+use App\Services\StatsService;
 use App\Services\NexmoService;
 use App\Services\ResetPasswordService;
 use App\Services\ClientService;
@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         TripService::class => TripService::class,
         ScheduleService::class => ScheduleService::class,
         ShiftService::class => ShiftService::class,
-        DriverService::class => DriverService::class,
+        StatsService::class => StatsService::class,
     ];
 
     /**

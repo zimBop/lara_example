@@ -6,7 +6,7 @@ use App\Filters\ScheduleWeekFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\GetScheduleRequest;
 use App\Models\Driver;
-use App\Services\DriverService;
+use App\Services\StatsService;
 use App\Services\ScheduleService;
 
 class ReportController extends Controller
@@ -23,16 +23,14 @@ class ReportController extends Controller
         GetScheduleRequest $request,
         ScheduleWeekFilter $filter,
         ScheduleService $scheduleService,
-        DriverService $driverService
+        StatsService $driverService
     )
     {
         $week = $scheduleService->getWeek($request, $filter);
 
         $data = Driver::all()->mapWithKeys(
             static function ($driver) use ($scheduleService, $driverService, $week) {
-                $scheduleShifts = $week->shifts()
-                    ->whereDriverId($driver->id)
-                    ->get();
+                $scheduleShifts = $scheduleService->getShiftsForDriver($week, $driver);
 
                 return [
                     $driver->full_name => [

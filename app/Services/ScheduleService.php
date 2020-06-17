@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Filters\ScheduleWeekFilter;
 use App\Http\Requests\Admin\GetScheduleRequest;
 use App\Http\Requests\Admin\UpdateScheduleRequest;
+use App\Models\Driver;
 use App\Models\ScheduleGap;
 use App\Models\ScheduleShift;
 use App\Models\ScheduleWeek;
@@ -187,4 +188,27 @@ class ScheduleService
                 return $hours + $end->diffInHours($start);
             }, 0);
     }
-}
+
+    public function getWeekTitle(ScheduleWeek $week)
+    {
+        $weekStart = now()->setISODate($week->year, $week->number)->startOfWeek();
+        $weekEnd = now()->setISODate($week->year, $week->number)->endOfWeek();
+
+        if ($weekStart->year !== $weekEnd->year) {
+            $startPartFormat = 'd F Y';
+        } elseif ($weekStart->month !== $weekEnd->month) {
+            $startPartFormat = 'd F';
+        } else {
+            $startPartFormat = 'd';
+        }
+
+        return $weekStart->format($startPartFormat)
+            . ' - ' . $weekEnd->format('d F Y');
+    }
+
+    public function getShiftsForDriver(ScheduleWeek $week, Driver $driver)
+    {
+        return $week->shifts()
+            ->whereDriverId($driver->id)
+            ->get();
+    }}

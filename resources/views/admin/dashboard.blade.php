@@ -8,13 +8,13 @@
             <h3>{{ now()->format('m/d/y') }} statistics</h3>
             <div class="row">
                 <div class="col">
-                    Number of rides: <span class="text-info">{{ $tripsCount }}</span>
+                    Number of rides: <span class="text-info">{{ $stats['trips_count'] }}</span>
                 </div>
                 <div class="col">
-                    Earned: <span class="text-info">${{ centsToDollars($earned['priceSum']) }}</span>
+                    Earned: <span class="text-info">${{ centsToDollars($stats['earned']) }}</span>
                 </div>
                 <div  class="col">
-                    Tips: <span class="text-info">${{ centsToDollars($earned['tipsSum']) }}</span>
+                    Tips: <span class="text-info">${{ centsToDollars($stats['tips']) }}</span>
                 </div>
             </div>
         </div>

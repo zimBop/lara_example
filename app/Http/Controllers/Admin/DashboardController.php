@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Constants\TripStatuses;
 use App\Http\Controllers\Controller;
 use App\Models\Trip;
+use App\Services\StatsService;
 
 class DashboardController extends Controller
 {
@@ -23,21 +24,14 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(StatsService $statsService)
     {
         $trips = Trip::where(Trip::STATUS, '>', TripStatuses::TRIP_IN_PROGRESS)
             ->whereDate(Trip::UPDATED_AT, '=', now())
             ->get();
 
-        $earned = $trips->reduce(function($earned, $trip) {
-            return [
-                'priceSum' => $earned['priceSum'] + $trip->price,
-                'tipsSum' => $earned['tipsSum'] + ($trip->tips ? $trip->tips->amount : 0),
-            ];
-        }, ['priceSum' => 0, 'tipsSum' => 0]);
+        $stats = $statsService->getTripsStats($trips);
 
-        $tripsCount = $trips->count();
-
-        return view('admin.dashboard', compact('earned', 'tripsCount'));
+        return view('admin.dashboard', compact('stats'));
     }
 }

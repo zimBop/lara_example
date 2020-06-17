@@ -155,6 +155,11 @@ class Trip extends Model
         return $this->created_at->timestamp;
     }
 
+    public function getTipsAmountAttribute()
+    {
+        return $this->tips ? $this->tips->amount : 0;
+    }
+
     public function setCo2Attribute($meters)
     {
         $miles = MetricConverter::metersToMiles($meters);
