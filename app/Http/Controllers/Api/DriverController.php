@@ -117,8 +117,7 @@ class DriverController extends ApiController
             $scheduleShift = $gap->shifts()->whereDriverId($driver->id)->first();
 
             if (!$scheduleShift) {
-                $dayAlreadyExists = array_search($dayOfWeekName, array_column($schedule, 'title')) !== false;
-                if (!$dayAlreadyExists) {
+                if (!in_array($dayOfWeekName, array_column($schedule, 'title'))) {
                     $schedule[]['title'] = $dayOfWeekName;
                 }
                 continue;

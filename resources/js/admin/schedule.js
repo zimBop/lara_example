@@ -13,8 +13,8 @@ $(function () {
 
     function driverSelectOnChange(event) {
         let $this = $(this);
-        let gapId = $this.data('gap-id');
-        let $gapSelects = $('.driver-select[data-gap-id=' + gapId + ']').not(this);
+        let weekDay = $this.data('week-day');
+        let $gapSelects = $('.driver-select[data-week-day=' + weekDay + ']').not(this);
 
         let newValue = $this.val();
 
