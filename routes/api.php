@@ -74,6 +74,7 @@ Route::middleware('multiauth:driver', 'scope:access-driver')->group(function () 
     Route::middleware('can:access,driver')->group(function () {
         Route::get('/drivers/{driver}', 'Api\DriverController@show')->name('drivers.show');
         Route::get('/drivers/{driver}/stats', 'Api\DriverController@stats')->name('drivers.stats');
+        Route::get('/drivers/{driver}/schedule', 'Api\DriverController@schedule')->name('drivers.schedule');
         Route::post('/drivers/logout/{driver}', 'Api\DriverController@logout')->name('drivers.logout');
 
         Route::get('/drivers/{driver}/trip-request/list', 'Api\DriverTripOrderController@showList')

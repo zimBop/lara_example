@@ -6,6 +6,7 @@ use App\Http\Requests\Driver\GetStatisticsRequest;
 use App\Http\Requests\Driver\ResetPasswordRequest;
 use App\Http\Requests\Driver\ForgotPasswordRequest;
 use App\Http\Resources\DriverResource;
+use App\Http\Resources\VehicleResource;
 use App\Models\Driver;
 use App\Models\ScheduleWeek;
 use App\Services\StatsService;
@@ -90,7 +91,7 @@ class DriverController extends ApiController
             ->get();
 
         $page = $request->input('page', 1);
-        $perPage = 2;
+        $perPage = 5;
         $weeks = $allWeeks->forPage($page, $perPage);
 
         return $this->data(
@@ -102,5 +103,32 @@ class DriverController extends ApiController
                 $driverService->getDriverStats($driver, $weeks, $scheduleService)
             )
         );
+    }
+
+    public function schedule(Driver $driver)
+    {
+        return ScheduleWeek::current()
+            ->with('gaps.shifts')
+            ->first()
+            ->gaps
+            ->map(static function ($gap) use ($driver) {
+
+                $dayOfWeekName = now()->startOfWeek()->addDays($gap->week_day - 1)->format('l');
+
+                $scheduleShift = $gap->shifts()->whereDriverId($driver->id)->first();
+
+                if (!$scheduleShift) {
+                    return false;
+                }
+
+                return [
+                    'title' => $dayOfWeekName,
+                    'shift_time' => $gap->start_formatted . ' - ' . $gap->end_formatted,
+                    'car' => (new VehicleResource($scheduleShift->vehicle))->toArray(null),
+                ];
+            })
+            ->reject(function($item) {
+                return $item === false;
+            });
     }
 }
