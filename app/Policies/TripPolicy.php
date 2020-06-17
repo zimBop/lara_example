@@ -2,20 +2,25 @@
 
 namespace App\Policies;
 
-use App\Models\Client;
 use App\Models\Trip;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Model;
 
 class TripPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * @param Client $client
+     * @param Model $model
      * @param Trip $trip
+     * @return bool
      */
-    public function view(Client $client, Trip $trip)
+    public function view(Model $model, Trip $trip)
     {
-        return $trip->client_id === $client->id;
+        if (is_client()) {
+            return $trip->client_id === $model->id;
+        }
+
+        return $trip->shift->driver_id === $model->id;
     }
 }

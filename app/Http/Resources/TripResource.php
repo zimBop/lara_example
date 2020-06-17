@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Constants\TripStatuses;
 use App\Logic\MetricConverter;
 use App\Models\Trip;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,6 +20,7 @@ class TripResource extends JsonResource
         return [
             Trip::ID => $this->id,
             Trip::PRICE => $this->price,
+            'tips' => $this->when($this->status === TripStatuses::TRIP_ARCHIVED, $this->tips_amount),
             // 'wait_duration_adjusted' used here as value instead of 'wait_duration'
             Trip::WAIT_DURATION => $this->wait_duration_adjusted,
             Trip::TRIP_DURATION => $this->trip_duration,

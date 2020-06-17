@@ -18,6 +18,29 @@ class DriverTripController extends ApiController
 {
     use TripControllerTrait;
 
+    /**
+     * @param Driver $driver
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function index(Driver $driver)
+    {
+        $trips = Trip::whereIn(Trip::SHIFT_ID, $driver->shifts->pluck('id'))
+            ->where(Trip::STATUS, '>', TripStatuses::TRIP_IN_PROGRESS)
+            ->latest()->paginate(20);
+
+        return TripResource::collection($trips);
+    }
+
+    /**
+     * @param Driver $driver
+     * @param Trip $trip
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(Driver $driver, Trip $trip)
+    {
+        return $this->data(new TripResource($trip));
+    }
+
     public function showActiveTrip(Driver $driver)
     {
         if (!$driver->active_trip) {
