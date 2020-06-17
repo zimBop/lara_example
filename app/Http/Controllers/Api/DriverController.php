@@ -107,28 +107,30 @@ class DriverController extends ApiController
 
     public function schedule(Driver $driver)
     {
-        return ScheduleWeek::current()
-            ->with('gaps.shifts')
+        $gaps = ScheduleWeek::current()->with('gaps.shifts')
             ->first()
-            ->gaps
-            ->map(static function ($gap) use ($driver) {
+            ->gaps;
 
-                $dayOfWeekName = now()->startOfWeek()->addDays($gap->week_day - 1)->format('l');
+        $schedule = [];
+        foreach ($gaps as $gap) {
+            $dayOfWeekName = now()->startOfWeek()->addDays($gap->week_day - 1)->format('l');
+            $scheduleShift = $gap->shifts()->whereDriverId($driver->id)->first();
 
-                $scheduleShift = $gap->shifts()->whereDriverId($driver->id)->first();
-
-                if (!$scheduleShift) {
-                    return false;
+            if (!$scheduleShift) {
+                $dayAlreadyExists = array_search($dayOfWeekName, array_column($schedule, 'title')) !== false;
+                if (!$dayAlreadyExists) {
+                    $schedule[]['title'] = $dayOfWeekName;
                 }
+                continue;
+            }
 
-                return [
-                    'title' => $dayOfWeekName,
-                    'shift_time' => $gap->start_formatted . ' - ' . $gap->end_formatted,
-                    'car' => (new VehicleResource($scheduleShift->vehicle))->toArray(null),
-                ];
-            })
-            ->reject(function($item) {
-                return $item === false;
-            });
+            $schedule[] = [
+                'title' => $dayOfWeekName,
+                'shift_time' => $gap->start_formatted . ' - ' . $gap->end_formatted,
+                'car' => (new VehicleResource($scheduleShift->vehicle))->toArray(null),
+            ];
+        }
+
+        return $this->data($schedule);
     }
 }
