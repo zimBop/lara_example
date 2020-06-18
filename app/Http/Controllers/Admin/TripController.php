@@ -19,6 +19,7 @@ class TripController extends Controller
 
         $trips = Trip::filter($filter)
             ->where(Trip::STATUS, '>', TripStatuses::TRIP_IN_PROGRESS)
+            ->orderBy(Trip::UPDATED_AT, 'desc')
             ->paginate(25);
 
         return view('admin.trips', get_defined_vars());
