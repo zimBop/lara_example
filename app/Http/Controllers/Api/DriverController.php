@@ -100,7 +100,7 @@ class DriverController extends ApiController
                     'page' => (int) $page,
                     'pages_count' => ceil($allWeeks->count() / $perPage),
                 ],
-                $driverService->getDriverStats($driver, $weeks, $scheduleService)
+                ['weeks' => $driverService->getDriverStats($driver, $weeks, $scheduleService)]
             )
         );
     }
