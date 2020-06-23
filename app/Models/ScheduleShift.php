@@ -25,6 +25,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleShift whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleShift whereVehicleId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\ScheduleGap $gap
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Shift[] $shifts
+ * @property-read int|null $shifts_count
+ * @property-read \App\Models\Vehicle $vehicle
  */
 class ScheduleShift extends Model
 {

@@ -41,6 +41,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read int|null $trip_orders_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift pending()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift whereWashedAt($value)
+ * @property int|null $schedule_shift_id
+ * @property-read \App\Models\City|null $city
+ * @property-read \App\Models\ScheduleShift|null $schedule_shift
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Shift whereScheduleShiftId($value)
  */
 class Shift extends Model
 {
