@@ -31,7 +31,7 @@ class CreateTripOrdersTable extends Migration
             $table->integer('wait_duration')->comment('Driver waiting time in seconds');
             $table->integer('trip_duration')->comment('Trip duration in seconds');
             $table->integer('distance')->comment('Trip distance in meters');
-            $table->integer('driver_distance')->comment('Distance in meters between diver\' location and origin');
+            $table->integer('driver_distance')->comment('Distance in meters between driver\' location and origin');
             $table->string('message_for_driver')->nullable();
             $table->string('payment_method_id')->nullable()->comment('Stripe payment method id');
             $table->timestamps();

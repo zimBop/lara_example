@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $wait_duration Driver waiting time in seconds
  * @property int $trip_duration Trip duration in seconds
  * @property int $distance Trip distance in meters
- * @property int $driver_distance Distance in meters between diver' location and origin
+ * @property int $driver_distance Distance in meters between driver' location and origin
  * @property string|null $message_for_driver
  * @property string|null $payment_method_id Stripe payment method id
  * @property string|null $picked_up_at Timestamp of the moment when client picked up
@@ -69,6 +69,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Trip withoutTrashed()
  * @property-read mixed $is_free_trip
  * @property-read mixed $trip_duration_adjusted
+ * @property-read mixed $tips_amount
+ * @property-read \App\Models\Tip $tips
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Trip filter(\App\Filters\QueryFilter $filters)
  */
 class Trip extends Model
 {
