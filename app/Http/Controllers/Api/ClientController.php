@@ -226,10 +226,6 @@ class ClientController extends ApiController
             return $this->error(ClientMessages::PHONE_ALREADY_REGISTERED);
         }
 
-        if ($client->invitations_number === 0) {
-            return $this->error(ClientMessages::ALL_INVITES_ALREADY_USED);
-        }
-
         if (Invitation::wherePhone($phone)->whereSmsSent(true)->exists()) {
             return $this->error(ClientMessages::INVITE_ALREADY_SENT);
         }

@@ -27,7 +27,6 @@ class ClientResource extends JsonResource
             Client::CO2_SUM => $this->co2_sum,
             Client::FREE_TRIPS => $this->free_trips,
             'avatar' => $this->avatar_url,
-            'invites_number' => $this->invitations_number,
         ];
     }
 }

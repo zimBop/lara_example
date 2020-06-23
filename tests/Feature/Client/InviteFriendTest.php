@@ -62,26 +62,6 @@ class InviteFriendTest extends TestCase
              ]);
     }
 
-    public function testIsAllInvitesAlreadyUsedMessageReturned()
-    {
-        $phone = ClientService::generatePhoneNumber();
-        $client = $this->makeAuthClient();
-
-        factory(Invitation::class, config('app.invites.number'))->create([
-            Invitation::CLIENT_ID => $client->id,
-        ]);
-
-        $this->postJson(
-                route('clients.invite-friend', ['client' => $client->id]),
-                ['phone' => $phone]
-            )
-            ->assertStatus(200)
-            ->assertJson([
-                 'done' => false,
-                 'message' => ClientMessages::ALL_INVITES_ALREADY_USED,
-             ]);
-    }
-
     public function testIsInviteAlreadySentMessageReturned()
     {
         $phone = ClientService::generatePhoneNumber();

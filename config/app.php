@@ -143,6 +143,8 @@ return [
 
     'invites' => [
         // How many friends Client can invite
+        // unused since EL-97 implemented.
+        // @see https://designstudioag.atlassian.net/browse/EL-97
         'number' => 3,
         // Link to the app store
         'link' => 'store:Electra',

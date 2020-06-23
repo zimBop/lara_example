@@ -64,7 +64,6 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereCo2Sum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereRating($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Invitation[] $invitations
- * @property-read int|null $invitations_number
  * @property int $free_trips
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereFreeTrips($value)
  * @property-read int|null $invitations_count
@@ -158,13 +157,6 @@ class Client extends Authenticatable
     public function getActiveTripAttribute()
     {
         return $this->trips()->active()->first();
-    }
-
-    public function getInvitationsNumberAttribute()
-    {
-        $number = config('app.invites.number') - $this->invitations()->count();
-
-        return $number > 0 ? $number : 0;
     }
 
     public function setPasswordAttribute($value): void
