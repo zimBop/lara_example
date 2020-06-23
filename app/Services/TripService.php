@@ -159,14 +159,20 @@ class TripService
     }
 
     /**
-     * @param $clientOrigin
+     * @param array $clientOrigin
+     * @param Driver|null $driver
      * @return array
      * @throws \ErrorException
      */
-    protected function getDriverData($clientOrigin): array
+    protected function getDriverData(array $clientOrigin, Driver $driver = null): array
     {
-        $drivers = $this->findDrivers($clientOrigin['coordinates']['lng'], $clientOrigin['coordinates']['lat']);
-        $closestDriver = $drivers->first();
+        if ($driver) {
+            $closestDriver = $driver;
+        } else {
+            $coords = $clientOrigin['coordinates'];
+            $closestDriver = $this->findDrivers($coords['lng'], $coords['lat'])
+                ->first();
+        }
 
         $currentTripDuration = 0;
         if ($closestDriver->active_trip) {
@@ -281,7 +287,7 @@ class TripService
      */
     public function createTrip(TripOrder $tripOrder, Driver $driver): Trip
     {
-        $driverData = $this->getDriverData($tripOrder->origin);
+        $driverData = $this->getDriverData($tripOrder->origin, $driver);
 
         $tripData = $tripOrder->toArray();
         $tripData[Trip::DRIVER_DISTANCE] = $driverData[TripOrder::DRIVER_DISTANCE];

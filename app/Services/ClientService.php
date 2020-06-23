@@ -21,7 +21,7 @@ class ClientService
     }
 
     /**
-     * Change Client's status from current to opposite one 1 > 0, 0 > 1
+     * Toggle Client's activity
      * @return true | false
      */
     public function changeActivity(): bool
@@ -42,7 +42,7 @@ class ClientService
 
     public static function generateRandomInt(int $digitsNumber): int
     {
-        return rand(pow(10, $digitsNumber - 1) - 1, pow(10, $digitsNumber) - 1);
+        return rand(10 ** ($digitsNumber - 1) - 1, 10 ** $digitsNumber - 1);
     }
 
     public function processInvitation()
