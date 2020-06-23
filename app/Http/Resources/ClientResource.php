@@ -19,8 +19,16 @@ class ClientResource extends JsonResource
         return [
             Client::ID => $this->id,
             Client::PHONE => $this->phone,
-            Client::FIRST_NAME => $this->when(is_driver(), $this->first_name[0] . '.', $this->first_name),
-            Client::LAST_NAME => $this->when(is_driver(), $this->last_name[0] . '.', $this->last_name),
+            Client::FIRST_NAME => $this->when(
+                is_driver() && $this->first_name,
+                substr($this->first_name, 0, 1) . '.',
+                $this->first_name
+            ),
+            Client::LAST_NAME => $this->when(
+                is_driver() && $this->last_name,
+                substr($this->last_name, 0, 1) . '.',
+                $this->last_name
+            ),
             Client::BIRTHDAY => $this->birthday ? $this->birthday->format('m/d/Y') : null,
             Client::EMAIL => $this->email,
             Client::RATING => $this->rating,
