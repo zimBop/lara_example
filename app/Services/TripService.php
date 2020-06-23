@@ -16,6 +16,7 @@ use App\Models\Trip;
 use App\Models\TripOrder;
 use App\Logic\TripPriceCalculator;
 use App\Notifications\NewTripOrder;
+use App\Notifications\TripOrderUpdated;
 use App\Notifications\TripStatusChanged;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
@@ -193,6 +194,7 @@ class TripService
         return [
             TripOrder::DRIVER_DISTANCE => $route['legs'][0]['distance']['value'],
             TripOrder::WAIT_DURATION => $currentTripDuration + $route['legs'][0]['duration']['value'],
+            TripOrder::EXPECTED_DRIVER_ID => $closestDriver->id,
         ];
     }
 
@@ -284,6 +286,7 @@ class TripService
      * @param TripOrder $tripOrder
      * @param Driver $driver
      * @return Trip
+     * @throws \ErrorException
      */
     public function createTrip(TripOrder $tripOrder, Driver $driver): Trip
     {
@@ -297,6 +300,31 @@ class TripService
         $tripData[Trip::STATUS] = TripStatuses::DRIVER_IS_ON_THE_WAY;
 
         return Trip::create($tripData);
+    }
+
+    /**
+     * When some driver accepts tripOrder we must update
+     * TripOrder::WAIT_DURATION, TripOrder::DISTANCE, TripOrder::EXPECTED_DRIVER_ID
+     * for another tripOrders associated with this driver
+     *
+     * @param int $tripOrderId
+     * @param int $driverId
+     */
+    public function updateTripOrders(int $tripOrderId, int $driverId): void
+    {
+        TripOrder::whereExpectedDriverId($driverId)
+            ->where(TripOrder::ID, '!=', $tripOrderId)
+            ->where(TripOrder::STATUS, '<=', TripStatuses::LOOKING_FOR_DRIVER)
+            ->get()
+            ->each(
+                function (TripOrder $tripOrder) {
+                    $tripOrder->update(
+                        $this->getDriverData($tripOrder->origin)
+                    );
+
+                    $tripOrder->client->notify(new TripOrderUpdated($tripOrder->id));
+                }
+            );
     }
 
     /**

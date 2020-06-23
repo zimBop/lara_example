@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $wait_duration Driver waiting time in seconds
  * @property int $trip_duration Trip duration in seconds
  * @property int $distance Trip distance in meters
- * @property int $driver_distance Distance in meters between diver' location and origin
+ * @property int $driver_distance Distance in meters between driver' location and origin
  * @property string|null $message_for_driver
  * @property string|null $payment_method_id Stripe payment method id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -49,6 +49,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Shift[] $shifts
  * @property-read int|null $shifts_count
  * @property-read mixed $is_free_trip
+ * @property int|null $expected_driver_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\TripOrder whereExpectedDriverId($value)
  */
 class TripOrder extends Model
 {
@@ -67,6 +69,7 @@ class TripOrder extends Model
     public const MESSAGE_FOR_DRIVER = 'message_for_driver';
     public const PAYMENT_METHOD_ID = 'payment_method_id';
     public const IS_FREE_TRIP = 'is_free_trip';
+    public const EXPECTED_DRIVER_ID = 'expected_driver_id';
 
     protected $fillable = [
         self::CLIENT_ID,
@@ -82,6 +85,7 @@ class TripOrder extends Model
         self::DRIVER_DISTANCE,
         self::MESSAGE_FOR_DRIVER,
         self::PAYMENT_METHOD_ID,
+        self::EXPECTED_DRIVER_ID,
     ];
 
     protected $casts = [
@@ -107,6 +111,6 @@ class TripOrder extends Model
             return null;
         }
 
-        return (bool) !$this->payment_method_id;
+        return !$this->payment_method_id;
     }
 }

@@ -51,6 +51,8 @@ class DriverTripOrderController extends ApiController
 
         $trip = $tripService->createTrip($tripOrder, $driver);
 
+        $tripService->updateTripOrders($tripOrder->id, $driver->id);
+
         $tripOrder->shifts()->detach();
 
         $trip->client->notify(new TripStatusChanged(TripStatuses::DRIVER_IS_ON_THE_WAY, $trip->id));

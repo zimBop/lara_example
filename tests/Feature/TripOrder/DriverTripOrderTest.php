@@ -7,6 +7,7 @@ use App\Constants\TripStatuses;
 use App\Http\Resources\TripResource;
 use App\Models\Trip;
 use App\Models\TripOrder;
+use App\Notifications\TripOrderUpdated;
 use App\Notifications\TripStatusChanged;
 use Illuminate\Support\Facades\Notification;
 use SMartins\PassportMultiauth\PassportMultiauth;
@@ -60,6 +61,39 @@ class DriverTripOrderTest extends TestCase
                 'done' => true,
                 'data' => $data
             ]);
+    }
+
+    public function testIsTripOrdersUpdated(): void
+    {
+        $directionsMock = $this->setupDirectionsMock();
+        $this->setupGoogleMapsMock($directionsMock);
+        Notification::fake();
+
+        $driver = $this->createDriverAtWork(true);
+        $driverTwo = $this->createDriverAtWork();
+
+        $tripOrderData = [
+            TripOrder::STATUS => TripStatuses::LOOKING_FOR_DRIVER,
+            TripOrder::EXPECTED_DRIVER_ID => $driver->id
+        ];
+
+        $firstTripOrder = factory(TripOrder::class)
+            ->create($tripOrderData);
+
+        $secondTripOrder = factory(TripOrder::class)
+            ->create($tripOrderData);
+
+        $this->postJson(
+            route('trip-order.accept', ['driver' => $driver->id, 'tripOrder' => $firstTripOrder->id])
+        );
+
+        $client = $secondTripOrder->client;
+        Notification::assertSentTo($client, TripOrderUpdated::class);
+
+        $this->assertDatabaseHas('trip_orders', [
+            TripOrder::ID => $secondTripOrder->id,
+            TripOrder::EXPECTED_DRIVER_ID => $driverTwo->id
+        ]);
     }
 
     public function testIsDriverDoesntHaveActiveShiftErrorShown(): void
