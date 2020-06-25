@@ -19,25 +19,17 @@ class ScheduleController extends Controller
 {
     public function index(GetScheduleRequest $request, ScheduleWeekFilter $filter, ScheduleService $scheduleService)
     {
-        $week = $scheduleService->getWeek($request, $filter);
-        $vehicles = Vehicle::all();
-        $drivers = Driver::all();
-        $cities = City::all();
-
-        $nextWeekExists = $scheduleService->isNextWeekExists();
-        $timeSelectOptions = $scheduleService->getTimeSelectOptions();
-
         return view(
             'admin.schedule.index',
             array_merge(
-                compact(
-                    'week',
-                    'vehicles',
-                    'drivers',
-                    'cities',
-                    'nextWeekExists',
-                    'timeSelectOptions'
-                ),
+                [
+                    'week' => $scheduleService->getWeek($request, $filter),
+                    'vehicles' => Vehicle::all(),
+                    'drivers' => Driver::all(),
+                    'cities' => City::all(),
+                    'nextWeekExists' => $scheduleService->isNextWeekExists(),
+                    'timeSelectOptions' => $scheduleService->getTimeSelectOptions(),
+                ],
                 $scheduleService->getDatesForWeekPicker($request)
             )
         );
